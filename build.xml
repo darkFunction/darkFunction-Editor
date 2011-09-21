@@ -119,11 +119,15 @@
         </fileset>
       </copy>
 
-        <exec executable="cmd">
-            <arg value="/c"/>
-            <arg value="buildInstaller.bat"/>
-        </exec>       
+       <taskdef name="izpack" classpath="./izpack/standalone-compiler.jar"
+            classname="com.izforge.izpack.ant.IzPackTask"/>       
+       <izpack  input="${basedir}/izpack/dFEditor Installer.xml" 
+                output="${basedir}/izpack/dfEditor Installer.jar" 
+                basedir="${basedir}/izpack/"
+       />
 
+
+     
 
       <copy file="./izpack/dFEditor Installer.jar" todir="./"/>
       <!--<copy file="./izpack/dFEditor Installer.jar" todir="../darkfunction.com/files/"/>-->
