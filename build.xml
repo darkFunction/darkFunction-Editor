@@ -126,7 +126,7 @@
 
 
       <copy file="./izpack/dFEditor Installer.jar" todir="./"/>
-      <copy file="./izpack/dFEditor Installer.jar" todir="../darkfunction.com/files/"/>
+      <!--<copy file="./izpack/dFEditor Installer.jar" todir="../darkfunction.com/files/"/>-->
 
     </target>
 

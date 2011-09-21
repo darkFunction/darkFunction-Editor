@@ -1,1 +1,1 @@
-"C:\Program Files\IzPack\bin\compile" "C:\Users\s4m20\Desktop\Coding\dfEditor\izpack\dFEditor Installer.xml" -b C:\Users\s4m20\Desktop\Coding\dfEditor\izpack
+"C:\Program Files\IzPack\bin\compile" "C:\Users\s4m20\Desktop\Coding\dfEditor\izpack\trunk\dFEditor Installer.xml" -b C:\Users\s4m20\Desktop\Coding\dfEditor\trunk\izpack
