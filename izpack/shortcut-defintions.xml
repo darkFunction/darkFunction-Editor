@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+<shortcuts>
+    <skipIfNotSupported />
+    <programGroup defaultName="darkFunction Editor" location="applications" />
+    <shortcut name="darkFunction Editor"
+              target="$INSTALL_PATH\dfEditor.jar"                        
+			  workingDirectory="$INSTALL_PATH"
+              description="darkFunction Editor"
+              initialState="noShow"
+              programGroup="yes"
+              desktop="no"
+              applications="yes"
+              startMenu="no"
+              startup="no">
+        <createForPack name="Core" />
+    </shortcut>
+	<shortcut name="Uninstall dfEditor"
+              target="$INSTALL_PATH\Uninstaller\uninstaller.jar"                        
+              description="Uninstall darkFunction Editor"
+			  workingDirectory="$INSTALL_PATH"
+              initialState="noShow"
+              programGroup="yes"
+              desktop="no"
+              applications="no"
+              startMenu="no"
+              startup="no">
+        <createForPack name="Core" />
+    </shortcut>
+</shortcuts>

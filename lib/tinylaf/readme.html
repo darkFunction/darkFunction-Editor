@@ -1,0 +1,1082 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+<title>TinyLaF ReadMe</title>
+<style type="text/css">
+p,body,#normal  {font-size:13px;
+	line-height:17px;
+	color:#001F66;
+	font-family:Arial,Geneva,Verdana,Helvetica,sans-serif;}
+b {color:#4F6390;}
+H4 { color:#4A65A2; }
+code {font-size:13px;
+	line-height:17px;
+	color:#001F66;
+	font-family:Courier, monospaced;}
+strong {color:#F3F4F6;}
+body { margin-left:48px; margin-right:48px; margin-top:0px; margin-bottom:16px }
+</style>
+</head>
+
+<body bgcolor="#F3F4F6">
+<a name="top"></a>
+<br>
+<b>TinyLaF beta 1.4.0</b>&nbsp;&nbsp;<code>(2009-8-25)</code>
+<br><br>
+The latest version of TinyLaF can be found at <a href="http://www.muntjak.de/hans/java/tinylaf/">http://www.muntjak.de/hans/java/tinylaf/</a>
+<br><hr><br>
+
+<b>Content</b>
+<br><br>
+<a href="#package">The TinyLaF package</a><br>
+<a href="#license">License</a><br>
+<a href="#jre">Required JRE</a><br>
+<a href="#build">Ant build files</a><br>
+<a href="#control">Running the TinyLaF control panel</a><br>
+<a href="#current">Making TinyLaF the current LookAndFeel</a><br>
+<a href="#default">The default theme</a><br>
+<a href="#unicode">Unicode Fonts</a><br>
+<a href="#decorated">Decorated frames and dialogs</a><br>
+<a href="#bundle">How to bundle tinylaf.jar with your packed application</a><br>
+<a href="#webstart">TinyLaF and Java Web Start</a><br>
+<a href="#switch">Theme switching</a><br>
+<a href="#sortable">Sortable table data with TinyLaF</a><br>
+<a href="#history">History</a>&nbsp;&nbsp;
+&nbsp;&nbsp;<a href="#140">1.4.0</a>
+&nbsp;&nbsp;<a href="#138">1.3.8</a>
+&nbsp;&nbsp;<a href="#137">1.3.7</a>
+&nbsp;&nbsp;<a href="#136">1.3.6</a>
+&nbsp;&nbsp;<a href="#135">1.3.5</a>
+&nbsp;&nbsp;<a href="#134">1.3.4</a>
+&nbsp;&nbsp;<a href="#133">1.3.3</a>
+&nbsp;&nbsp;<a href="#132">1.3.2</a>
+&nbsp;&nbsp;<a href="#131">1.3.1</a>
+&nbsp;&nbsp;<a href="#130">1.3.0</a>
+&nbsp;&nbsp;<a href="#121">1.2.1</a>
+&nbsp;&nbsp;<a href="#120">1.2.0</a>
+&nbsp;&nbsp;<a href="#110">1.1.0</a><br>
+<a href="#issues">Known issues</a><br>
+<a href="#thanks">Thanks ...</a><br>
+<a href="#contact">Contact the author</a>
+<br><hr>
+
+<a name="package"></a>
+<br>
+<b>The TinyLaF package</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+Source distribution:<br>
+<code>&nbsp;&nbsp;help</code> - contains the files of the online help, used by Ant.<br>
+<code>&nbsp;&nbsp;license</code> - contains copies of the GNU General Public License and the GNU Lesser General Public License.<br>
+<code>&nbsp;&nbsp;src</code> - contains the TinyLaF sources.<br>
+<code>&nbsp;&nbsp;themes</code> - contains some TinyLaF theme files, used by Ant.<br>
+<code>&nbsp;&nbsp;build.xml</code> - an <a href="#build">Ant build file</a> to build the TinyLaF binaries.<br>
+<code>&nbsp;&nbsp;javadoc.xml</code> - an <a href="#build">Ant build file</a> to extract the javadoc documentation.<br>
+<code>&nbsp;&nbsp;manifest.txt</code> - the manifest for <code>tinycp.jar</code>, used by Ant.<br>
+<code>&nbsp;&nbsp;readme.html</code> - this file.<br>
+<code>&nbsp;&nbsp;tinycp.xml</code> - an <a href="#build">Ant build file</a> to build the TinyLaF binaries including the control panel.<br>
+<br>
+Binary distribution:<br>
+<code>&nbsp;&nbsp;docs</code> - contains the javadoc documentation.<br>
+<code>&nbsp;&nbsp;license</code> - contains copies of the GNU General Public License and the GNU Lesser General Public License.<br>
+<code>&nbsp;&nbsp;readme.html</code> - this file.<br>
+<code>&nbsp;&nbsp;tinycp.jar</code> - an executable JAR containing the Tiny Look and Feel and the TinyLaF control panel.<br>
+<code>&nbsp;&nbsp;tinylaf.jar</code> - the Tiny Look and Feel (without the control panel).
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#F4F3DF"><font id="normal">
+<b>Note</b>: <code>tinycp.jar</code> is equivalent to <code>tinylaf.jar</code> of previous releases whereas the new <code>tinylaf.jar</code> is less than half the size and doesn't contain the control panel. For minimum file size, <code>tinylaf.jar</code> is compiled without debugging information.
+</font>
+</td></tr>
+</table>
+<br><hr>
+
+<a name="license"></a>
+<br>
+<b>License</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+The TinyLaF source code is released under the terms of the <a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser General Public License</a>.
+<br><hr>
+
+<a name="jre"></a>
+<br>
+<b>Required JRE</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+1.4.0 or later. Recommended: 1.4.2 or later.
+<br><hr>
+
+<a name="build"></a>
+<br>
+<b>Ant build files</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+The source distribution contains three Ant buildfiles.
+<br><br>
+To build <code>tinylaf.jar</code>, <code>cd</code> to the TinyLaF directory and execute:
+<br>
+<code>&nbsp;&nbsp;&gt; ant</code>
+<br><br>
+To build the executable <code>tinycp.jar</code>, <code>cd</code> to the TinyLaF directory and execute:
+<br>
+<code>&nbsp;&nbsp;&gt; ant -f tinycp.xml</code>
+<br><br>
+To build the javadoc documentation, <code>cd</code> to the TinyLaF directory and execute:
+<br>
+<code>&nbsp;&nbsp;&gt; ant -f javadoc.xml</code>
+<br>
+(this command will create a new <code>docs</code> directory)
+<br><hr>
+
+<a name="control"></a>
+<br>
+<b>Running the TinyLaF control panel</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+Using the control panel you can create and save your own themes.
+<br><br>
+To start the control panel, either double-click <code>tinycp.jar</code> or <code>cd</code> to the TinyLaF directory and execute:
+<br>
+<code>&nbsp;&nbsp;&gt; java -jar tinycp.jar</code>
+<br><hr>
+
+<a name="current"></a>
+<br>
+<b>Making TinyLaF the current LookAndFeel</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+To make TinyLaF the current LAF of your application, include this line:
+<br><br>
+<code>UIManager.setLookAndFeel(&quot;de.muntjak.tinylookandfeel.TinyLookAndFeel&quot);</code>
+<br><br>
+at the beginning of your <code>main</code> method (you will have to catch any exceptions).
+<br>
+(Additional ways to define the LAF can be found at <a href="http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/UIManager.html">Sun's Java documentation</a>)
+<br><br>
+Here is my complete install sequence:
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal"><code>
+Toolkit.getDefaultToolkit().setDynamicLayout(true);<br>
+System.setProperty("sun.awt.noerasebackground", "true");<br>
+JFrame.setDefaultLookAndFeelDecorated(true);<br>
+JDialog.setDefaultLookAndFeelDecorated(true);<br>
+<br>
+try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UIManager.setLookAndFeel(&quot;de.muntjak.tinylookandfeel.TinyLookAndFeel&quot);<br>
+} catch(Exception ex) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<br>
+}</code>
+</td></tr>
+</table>
+<br><hr>
+
+<a name="default"></a>
+<br>
+<b>The default theme</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+TinyLaF looks for a default theme file named <code>'Default.theme'</code> (case-sensitive). If it finds one, this
+file will be loaded at startup.
+<br>
+(The <code>'Default.theme'</code> file is an ordinary TinyLaF .theme file, just with a special name, you can take any .theme file and rename it to <code>'Default.theme'</code>).
+<br><br>
+TinyLaF will search the following URLs:
+<br>
+<ol>
+<li><code>TinyLookAndFeel.class.getResource("/Default.theme");</code><br>
+- finds <code>'Default.theme'</code> if it is inside <code>tinylaf.jar</code><br>
+<li><code>Thread.currentThread().getContextClassLoader().getResource("Default.theme");</code><br>
+- finds <code>'Default.theme'</code> if it is inside your application's JAR<br>
+<li><code>new File(System.getProperty("user.home"), "Default.theme").toURI().toURL();</code><br>
+- finds <code>'Default.theme'</code> if it is inside the home directory<br>
+<li><code>new File(System.getProperty("user.dir"), "Default.theme").toURI().toURL();</code><br>
+- finds <code>'Default.theme'</code> if it is inside the working directory
+</ol>
+<hr>
+
+<a name="unicode"></a>
+<br>
+<b>Unicode Fonts</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+By default, TinyLaF specifies the 'Tahoma' font to be used by text components. 'Tahoma' is a relatively small font with a relatively small number of glyphs. The supplied 'Unicode' theme specifies the 'SansSerif' font (a logical Java font) instead of the 'Tahoma' font. To make it the default theme, follow the instructions given in the <a href="#default">The default theme</a> section. Alternatively you can make any theme Unicode-compliant by specifying a Unicode font for both 'Fonts | Plain Font' and 'Fonts | Bold Font'.
+<br><hr>
+
+<a name="decorated"></a>
+<br>
+<b>Decorated frames and dialogs</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+To try the 'Decorated Frames' feature, include the following two lines (or maybe just one) in your source code <em>before</em> the first frame is made visible:
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal">
+&nbsp;&nbsp;&nbsp;&nbsp;<code>JFrame.setDefaultLookAndFeelDecorated(true);	// to decorate frames</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<code>JDialog.setDefaultLookAndFeelDecorated(true);	// to decorate dialogs</code>
+</td></tr>
+</table>
+<br>
+To eliminate flickering on resize (decorated frames only), include this code before you set the LAF:
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal">
+&nbsp;&nbsp;&nbsp;&nbsp;<code>// continuous layout on frame resize</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<code>Toolkit.getDefaultToolkit().setDynamicLayout(true);</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<code>// no flickering on resize</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<code>System.setProperty("sun.awt.noerasebackground", "true");</code>
+</td></tr>
+</table>
+<hr>
+
+<a name="bundle"></a>
+<br>
+<b>How to bundle tinylaf.jar with your packed application</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+When JARing your application you should specify the <em>relative</em> path to <code>tinylaf.jar</code> as (one) value of the manifest's <code>Class-Path</code> attribute.
+<br><br>
+If you are new to manifest files:
+<br><br>
+The first line should specify the <em>manifest version</em> (until now there's only version 1.0):<br>
+<code>Manifest-Version: 1.0</code>
+<br><br>
+The second line specifies the <em>main class</em> of your application, providing its fully-qualified class name:<br>
+<code>Main-Class: package1.package2.YourMainClass</code>
+<br><br>
+The third line should read like this (<code>tinylaf.jar</code> resides in <code>lib</code> directory):<br>
+<code>Class-Path: lib/tinylaf.jar</code>
+<br><br>
+The fourth (last) line MUST be a blank line.
+<br><br>
+When JARing your application, you say:<br>
+<code>&gt; jar cmf nameOfManifestFile nameOfJar contentsOfJar ...</code>
+<br><br>
+What you get is an executable JAR which automatically finds <code>tinylaf.jar</code> if the directory layout is as follows:<br>
+<code>&nbsp;&nbsp;.../applicationDirectory/nameOfJar.jar</code><br>
+<code>&nbsp;&nbsp;.../applicationDirectory/lib/tinylaf.jar</code>
+<br><hr>
+
+<a name="webstart"></a>
+<br>
+<b>TinyLaF and Java Web Start</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+TinyLaF should work with Java Web Start without <code>tinylaf.jar</code> needing to be signed (but note: if one of your JARs needs to be signed, you must also sign <code>tinylaf.jar</code>).
+<br><br>
+Because, in general, the <code>'Default.theme'</code> file will not be inside <code>tinylaf.jar</code> you may want
+to give <code>tinylaf.jar</code> the attribute <code>download="lazy"</code> in your JNLP file (so the JAR including
+the <code>'Default.theme'</code> file loads <em>before</em> <code>tinylaf.jar</code>).
+<br><hr>
+
+<a name="switch"></a>
+<br>
+<b>Theme switching</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+All predefined themes (YQ, Forest, Golden, Nightly, Plastic, Silver and Unicode) are now included in the JAR file. Additionally Tiny searches both the user directory and the working directory for theme files.<br>
+<code>Theme.getAvailableThemes()</code> returns an array of <code>ThemeDescription</code> objects. Once you have obtained the array, you can call <code>ThemeDescription.getName()</code> for each object to build a menu presenting the available themes. As a user selects a <code>ThemeDescription</code>, you can pass it as argument to <code>Theme.loadTheme(ThemeDescription)</code>.
+<br><br>
+After loading a theme, you should re-install the Tiny Look and Feel and recreate the ui:
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal">
+<code>
+// re-install the Tiny Look and Feel<br>
+UIManager.setLookAndFeel(new TinyLookAndFeel());<br>
+<br>
+// Update the ComponentUIs for all Components. This<br>
+// needs to be invoked for all windows.<br>
+SwingUtilities.updateComponentTreeUI(rootComponent);
+</<code>
+</td></tr>
+</table>
+<br>
+(The javadoc documentation of the <code>Theme</code> class contains more information on theme switching.)
+<br><hr>
+
+<a name="sortable"></a>
+<br>
+<b>Sortable table data with TinyLaF</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+Since version 1.3.6 TinyLaF supports sortable table data (user can sort column values by clicking inside the column header). Sortable column headers visualize rollovers and display up/down arrows. TinyLaF supports single-column sort and multi-column sort.
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#F4F3DF"><font id="normal">
+<b>Note</b>: Of course you can also use the sorting capabilities that came with Java 1.6 with TinyLaF.
+</font>
+</td></tr>
+</table>
+<br>
+To make table data sortable, a <code>TableModel</code> must <code>implement de.muntjak.tinylookandfeel.table.SortableTableData</code>, here are the interface methods:
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal">
+<PRE>boolean <B>isColumnSortable</B>(int&nbsp;column)</PRE>
+<DL>
+<DD>Return <code>true</code> if the specified column is sortable, <code>false</code> otherwise. Non-sortable column headers will not react to mouse clicks or rollovers.
+<P>
+<DL>
+<DT><B>Parameters:</B></dt>
+<DD><CODE>column</CODE> - a column index</dd>
+<DT><B>Returns:</B></dt>
+<DD><code>true</code> if the specified column is sortable, <code>false</code> otherwise</dd>
+</DL>
+</DL>
+<HR>
+
+<a name="supportsMultiColumnSort"></a>
+<PRE>boolean <B>supportsMultiColumnSort</B>()</PRE>
+<DL>
+<DD>Return <code>true</code> if the table model supports multiple sorted columns, <code>false</code> otherwise. (Supporting multi column sort makes sense only with columns containing some equal values.)
+<p>
+The TinyLaF user gestures concerning multi column sort are:
+<ul>
+<li><code>Ctrl-Click</code>: If clicked column was already sorted, change sorting direction, else add clicked column to sorted columns.
+<li><code>Alt-Click</code>: If clicked column was already sorted, remove from sorted columns. Ignore if clicked column was not sorted.
+<li><code>Click</code> (without <code>Ctrl</code> or <code>Alt</code>): The clicked column becomes the only sorted column. If the clicked column already was sorted, change sorting direction.
+</ul>
+<P>
+<DL>
+<DT><B>Returns:</B></dt>
+<DD><code>true</code> if the table model supports multiple sorted columns, <code>false</code> otherwise</dd>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<PRE>void <B>sortColumns</B>(int[]&nbsp;columns, int[]&nbsp;sortingDirections, javax.swing.JTable&nbsp;table)</PRE>
+<DL>
+<DD>Sort the data according to the given arguments. If argument arrays are empty, the original state of the data will be restored, if there is no original state then no action will be performed.
+<p>
+Note for implementors: If your data is dynamically changing you should think about storing copies of the arguments so you can re-sort data after each change. It may also be a good idea to call <code>fireTableDataChanged()</code> after sorting (this makes sure that the table is updated).
+<P>
+<DL>
+<DT><B>Parameters:</B></dt>
+<DD><CODE>columns</CODE> - array of column indices sorted by priority (highest priority first).</DD>
+<DD><CODE>sortingDirections</CODE> - array containing the sorting direction for each sorted column. Values are either
+<ul>
+<li><code>SORT_ASCENDING</code> - sort column data in ascending order, or<li><code>SORT_DESCENDING</code> - sort column data in descending order
+</ul>
+</DD>
+<DD><CODE>table</CODE> the table displaying the data. Might be useful, for example, to restore selected cells after sorting.
+</DD>
+</DL>
+</DD>
+</DL>
+</td></tr>
+</table>
+<br>
+The source distribution contains an implementations of this interface, see <code>de.muntjak.tinylookandfeel.controlpanel.TinyTableModel</code> (performing multi-column sort).
+<br><br>
+In class <code>de.muntjak.tinylookandfeel.TinyTableHeaderUI</code> there are two further methods related to sorting.
+<br><br>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td bgcolor="#FFFFFF"><font id="normal">
+<PRE>void <B>sortColumns</B>(int[]&nbsp;columns, int[]&nbsp;sortingDirections, javax.swing.JTable&nbsp;table)</PRE>
+<DL>
+<DD>Call this method to programmatically initiate sorting on (sortable) table models. Especially if your data is sorted by default, you should call this method before the table is displayed the first time.</dd>
+<P>
+<DL>
+<DT><B>Parameters:</B></dt>
+<DD><CODE>columns</CODE> - array of column indices sorted by priority (highest priority first)</dd>
+<DD><CODE>sortingDirections</CODE> - array containing the sorting direction for each sorted column. Values are either
+<ul>
+<li><code>de.muntjak.tinylookandfeel.table.SortableTableData.SORT_ASCENDING</code> or <li><code>de.muntjak.tinylookandfeel.table.SortableTableData.SORT_DESCENDING</code>
+</ul>
+</dd>
+<DD><CODE>table</CODE> the table displaying the data</dd>
+<DT><B>Throws:</B></dt>
+<DD><CODE>java.lang.IllegalArgumentException</CODE> - If any of the arguments is <code>null</code> or if <code>columns</code> argument and <code>sortingDirections</code> argument are of different length
+</DD>
+</DL>
+</DL>
+<HR>
+
+<PRE>void <B>setHorizontalAlignments</B>(int[]&nbsp;alignments)</PRE>
+<DL>
+<DD>Sets horizontal alignments of table header renderers where an index in the argument array corresponds to a column index.
+<br>
+Note: If the length of the argument array is less than the number of columns, unspecified columns default to <code>CENTER</code> alignment. If the length of the argument array is greater than the number of columns, surplus information will be ignored.
+<P>
+<DL>
+<DT><B>Parameters:</B>
+<DD><CODE>alignments</CODE> - array of the following constants defined in <code>SwingConstants</code>: <code>LEFT</code>, <code>CENTER</code>, <code>RIGHT</code>, <code>LEADING</code> or <code>TRAILING</code>
+</DD>
+</DL>
+</DL>
+</td></tr>
+</table>
+<br>
+Each table header has its own instance of <code>de.muntjak.tinylookandfeel.TinyTableHeaderUI</code>. You can obtain it with code like this:<br>
+<pre>
+JTable table = new JTable(new MySortableTableModel());
+TableHeaderUI headerUI = table.getTableHeader().getUI();
+
+if(headerUI instanceof TinyTableHeaderUI) {
+    // do your thing ...
+}
+</pre>
+<hr>
+
+<a name="history"></a>
+<br>
+<b>History</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+TinyLaF was first released in May 2003. It is based on the XP Look and Feel written by Stefan Krause.
+<br><hr>
+
+<a name="110"></a>
+<br>
+<b>V 1.1.0</b>&nbsp;&nbsp;<code>(2003-6-9)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JProgressBar.getFont()</code> returning <code>null</code>. Aditionally one can now set the font of <code>JProgressBar</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JProgressBar</code> now displays strings even when in indeterminate mode.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Defining TinyLaF as the standard LAF in <code>swing.properties</code> threw exceptions (<code>PanelUI</code> not found).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>ButtonUI</code> now honours <code>isBorderPainted</code> and <code>isContentAreaFilled</code> properties.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Border of <code>JToolBar</code> now isn't painted if set to <code>null</code> or <code>isBorderPainted</code> resolves to <code>false</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Border of <code>JTextField</code> and <code>JComboBox</code> now isn't painted if set to <code>null</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Due to a bug in <code>BasicProgressBarUI</code> (unfortunately in a private method, caused by a private member) sometimes a <code>NullPointerException</code> was thrown soon after the ControlPanel started. Because this exception is harmless, I decided to catch it.
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Removed Popup Font.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added ProgressBar Font together with two additional text colors in Decoration/ProgressBar.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+File format changed slightly due to previous changes. 1.0-themes can still be loaded, but saved themes are not compatible with TinyLaF-1.0
+</td></tr>
+</table>
+<br><hr>
+
+<a name="120"></a>
+<br>
+<b>V 1.2.0</b>&nbsp;&nbsp;<code>(2003-8-23)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Icons for <code>JMenuItem</code>s were painted disabled when menu item was selected.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The selection background and selection foreground for text components were both set to white.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Double-clicking the title bar of a frame maximized the frame without respect to the screen insets (while clicking the maximize button <em>did</em> respect screen insets).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Simplified the paint routine for progress bar border to be faster so it doesn't conflict with the animation speed in <code>javax.swing.plaf.basic.BasicProgressBarUI</code>.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="121"></a>
+<br>
+<b>V 1.2.1</b>&nbsp;&nbsp;<code>(2003-9-29)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Bug in Launcher calling wrong LAF class.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Now changing to TinyLookAndFeel from another LAF works - changing from TinyLookAndFeel to another LAF still causes problems (certain properties are not updated, I guess this will never be fixed)
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Before searching "user.dir" for a <code>'Default.theme'</code> file, TinyLaF searches "user.home", e.g. you can set a global default theme if you put it in "user.home".
+</td></tr>
+</table>
+<br><hr>
+
+<a name="130"></a>
+<br>
+<b>V 1.3.0</b>&nbsp;&nbsp;<code>(2004-6-14)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Bug with scrollbar button arrows not changing direction when scrollbar orientation changes.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>ArrayIndexOutOfBoundsException</code> thrown in <code>TinyTabbedPaneUI</code> when trying to remove a tab by manipulating the tab.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Sub-menus painting partially above children.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTabbedPane</code> now honours tab background color set with <code>setBackgroundAt(int, Color)</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Menus and menu items now honour background and foreground properties set with <code>setBackground(Color)</code> resp. <code>setForeground(Color)</code>. Additionally menus and menu items now are displayed with foreground colors defined in 'Menu Font' resp. 'Menu Item Font' by default.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Windows 98 style only: Arrowbuttons of <code>JSpinner</code> now draw themselves correctly.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Button margins were calculated without respect to the button border, so a margin of 0 made the button text obscure the border.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JToggleButton</code> displayed the default icon instead of the selected icon if model was both selected and rollover.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JFormattedTextField</code> of <code>JSpinner</code> editor did loose focus with each click on arrow buttons. Therefore, with <code>SpinnerDateModel</code>, it was not possible to select distinct date fields.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+If the <code>JFrame.setDefaultLookAndFeelDecorated</code> property is <code>true</code> and the frame is maximized, the frame border now is supressed. This is also true for internal frames.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JOptionPane.showInternalXXXDialog()</code> bringing up dialogs which painted no decorations at all.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JComboBox</code> now updates its display size as the model changes.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Usage in applets: the theme is now reloaded as the applet is reloaded.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Editable text fields in <code>ColorChooser</code> now work as expected.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The Windows XP style mutated to YQ style, the Windows 98 style mutated to 99 style. The YQ style is now the default style and will run with every operating system. To get rid of copyright issues I decided to replace both Windows 98 and XP icons with a custom icon set. Therefore I improved the algorithm to colorize icons.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+On startup TinyLaF now displays a message via <code>System.out</code>, reporting the version and the path to the <code>'Default.theme'</code> file.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+In the past, radio buttons and check boxes painted rather slow. Though both paint more aesthetically now, painting speed increased drastically (by painting icons only once and caching the result - this speeds up painting by a factor of 80 and more).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Radio buttons and checkboxes now have an editable margin. Please note: A Metal checkbox (or radio button) has border insets of (2, 2, 2, 2) which adds to the margin of (2, 2, 2, 2), so, if you want a TinyLaF checkbox to behave as a Metal checkbox, you must set its margin to (4, 4, 4, 4).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The thumb of a scrollbar now has a minimum height/width of 17 pixels.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JComboBox</code> now calculates its preferred size more realistic (and less space-consuming). The rollover border for <code>JComboBox</code> is now disabled by default.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The rollover border for <code>JSpinner</code> is now disabled by default.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+If frames or dialogs are decorated, they now have a minimum width of 104 pixels. Internal frames now have a minimum width of 32 px. Internal frames defined as palettes now can additionally display an iconify and a maximize button. Palette buttons are smaller now than internal frame buttons.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+You can now define separate title bar fonts for (decorated) frames, internal frames and internal palettes.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Buttons are now opaque by default (this was a trick of the <code>XPLookAndFeel</code>). This change doesn't affect rendering of buttons, just the value of the <code>opaque</code> property.<br>
+YQ-Buttons now shift their text if the button is pressed.<br>
+There is an additional flag: "ENTER 'presses' focused button". If it is selected, the ENTER key triggers the buttonPressed action on <code>JButton</code>, <code>JToggleButton</code>, <code>JCheckBox</code> and <code>JRadioButton</code> (same as SPACE key).<br>
+<code>JButton</code>, <code>JToggleButton</code>, <code>JCheckBox</code> and <code>JRadioButton</code> now support a focus border. You can disable this by deselecting 'Paint Focus Border'.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Toolbar buttons now have a definable margin and separate backgrounds and borders for their deselected-, rollover-, pressed- and selected state which makes them much more flexible to use.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JProgressBar</code> now looks like a WinXP progress bar.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added a <code>SeparatorUI</code> (see Decoration | Separator).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added a <code>PasswordFieldUI</code> (that just duplicates the settings from <code>JTextFieldUI</code>).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added the following UIs which support a default background color: <code>EditorPaneUI</code>, <code>TextPaneUI</code> and <code>DesktopPaneUI</code> (see Decoration | Miscellaneous).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSplitPane</code> now has a divider size of 7 pixels (instead of 6 as before), oneTouchButtons have become smaller.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTree</code> now supports arbitrary text colors. (Note: A <code>JTree</code>'s text color is NOT its foreground color (and not a <code>JTree</code> property at all)). Additionally you can now adjust the line color (see Decoration | Tree).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JComboBox</code> now has its own background and foreground colors (see Decoration | ComboBox).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Lists now support a background and a foreground color (see Decoration | List).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added support for floatable tool bars (see Decoration | ToolBar).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+You can now set the colors of toolbar separators (see Decoration | ToolBar).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+You can now set the colors of popup menu borders (see Decoration | Menu).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added borders for table and table headers (see Decoration | Table). The header border adds an inset of 1 pixel in each direction.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added some colors for disabled tabbed panes (see Decoration | TabbedPane).<br>
+The 'Paint Focus' flag disappeared, instead there is a 'Ignore Selected Bg' flag. If this flag is on, a selected tab will not change background color.<br>
+Tab insets and tab area insets now are editable.<br>
+Added a 'Fixed Tab Positions' flag - it switches from Java-Metal behaviour (the selected tab is always in the lowest tab row) to Windows behaviour (tabs never change positions).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Text components now additionally support a caret color.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Now you can specify the border, background and foreground colors for disabled tool tips.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Combobox button, spinner previous/next buttons and window buttons now are non-focusable. This means, they will not be included in a <code>FocusTraversalPolicy</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The <code>JFileChooser</code> dialog is now opened at a larger size so you see more files at a time.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+File format changed. Pre-1.3-themes can still be loaded, but saved themes are not compatible with TinyLaF versions prior to 1.3.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="131"></a>
+<br>
+<b>V 1.3.1</b>&nbsp;&nbsp;<code>(2004-12-13)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Fixed a memory leak introduced in 1.3.0.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="132"></a>
+<br>
+<b>V 1.3.2</b>&nbsp;&nbsp;<code>(2005-6-22)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The fix for reloading themes as an applet is reloaded didn't work in 1.3.0 and 1.3.1.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="133"></a>
+<br>
+<b>V 1.3.3</b>&nbsp;&nbsp;<code>(2006-2-6)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Popup menu width was too wide when icons were displayed.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="134"></a>
+<br>
+<b>V 1.3.4</b>&nbsp;&nbsp;<code>(2006-4-15)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Code for calculating the clicked tab of <code>JTabbedPane</code> (<code>SCROLL_TAB_LAYOUT</code> mode only) didn't work with JRE 1.5. (The only way to make it work was to execute different code dependent on JRE version).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Internal frames used a special <code>DesktopManager</code>, now the default <code>DesktopManager</code> is used and <code>DesktopManager</code> methods will be called as expected.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JButton</code> text is shifted one pixel right/down as the button is pressed. Now a test is performed if the button's text is <code>null</code> or of zero length and, if it is an icon-only button, no shifting occurs.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The control panel has a new checkbox (Decoration | Button | Shift button text) allowing you to disable text shifting for <code>JButton</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added an <code>Ant</code> buildfile to the source distribution (<code>build.xml</code>).
+</td></tr>
+</table>
+<br><hr>
+
+<a name="135"></a>
+<br>
+<b>V 1.3.5</b>&nbsp;&nbsp;<code>(2007-1-28)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Bug introduced in 1.3.1 where <code>JProgressBar</code> was not set to opaque and therefore setting the track color had no effect.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The &quot;armed&quot; thing of <code>JCheckBox</code> and <code>JRadioButton</code> (click the component, then drag the mouse outside the component's bounds, then drag it back again...) - wonder why noone reported this as being a bug.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSlider</code> now paints a focus indicator. Additionally the shape of the slider thumb now changes dependent on whether ticks are painted or not.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTabbedPane</code> now paints a focus indicator.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Added 'Help |Check for Updates...' menu.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Improved antialiasing of <code>JRadioButton</code> symbol.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTabbedPane</code>: The default tab font is now plain instead of bold.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Font size selectors now display font sizes up to 24 pt.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+File format changed. Pre-1.3.5 themes can still be loaded, but saved themes are not compatible with TinyLaF versions prior to 1.3.5.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="136"></a>
+<br>
+<b>V 1.3.6</b>&nbsp;&nbsp;<code>(2007-5-6)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Problems with menu item mnemonics. If a menu contained at least on sub-menu, it could happen that mnemonics of menu items following the sub-menu were not recognized.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+In <code>TinyProgressBarUI.installDefaults()</code> i did use a method new in Java 1.5, making TinyLaF non-Java-1.4-compliant. (Introduced in 1.3.5).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSpinner</code> now fires a <code>ChangeEvent</code> each time the user inputs a new value and presses <code>Return</code>.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+'Alt' key closes opened menus and context menus (not only with Java 1.6 but also with Java 1.4 and 1.5).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Implemented support for <a href="#sortable">sortable table data</a>. Three new properties control the appearance of sortable table headers: 'Header Rollover Background', 'Header Rollover Color' and 'Header Arrow Color' (see Decoration | Table).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Border of table headers in YQ style now look more like those in WinXP.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+File format changed. Pre-1.3.6 themes can still be loaded, but saved themes are not compatible with TinyLaF versions prior to 1.3.6.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="137"></a>
+<br>
+<b>V 1.3.7</b>&nbsp;&nbsp;<code>(2007-6-3)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The &quot;armed&quot; thing of toolbar buttons (click the button, then drag the mouse outside the button's bounds, then drag it back again...) now works as expected.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JComboBox</code>: Arrow buttons were included in focus traversal.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+ControlPanel: Since v1.3.6 changing border colors of <code>JCheckBox</code> and <code>JRadioButton</code> seemed to have no effect.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+ControlPanel: Tooltip texts of color fields (&quot;Main Color&quot;, &quot;Background Color&quot;, &quot;Disabled Color&quot; and &quot;Frame Color&quot;) were not updated as themes were switched.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+On Linux OS, the <code>&quot;FileChooser.readOnly&quot; UIManager</code> property will now be set to <code>true</code> (this disables editing of file names).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JFileChooser</code>: The details table now is sortable. Removed the file attributes column. 
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JFileChooser</code>: The icon-only buttons now look and behave like toolbar buttons.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Toolbar buttons: The default margin has changed from <code>Insets(4, 4, 4, 4)</code> to <code>Insets(5, 5, 5, 5)</code>. Also border colors have changed.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JProgressBar</code> border (<code>JProgressBar</code> is non-opaque again).
+</td></tr>
+</table>
+<br><hr>
+
+<a name="138"></a>
+<br>
+<b>V 1.3.8</b>&nbsp;&nbsp;<code>(2007-6-17)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Editable <code>JComboBox</code>: Due to a change in Java 1.5, editable combo box was too high (24 pixels instead of 20 pixels).
+</td></tr>
+</table>
+<br><hr>
+
+<a name="140"></a>
+<br>
+<b>V 1.4.0</b>&nbsp;&nbsp;<code>(2009-8-25)</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+<table border=0 cellpadding=4 cellspacing=2>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+The &quot;armed&quot; thing of window buttons (click the button, then drag the mouse outside the button's bounds, then drag it back again...) now works as expected.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSpinner</code> arrow buttons: Now spinner value will stop changing if the mouse is dragged out of the arrow button.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JMenuBar</code>'s background color is now propagated to top menus.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JToolBar</code>'s background color is now propagated to tool bar buttons.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JFormattedTextField</code>: Actions specific for formatted text fields are now enabled.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JButton</code>: With 'Paint Rollover Border' deselected, buttons didn't change background color on rollover.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JButton</code>: If a button's <code>focusPainted</code> property was <code>false</code>, the 'Paint Focus Border' setting had no effect.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JScrollBar</code>: If there wasn't enough space to display the thumb at its minimum size, scroll buttons were painted disabled.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Sometimes window cursor not restored to default cursor after resize.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Bug appearing with 1.6 JREs: Title panes of frames and dialogs not painted.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Fixed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JPasswordField</code> didn't reflect its non-editable state.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+There now is a javadoc API documentation. It documents how to switch themes and how to implement sortable table models.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Refactored the TinyLaF classes so it is possible to build the Tiny look and feel without the control panel.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Introduced theme switching.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+ControlPanel: Implemented unlimited Undo/Redo. Added an online help. Implemented a magnifier.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSplitPane</code>: One can now specify the color of the optional &quot;One-touch&quot; buttons.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTabbedPane</code>: One can now specify border colors for disabled tabbed panes.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JList</code>: One can now specify the border color of focused items.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTable</code>: One can now specify the border color of focused cells.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTextField</code>: One can now specify the background color of non-editable text fields.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JToggleButton</code>: One can now specify the background color of selected toggle buttons (previously this was the background color of pressed JButton).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JCheckBox</code>es inside tables (renderer or editor) are now rendered <em>flat</em> (with line border and no background).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Popup menus can now optionally have a shadow border (see 'Decoration | Menu | Popup Shadows').
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+You can now adjust the size of scroll bars (between 14 and 64 px.). (Note: When enlarging scroll bars you should also reduce their 'Spread Light' value.)
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>New</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JTable</code>: You can now specify an <em>alternate row color</em> (introduced with Java 1.6). For the TinyLaF default theme, the alternate row color is equal to the table background color, so it has no visual effect. Setting it for pre-1.6 JREs has no effect but does no harm.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Removed support for 99 Style. You will now see an error message when trying to load a 99 theme.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JFileChooser</code>: Rewrote <code>TinyFileChooserUI</code> because it was using <code>sun.awt.shell.ShellFolder</code> class. Due to this change, the details table is now sortable only with 1.6.0 or higher JREs.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Created a new set of <code>JOptionPane</code> icons (information, question, warning, error).
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JMenu</code>: Reduced the horizontal distance between adjacent top menu items (so menus require less space).<br>
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JMenuItem</code>: Rewrote the code responsible for laying out and rendering menu items. <code>JCheckBoxMenuItem</code> and <code>JRadioButtonMenuItem</code> now can display an addtitional icon.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Menu navigation using the arrow keys, SPACE and RETURN now works very similar to navigation on MS Windows.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+ControlPanel: Frames now are decorated by default.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Frames, dialogs and internal frames: Now titles are rendered antialiased and have a shadow.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Window buttons were improved and plain dialogs now show an icon and have a system menu.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+Improved performance by caching the results of drawing <code>JButton</code>, window buttons, <code>JSpinner</code> arrow buttons,  <code>JComboBox</code> arrow button and scroll bar thumb.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+In previous releases, <code>JSpinner</code> border was textfield border, now it is <code>de.muntjak.tinylookandfeel.borders.TinySpinnerBorder</code>. Due to this change there is a new property: 'Decoration | Spinner | Border Color', controlling both the spinner border color and the spinner button border color.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+<code>JSlider</code>: Rewrote the draw routine for disabled sliders.
+</td></tr>
+<tr><td bgcolor="#DFE6EB"><font id="normal"><b>Changed</b></td>
+<td bgcolor="#DFE6EB"><font id="normal">
+File format changed. Pre-1.4.0 themes can still be loaded, but saved themes are not compatible with TinyLaF versions prior to 1.4.0.
+</td></tr>
+</table>
+<br><hr>
+
+<a name="issues"><a>
+<br>
+<b>Known issues</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+- A tabbed pane in <code>SCROLL_TAB_LAYOUT</code> mode doesn't respect client components' preferred sizes (4 pixels at
+the bottom of the client area are cut). This is a bug in <code>BasicTabbedPaneUI.TabbedPaneScrollLayout</code>
+(which is declared <code>private</code>) and fixing it would require too much effort on my side.
+<br><hr>
+
+<a name="thanks"><a>
+<br>
+<b>Thanks ...</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+... to everybody who helped me improve TinyLaF by sending bug reports and feature requests.
+<br>
+Have fun creating your own themes.
+<br><br>
+27.8.2009   Hans Bickel
+<br><hr>
+
+<a name="contact"></a>
+<br>
+<b>Contact the author</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#top">Top of page</a>
+<br><br>
+To send bug reports, questions, suggestions, feedback please use the <a href="http://www.muntjak.de/hans/kontakt/contact.html">contact form</a> at <a href="http://www.muntjak.de/">www.muntjak.de</a>.
+<br><hr>
+</body>
+</html>

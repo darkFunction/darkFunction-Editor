@@ -1,0 +1,18 @@
+End User License Agreement (EULA)
+
+-=General=-
+By using darkFunction Editor you agree with the points described below.
+
+-=Warranty=-
+The author shall not be held responsible for any damages, direct or indirect, that may arise from the use of darkFunction Editor.
+
+-=Registration=-
+Anyone may use this software during a trial period of 30 days. Following this test period of 30 days or less, if you wish to continue to use darkFunction Editor, you must purchase a license. The vendor will email you a unique license key on receipt of payment which can be used to register the software.
+
+If you're using darkFunction Editor for personal use such as self-employed, independent contractors, or hobbyists you are free to use a single license on any computer that you own and are the primary user of. If you're using darkFunction Editor for professional use such as at a company you work for each user will need a license of their own that they are free to use for themselves at work or home.
+
+Purchasing a license grants you rights to use darkFunction Editor for commercial or non-commercial endeavors. While updates are likely to be regularly provided to ensure quality there are no guarantees at time of purchase that additional features beyond what are in the current downloadable version will be available at a later date.
+
+-=Copyright=-
+The author retains all rights, present and future, to darkFunction Editor.
+Copyright (c) 2010 darkFunction / Samuel Taylor.

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<spritesheet>
+	<img name="./test.png" />
+	<definitions>
+		<dir name="">
+			<dir name="Category 1">
+				<spr name="Sprite 1" x="0" y="0" w="50" h="50" />
+				<spr name="Sprite 2" x="0" y="0" w="50" h="50" />
+				<spr name="Sprite 3" x="0" y="0" w="50" h="50" />
+				<spr name="Sprite 4" x="0" y="0" w="50" h="50" />
+				<dir name="Category 2">
+					<spr name="Sprite 1" x="0" y="0" w="50" h="50" />
+					<spr name="Sprite 2" x="0" y="0" w="50" h="50" />
+					<spr name="Sprite 3" x="0" y="0" w="50" h="50" />
+					<spr name="Sprite 4" x="0" y="0" w="50" h="50" />
+				</dir>
+			</dir>
+			<spr name="Sprite 1" x="0" y="0" w="50" h="50" />
+		</dir> 
+	</definitions>
+</spritesheet>

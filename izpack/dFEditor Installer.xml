@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+    <info>
+        <appname>darkFunction Editor</appname>
+        <appversion>1.0</appversion>
+        <authors>
+            <author name="Sam Taylor" email="sam@darkfunction.com"/>	
+        </authors>
+        <url>http://www.darkfunction.com/</url>
+		<run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7" />
+    </info>
+    
+	<packs>
+        <pack name="Core" required="yes">
+            <description>The core files</description>
+			<file src="dfEditor.jar" targetdir="$INSTALL_PATH"/>
+			<file src="exe.ico" targetdir="$INSTALL_PATH"/>
+            <file src="..\license.txt" targetdir="$INSTALL_PATH"/> 
+			<fileset dir="lib" targetdir="$INSTALL_PATH\lib">
+                <include name="**"/>
+            </fileset>
+        </pack>		
+	</packs>
+
+    <panels>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>		
+		<panel classname="ShortcutPanel"/>		
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+
+	<resources>
+        <res id="LicencePanel.licence" src="..\license.txt"/>
+		<res src="shortcut-defintions.xml"
+					id="shortcutSpec.xml"/>
+    </resources>
+	
+	<guiprefs width="640" height="480" resizable="no">
+    </guiprefs>
+	
+	<locale>
+        <langpack iso3="eng"/>
+    </locale>
+	
+	<native type="izpack" name="ShellLink_x64.dll" />
+	<native type="izpack" name="ShellLink.dll" />
+	<native type="3rdparty" name="COIOSHelper.dll" stage="both">
+         <os family="windows"/>
+     </native>
+
+</installation>
