@@ -3,7 +3,7 @@
 <installation version="1.0">
     <info>
         <appname>darkFunction Editor</appname>
-        <appversion>1.0</appversion>
+        <appversion>1.3</appversion>
         <authors>
             <author name="Sam Taylor" email="sam@darkfunction.com"/>	
         </authors>
@@ -17,7 +17,7 @@
 			<file src="dfEditor.jar" targetdir="$INSTALL_PATH"/>
 			<file src="exe.ico" targetdir="$INSTALL_PATH"/>
             <file src="../license_paid.txt" targetdir="$INSTALL_PATH"/> 
-			<fileset dir="lib" targetdir="$INSTALL_PATH\lib">
+			<fileset dir="lib" targetdir="$INSTALL_PATH/lib">
                 <include name="**"/>
             </fileset>
         </pack>		
