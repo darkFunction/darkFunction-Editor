@@ -24,7 +24,7 @@ import de.muntjak.tinylookandfeel.*;
  */
 public class dfEditorApp extends SingleFrameApplication
 {
-    public static boolean isFreeVersion = true;
+    public static boolean isFreeVersion = false;
 
     private static String regKey = null;
     private static long daysUsed = 0;

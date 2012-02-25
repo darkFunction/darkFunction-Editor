@@ -142,7 +142,7 @@ public class AnimationController extends dfEditorPanel implements
         }
     }
     
-    private void buildAnimatedGif()
+    private void buildAnimatedGif(String filePath)
     {
         Animation animation = this.getWorkingAnimation();
         
@@ -168,8 +168,10 @@ public class AnimationController extends dfEditorPanel implements
                 
             AnimatedGifEncoder e = new AnimatedGifEncoder();
             e.setTransparent(new Color(0,0,0,0));
-            e.start("c:\\test.gif");
-            e.setDelay(300);
+            e.start(filePath);            
+            e.setRepeat(animation.getLoops());
+            e.setQuality(1);
+            e.setSize(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
             
             for (int i=0; i<animation.numCells(); i++)
             {
@@ -184,7 +186,8 @@ public class AnimationController extends dfEditorPanel implements
                 r.y -= topLeft.y; 
                 cell.draw(ig, r);              
                 
-                e.addFrame(image);         
+                e.addFrame(image);
+                e.setDelay(cell.getDelay());
             }
             
             e.finish();           
@@ -294,6 +297,7 @@ public class AnimationController extends dfEditorPanel implements
         addAnimationButton = new javax.swing.JButton();
         removeAnimationButton = new javax.swing.JButton();
         duplicateAnimationButton = new javax.swing.JButton();
+        exportGifButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         animationPanel1 = new dfEditor.animation.AnimationPanel();
         playButton = new javax.swing.JButton();
@@ -358,7 +362,6 @@ public class AnimationController extends dfEditorPanel implements
         addAnimationButton.setText(resourceMap.getString("addAnimationButton.text")); // NOI18N
         addAnimationButton.setToolTipText(resourceMap.getString("addAnimationButton.toolTipText")); // NOI18N
         addAnimationButton.setAlignmentX(0.5F);
-        addAnimationButton.setBorder(null);
         addAnimationButton.setContentAreaFilled(false);
         addAnimationButton.setEnabled(false);
         addAnimationButton.setFocusable(false);
@@ -377,7 +380,6 @@ public class AnimationController extends dfEditorPanel implements
         removeAnimationButton.setText(resourceMap.getString("removeAnimationButton.text")); // NOI18N
         removeAnimationButton.setToolTipText(resourceMap.getString("removeAnimationButton.toolTipText")); // NOI18N
         removeAnimationButton.setAlignmentX(0.5F);
-        removeAnimationButton.setBorder(null);
         removeAnimationButton.setContentAreaFilled(false);
         removeAnimationButton.setEnabled(false);
         removeAnimationButton.setFocusable(false);
@@ -397,7 +399,6 @@ public class AnimationController extends dfEditorPanel implements
         duplicateAnimationButton.setText(resourceMap.getString("duplicateAnimationButton.text")); // NOI18N
         duplicateAnimationButton.setToolTipText(resourceMap.getString("duplicateAnimationButton.toolTipText")); // NOI18N
         duplicateAnimationButton.setAlignmentX(0.5F);
-        duplicateAnimationButton.setBorder(null);
         duplicateAnimationButton.setContentAreaFilled(false);
         duplicateAnimationButton.setEnabled(false);
         duplicateAnimationButton.setFocusable(false);
@@ -406,10 +407,27 @@ public class AnimationController extends dfEditorPanel implements
         duplicateAnimationButton.setMaximumSize(new java.awt.Dimension(100, 100));
         duplicateAnimationButton.setMinimumSize(new java.awt.Dimension(0, 0));
         duplicateAnimationButton.setName("duplicateAnimationButton"); // NOI18N
-        duplicateAnimationButton.setPreferredSize(new java.awt.Dimension(30, 30));
         duplicateAnimationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 duplicateAnimationButtonActionPerformed(evt);
+            }
+        });
+
+        exportGifButton.setIcon(resourceMap.getIcon("exportGif.icon")); // NOI18N
+        exportGifButton.setText(resourceMap.getString("exportGifButton.text")); // NOI18N
+        exportGifButton.setToolTipText(resourceMap.getString("exportGifButton.toolTipText")); // NOI18N
+        exportGifButton.setAlignmentX(0.5F);
+        exportGifButton.setContentAreaFilled(false);
+        exportGifButton.setEnabled(false);
+        exportGifButton.setFocusable(false);
+        exportGifButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        exportGifButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        exportGifButton.setMaximumSize(new java.awt.Dimension(100, 100));
+        exportGifButton.setMinimumSize(new java.awt.Dimension(0, 0));
+        exportGifButton.setName("exportGifButton"); // NOI18N
+        exportGifButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportGifButtonActionPerformed(evt);
             }
         });
 
@@ -424,18 +442,21 @@ public class AnimationController extends dfEditorPanel implements
                 .addComponent(removeAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(duplicateAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(exportGifButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removeAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(duplicateAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(duplicateAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportGifButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel2.border.title"))); // NOI18N
@@ -451,7 +472,6 @@ public class AnimationController extends dfEditorPanel implements
         playButton.setText(resourceMap.getString("playButton.text")); // NOI18N
         playButton.setToolTipText(resourceMap.getString("playButton.toolTipText")); // NOI18N
         playButton.setAlignmentX(0.5F);
-        playButton.setBorder(null);
         playButton.setContentAreaFilled(false);
         playButton.setEnabled(false);
         playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -470,13 +490,13 @@ public class AnimationController extends dfEditorPanel implements
         animationPanel1Layout.setHorizontalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
-                .addContainerGap(133, Short.MAX_VALUE)
+                .addContainerGap(131, Short.MAX_VALUE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         animationPanel1Layout.setVerticalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
-                .addContainerGap(118, Short.MAX_VALUE)
+                .addContainerGap(115, Short.MAX_VALUE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -511,7 +531,6 @@ public class AnimationController extends dfEditorPanel implements
         addCellButton.setText(resourceMap.getString("addCellButton.text")); // NOI18N
         addCellButton.setToolTipText(resourceMap.getString("addCellButton.toolTipText")); // NOI18N
         addCellButton.setAlignmentX(0.5F);
-        addCellButton.setBorder(null);
         addCellButton.setContentAreaFilled(false);
         addCellButton.setEnabled(false);
         addCellButton.setFocusable(false);
@@ -530,7 +549,6 @@ public class AnimationController extends dfEditorPanel implements
         removeCellButton.setText(resourceMap.getString("removeCellButton.text")); // NOI18N
         removeCellButton.setToolTipText(resourceMap.getString("removeCellButton.toolTipText")); // NOI18N
         removeCellButton.setAlignmentX(0.5F);
-        removeCellButton.setBorder(null);
         removeCellButton.setContentAreaFilled(false);
         removeCellButton.setEnabled(false);
         removeCellButton.setFocusable(false);
@@ -583,12 +601,12 @@ public class AnimationController extends dfEditorPanel implements
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(animationStripScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+            .addComponent(animationStripScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(addCellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removeCellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(delaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -641,7 +659,6 @@ public class AnimationController extends dfEditorPanel implements
         addToFrameButton.setIcon(resourceMap.getIcon("addToFrameButton.icon")); // NOI18N
         addToFrameButton.setText(resourceMap.getString("addToFrameButton.text")); // NOI18N
         addToFrameButton.setToolTipText(resourceMap.getString("addToFrameButton.toolTipText")); // NOI18N
-        addToFrameButton.setBorder(null);
         addToFrameButton.setContentAreaFilled(false);
         addToFrameButton.setEnabled(false);
         addToFrameButton.setFocusable(false);
@@ -692,7 +709,7 @@ public class AnimationController extends dfEditorPanel implements
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spritePreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -704,7 +721,6 @@ public class AnimationController extends dfEditorPanel implements
         zoomInButton.setIcon(resourceMap.getIcon("zoomInButton.icon")); // NOI18N
         zoomInButton.setText(resourceMap.getString("zoomInButton.text")); // NOI18N
         zoomInButton.setToolTipText(resourceMap.getString("zoomInButton.toolTipText")); // NOI18N
-        zoomInButton.setBorder(null);
         zoomInButton.setContentAreaFilled(false);
         zoomInButton.setEnabled(false);
         zoomInButton.setFocusable(false);
@@ -723,7 +739,6 @@ public class AnimationController extends dfEditorPanel implements
         zoomOutButton.setIcon(resourceMap.getIcon("zoomOutButton.icon")); // NOI18N
         zoomOutButton.setText(resourceMap.getString("zoomOutButton.text")); // NOI18N
         zoomOutButton.setToolTipText(resourceMap.getString("zoomOutButton.toolTipText")); // NOI18N
-        zoomOutButton.setBorder(null);
         zoomOutButton.setContentAreaFilled(false);
         zoomOutButton.setEnabled(false);
         zoomOutButton.setFocusable(false);
@@ -760,7 +775,6 @@ public class AnimationController extends dfEditorPanel implements
         removeSpriteButton.setText(resourceMap.getString("removeSpriteButton.text")); // NOI18N
         removeSpriteButton.setToolTipText(resourceMap.getString("removeSpriteButton.toolTipText")); // NOI18N
         removeSpriteButton.setAlignmentX(0.5F);
-        removeSpriteButton.setBorder(null);
         removeSpriteButton.setEnabled(false);
         removeSpriteButton.setFocusable(false);
         removeSpriteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -779,7 +793,6 @@ public class AnimationController extends dfEditorPanel implements
         rotateCWButton.setIcon(resourceMap.getIcon("rotateCWButton.icon")); // NOI18N
         rotateCWButton.setToolTipText(resourceMap.getString("rotateCWButton.toolTipText")); // NOI18N
         rotateCWButton.setAlignmentX(0.5F);
-        rotateCWButton.setBorder(null);
         rotateCWButton.setEnabled(false);
         rotateCWButton.setFocusable(false);
         rotateCWButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -799,7 +812,6 @@ public class AnimationController extends dfEditorPanel implements
         rotateACWButton.setIcon(resourceMap.getIcon("rotateACWButton.icon")); // NOI18N
         rotateACWButton.setToolTipText(resourceMap.getString("rotateACWButton.toolTipText")); // NOI18N
         rotateACWButton.setAlignmentX(0.5F);
-        rotateACWButton.setBorder(null);
         rotateACWButton.setEnabled(false);
         rotateACWButton.setFocusable(false);
         rotateACWButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -958,13 +970,13 @@ public class AnimationController extends dfEditorPanel implements
                 .addGroup(viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(viewPanelLayout.createSequentialGroup()
                         .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                         .addComponent(zoomInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(zoomOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(viewPanelLayout.createSequentialGroup()
                         .addComponent(spriteListControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(464, Short.MAX_VALUE))))
+                        .addContainerGap(438, Short.MAX_VALUE))))
         );
         viewPanelLayout.setVerticalGroup(
             viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -976,7 +988,7 @@ public class AnimationController extends dfEditorPanel implements
                     .addGroup(viewPanelLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
                 .addComponent(spriteListControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1053,7 +1065,7 @@ public class AnimationController extends dfEditorPanel implements
                             .addComponent(modifySpriteToggle, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(viewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1557,6 +1569,52 @@ private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent 
     }
 }//GEN-LAST:event_duplicateAnimationButtonActionPerformed
 
+private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportGifButtonActionPerformed
+    saveGifAs();
+}//GEN-LAST:event_exportGifButtonActionPerformed
+
+    public void saveGifAs()
+    {        
+        JFileChooser chooser = fileChooser;
+
+        CustomFilter filter = new CustomFilter();
+        filter.addExtension(CustomFilter.EXT_GIF);
+        chooser.resetChoosableFileFilters();
+        chooser.setFileFilter(filter);
+        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        chooser.setApproveButtonText("Export");
+        chooser.setDialogTitle("Export animation as GIF");
+        chooser.setSelectedFile(new File(this.getWorkingAnimation().getName() + "." + CustomFilter.EXT_GIF));
+        
+        JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
+        while (true)
+        {
+            int returnVal = chooser.showSaveDialog(mainFrame);
+            if(returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                java.io.File f = chooser.getSelectedFile();
+                if(null == dfEditor.io.Utils.getExtension(f))
+                {
+                    f = new java.io.File(new String(f.getAbsolutePath() + "." + filter.getExtension()));
+                }
+
+                if (f.exists())
+                {
+                    //Custom button text
+                    int response = JOptionPane.showConfirmDialog (null,
+                       "Overwrite existing file?","Confirm Overwrite",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                    if (response == JOptionPane.CANCEL_OPTION)
+                        continue;
+                }
+
+                buildAnimatedGif(f.getAbsolutePath());            
+            }
+            break;
+        }           
+    }
+    
     public void animatedToCell(AnimationCell aCell)
     {
         animationPanel1.setCell(aCell);
@@ -1906,6 +1964,7 @@ private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent 
                 boolean bEnabled = (! ((DefaultMutableListModel)list.getModel()).isEmpty()) && (list.getSelectedIndex() >= 0);
                 removeAnimationButton.setEnabled(bEnabled);
                 duplicateAnimationButton.setEnabled(bEnabled);
+                exportGifButton.setEnabled(bEnabled);
             } 
             else if (list == spriteList)
             {
@@ -2042,6 +2101,7 @@ private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent 
     private javax.swing.JInternalFrame controlPanel;
     private javax.swing.JSpinner delaySpinner;
     private javax.swing.JButton duplicateAnimationButton;
+    private javax.swing.JButton exportGifButton;
     private javax.swing.JCheckBox flipHCheckBox;
     private javax.swing.JCheckBox flipVCheckBox;
     private javax.swing.JLabel jLabel1;

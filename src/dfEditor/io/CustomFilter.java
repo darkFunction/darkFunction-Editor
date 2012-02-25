@@ -9,6 +9,7 @@ public class CustomFilter extends FileFilter
 {
     public final static String EXT_ANIM = "anim";
     public final static String EXT_SPRITE = "sprites";
+    public final static String EXT_GIF = "gif";
 
     private ArrayList<String> ext = null;
 
@@ -59,6 +60,8 @@ public class CustomFilter extends FileFilter
                 verbose = "Animations";
             else if (extension.equals(EXT_SPRITE))
                 verbose = "Spritesheets";
+            else if (extension.equals(EXT_GIF))
+                verbose = "Gif animated image";
 
             desc += verbose + " ";
             if (verbose != null)

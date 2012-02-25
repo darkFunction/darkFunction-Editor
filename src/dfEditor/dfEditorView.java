@@ -42,7 +42,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         }
         else
         {
-            if (! dfEditorApp.getApplication().isRegistered() && dfEditorApp.getApplication().getDaysRemaining() < 10)
+            if (! dfEditorApp.getApplication().isRegistered())// && dfEditorApp.getApplication().getDaysRemaining() < 10)
             {
                 this.showAboutBox();
             }
