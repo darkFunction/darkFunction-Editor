@@ -86,6 +86,7 @@
             <pathelement location="lib/org-openide-awt.jar" />
             <pathelement location="lib/tinylaf/tinylaf.jar" />
             <pathelement location="lib/AbsoluteLayout.jar" />
+            <pathelement location="lib/jDeskMetrics.jar" />
         </externalclasses>
 
         <rename mainclass="dfEditor.dfEditorApp" logfile="yguard/renamelog.xml">

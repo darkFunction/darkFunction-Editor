@@ -4,6 +4,7 @@
 
 package dfEditor;
 
+import com.DeskMetrics.DeskMetrics;
 import dfEditor.animation.AnimationController;
 import dfEditor.animation.Animation;
 import org.jdesktop.application.Action;
@@ -52,6 +53,20 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         ImageIcon ii = new ImageIcon(imgURL);
         this.getFrame().setIconImage(ii.getImage());
 
+        this.getFrame().addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    DeskMetrics.getInstance().stop();
+                    System.out.println("Application finished");
+                } catch (java.io.IOException ex) {
+                    System.out.println("DeskMetrics exception");
+                }
+                System.exit(0);
+            }
+        });
+        
     }
 
     public void checkRegistered()

@@ -4,6 +4,8 @@
 
 package dfEditor;
 
+import com.DeskMetrics.DeskMetrics;
+import com.apple.eawt.QuitStrategy;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import java.io.FileInputStream;
@@ -39,12 +41,12 @@ public class dfEditorApp extends SingleFrameApplication
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             public void run()
-            {
+            {                                
                 Toolkit.getDefaultToolkit().setDynamicLayout(true);
                 System.setProperty("sun.awt.noerasebackground", "true");
                 //JFrame.setDefaultLookAndFeelDecorated(true);
                 //JDialog.setDefaultLookAndFeelDecorated(true);
-
+                
                 try {
                     TinyLookAndFeel tiny = new TinyLookAndFeel();
                   //  tiny.setCurrentTheme(de.muntjak.tinylookandfeel.Theme. )
@@ -74,22 +76,34 @@ public class dfEditorApp extends SingleFrameApplication
                 {
 
                 }
-
-                if (!self.isRegistered())
+                
+                // Create an instance of file object.
+                File file = new File("./dfEditor.jar");
+                if (file.exists())
                 {
-                    // Create an instance of file object.
-                    File file = new File("./dfEditor.jar");
                     Long lastModified = file.lastModified();
                     Date dateInstalled = new Date(lastModified);
-                    
+
                     Date dateNow = new Date(System.currentTimeMillis());
 
                     final long oneDay = 24 * 60 * 60 * 1000;
-                    
+
                     daysUsed = (dateNow.getTime() / oneDay) - (dateInstalled.getTime() / oneDay);
-
                 }
-
+                else
+                    daysUsed = -1;
+                
+                final DeskMetrics deskmetrics = DeskMetrics.getInstance();
+                String appID = "4f70add4a14ad70c41000000";
+                
+                try {
+                    deskmetrics.start(appID, "1.3");                    
+                    deskmetrics.trackCustomData("Days since install", ""+daysUsed);
+                } catch (IOException e) {  }
+                
+                // so we get the window closed event on OSX and can stop DeskMetrics
+                com.apple.eawt.Application.getApplication().setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+                
                 sv = new dfEditorView(self);
                 self.addExitListener(sv);
                 show(sv);
