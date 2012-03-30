@@ -5,7 +5,7 @@
 package dfEditor;
 
 import com.DeskMetrics.DeskMetrics;
-import com.apple.eawt.QuitStrategy;
+//import com.apple.eawt.QuitStrategy;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import java.io.FileInputStream;
@@ -102,7 +102,7 @@ public class dfEditorApp extends SingleFrameApplication
                 } catch (IOException e) {  }
                 
                 // so we get the window closed event on OSX and can stop DeskMetrics
-                com.apple.eawt.Application.getApplication().setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+                //com.apple.eawt.Application.getApplication().setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
                 
                 sv = new dfEditorView(self);
                 self.addExitListener(sv);
