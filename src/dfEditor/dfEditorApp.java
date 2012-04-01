@@ -13,8 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.File;
 import java.util.Date;
-import javax.swing.JFrame;
-import javax.swing.JDialog;
 import javax.swing.UIManager;
 import java.awt.Toolkit;
 
@@ -26,11 +24,13 @@ import de.muntjak.tinylookandfeel.*;
  */
 public class dfEditorApp extends SingleFrameApplication
 {
+    public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
     public static boolean isFreeVersion = false;
 
     private static String regKey = null;
     private static long daysUsed = 0;
     private dfEditorView sv;
+    private static boolean deskMetricsStarted = false;
 
     /**
      * At startup create and show the main frame of the application.
@@ -93,16 +93,15 @@ public class dfEditorApp extends SingleFrameApplication
                 else
                     daysUsed = -1;
                 
-                final DeskMetrics deskmetrics = DeskMetrics.getInstance();
-                String appID = "4f70add4a14ad70c41000000";
                 
                 try {
-                    deskmetrics.start(appID, "1.3");                    
-                    deskmetrics.trackCustomData("Days since install", ""+daysUsed);
+                    DeskMetrics.getInstance().start("4f70add4a14ad70c41000000", "1.3"); 
+                    deskMetricsStarted = true;
                 } catch (IOException e) {  }
                 
-                // so we get the window closed event on OSX and can stop DeskMetrics
+                // so we get the window closed event on OSX and can stop DeskMetrics *BREAKS OTHER PLATFORMS NEED TO USE REFLECTION, SEE BELOW*
                 //com.apple.eawt.Application.getApplication().setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+                registerForMacOSXEvents();
                 
                 sv = new dfEditorView(self);
                 self.addExitListener(sv);
@@ -110,6 +109,41 @@ public class dfEditorApp extends SingleFrameApplication
             }
         });
     }
+    
+    public void registerForMacOSXEvents() {
+        if (MAC_OS_X) {
+            try {
+                // Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
+                // use as delegates for various com.apple.eawt.ApplicationListener methods
+                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quitMacOSX", (Class[])null));    
+            } catch (Exception e) {
+                System.err.println("Error while loading the OSXAdapter:");
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void quitMacOSX()
+    {
+        closeDeskMetrics();
+    }
+    
+    public static void closeDeskMetrics()
+    {
+        if (!deskMetricsStarted)
+            return;
+        
+        deskMetricsStarted = false;
+        
+        try 
+        {
+            DeskMetrics.getInstance().stop();
+        } catch (java.io.IOException ex) {
+            System.out.println("IOException closing DeskMetrics...");
+        }
+    }
+
+    
     /**
      * This method is to initialize the specified window by injecting resources.
      * Windows shown in our application come fully initialized from the GUI

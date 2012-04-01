@@ -20,6 +20,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
         this.parent = parent;
         initComponents();
         getRootPane().setDefaultButton(CloseButton);
+        this.setDefaultCloseOperation(javax.swing.JDialog.DISPOSE_ON_CLOSE);
 
         String license = dfEditorApp.getApplication().getRegKey();
 
@@ -39,8 +40,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
 
             if (daysRemaining == 0)
             {
-                this.setDefaultCloseOperation(javax.swing.JDialog.DO_NOTHING_ON_CLOSE);
-
+                
                 CloseButton.setEnabled(false);
                 
                 daysLeftLabel.setForeground(Color.red);
@@ -56,7 +56,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
                         CloseButton.setText("     " + count + "     ");
                         if (-- count < 0)
                         {
-                            self.setDefaultCloseOperation(javax.swing.JDialog.DISPOSE_ON_CLOSE);
+                            
                             CloseButton.setEnabled(true);
                             CloseButton.setText("Continue");
                             this.cancel();
@@ -69,7 +69,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
     }
 
     @Action public void closeAboutBox() {
-        dispose();
+        this.dispose();
     }
 
     /** This method is called from within the constructor to

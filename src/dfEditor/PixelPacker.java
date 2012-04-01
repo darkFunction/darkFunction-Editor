@@ -142,8 +142,8 @@ public class PixelPacker
 
         // create the new image!
 
-        // first work out the size
-        if (!bPowerOfTwo)
+        // first work out the min size
+        // constrain as tight as poss
         {
             sizeX = sizeY = 0;
             for (int i=0; i<pairs.length; ++i)
@@ -155,6 +155,23 @@ public class PixelPacker
                     sizeY = r.y + r.height;
             }
         }
+        
+        // shouldn't need to do this with power of two because the algo is 
+        // supposed to give us correct dimensions, sometimes it is wrong though,
+        // so re-constrain it according to min size above
+        if (bPowerOfTwo)
+        {
+            int x = 1;
+            while(x < sizeX)
+                x *= 2;
+            sizeX = x;
+            int y = 1;
+            while(y < sizeY)
+                y *= 2;
+            sizeY = y;
+        }
+        
+        
 
         if (sizeX * sizeY == 0)
             return null;

@@ -1536,18 +1536,26 @@ private void angleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-
 private void flipHCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHCheckBoxActionPerformed
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
     
-    cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, true, viewPanel));
+    if (selectedGraphics != null)
+        cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, true, viewPanel));
     
-    this.getWorkingCell().rebuild();
+    AnimationCell cell = this.getWorkingCell();
+    if (cell != null)
+        cell.rebuild();
+    
     repaint();
 }//GEN-LAST:event_flipHCheckBoxActionPerformed
 
 private void flipVCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipVCheckBoxActionPerformed
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
     
-    cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, false, viewPanel));
+    if (selectedGraphics != null)
+        cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, false, viewPanel));
     
-    this.getWorkingCell().rebuild();
+    AnimationCell cell = this.getWorkingCell();
+    if (cell != null)
+        cell.rebuild();
+    
     repaint();
 }//GEN-LAST:event_flipVCheckBoxActionPerformed
 
