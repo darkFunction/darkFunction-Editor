@@ -69,7 +69,7 @@ public class CustomNode extends DefaultMutableTreeNode
         for (int i=0; i<objects.length; ++i)
         {            
             path += objects[i];
-            if (i < objects.length-1 && i > 0 || !this.isLeaf())
+            if (i < objects.length-1 || !this.isLeaf())
                 path += "/";
         }
 
