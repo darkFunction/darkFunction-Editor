@@ -62,6 +62,8 @@ public class AnimationController extends dfEditorPanel implements
 
         viewPanel.addGraphicChangeListener(this);
         animationStripPanel.setController(this);
+        
+        animationStripPanel.setCommandManager(aCmdManager);
         viewPanel.setCommandManager(aCmdManager);
 
         animationList.addListSelectionListener(this);   
@@ -274,6 +276,14 @@ public class AnimationController extends dfEditorPanel implements
 
             setWorkingCell(aAnimation.getCurrentCell());
 
+        }
+    }
+    
+    public void cellOrderChanged(Animation aAnimation)
+    {
+        if (aAnimation == this.getWorkingAnimation())
+        {
+            
         }
     }
 
@@ -1237,9 +1247,12 @@ public class AnimationController extends dfEditorPanel implements
     private void delaySpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_delaySpinnerStateChanged
         JSpinner spinner = (JSpinner)evt.getSource();
 
-        int value = (Integer)spinner.getValue();        
-        workingCell.setDelay(value);
-        spinner.setValue(workingCell.getDelay());
+        if (workingCell != null)
+        {
+            int value = (Integer)spinner.getValue();        
+            workingCell.setDelay(value);
+            spinner.setValue(workingCell.getDelay());
+        }
     }//GEN-LAST:event_delaySpinnerStateChanged
 
     // TODO
@@ -1881,7 +1894,10 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     {
         updateControlPanel(aPanel);
         
-        workingCell.rebuild();
+        if (workingCell != null)
+        {
+            workingCell.rebuild();
+        }
         animationStripPanel.repaint();
     }
     

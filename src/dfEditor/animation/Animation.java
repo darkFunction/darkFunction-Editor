@@ -72,6 +72,9 @@ public class Animation implements NamedElement
                 cellList.add(aToIndex, cell);
             else
                 cellList.add(cell);
+            
+            for (int i=0; i<animationListeners.size(); ++i)
+                animationListeners.get(i).cellOrderChanged(this);
         }
     }
 

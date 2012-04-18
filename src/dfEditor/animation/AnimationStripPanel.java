@@ -17,6 +17,7 @@ import java.awt.AlphaComposite;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import dfEditor.command.*;
 
 import dfEditor.MathUtil;
 
@@ -36,6 +37,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     private int currentSlotInAnimation = -1;
     private int currentSlotInAnimationFramesLeft = -1;
     private ArrayList<AnimationStripListener> stripListeners = null;
+    private CommandManager commandManager = null;
     int currentLoop = 0;
 
     public AnimationStripPanel()
@@ -79,6 +81,11 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         repaint();
     }
 
+    public void setCommandManager(CommandManager aManager)
+    {
+        this.commandManager = aManager;
+    }
+    
     public void cellAdded(Animation aAnimation, AnimationCell aCell)
     {
         if (aAnimation == animation)
@@ -92,6 +99,14 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         if (aAnimation == animation)
         {
             setAnimation(aAnimation); // rebuilds slot positions
+        }
+    }
+    
+    public void cellOrderChanged(Animation aAnimation)
+    {
+        if (aAnimation == animation)
+        {
+            // do nothing
         }
     }
 
@@ -498,6 +513,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
             {
                 orderChanged = true;
                 animation.moveCell(i, insertBeforeSlotIndex);
+                // TODO: do a command for this 
             }
         }       
         
