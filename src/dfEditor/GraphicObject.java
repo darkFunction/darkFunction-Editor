@@ -58,6 +58,8 @@ public abstract class GraphicObject extends java.util.Observable
 
     public abstract void draw(Graphics g, Point aOffset, float aScale, boolean bDrawSelectedMode);
     
+    public abstract GraphicObject copy();
+    
     private void changed()
     {
         setChanged();

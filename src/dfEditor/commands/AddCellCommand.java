@@ -16,30 +16,15 @@ public class AddCellCommand extends UndoableCommand
 
     Animation _animation;
     AnimationCell _animationCell;
-    AnimationCell _animationCellToCopy;
 
     public AddCellCommand(Animation aAnimation, AnimationCell aCellToCopy)
     {
         _animation = aAnimation;
-        _animationCellToCopy = aCellToCopy;
-        _animationCell = new AnimationCell();
+        _animationCell = aCellToCopy.copy();
     }
 
     public boolean execute()
-    {
-        if (_animationCellToCopy != null)
-        {
-            ArrayList<GraphicObject> sprites = _animationCellToCopy.getGraphicList();
-            for (int i=0; i<sprites.size(); ++i)
-            {
-                SpriteGraphic orig = (SpriteGraphic)sprites.get(i);
-                CustomNode node = _animationCellToCopy.nodeForGraphic(orig);
-                SpriteGraphic sprite = orig.copy();
-                _animationCell.addSprite(node, sprite);
-                _animationCell.setDelay(_animationCellToCopy.getDelay());
-            }          
-        }
-
+    {        
         _animation.addCell(_animationCell);
 
         return true;

@@ -296,5 +296,22 @@ public class AnimationCell
 
         //this.rebuild();
     }
+    
+    public AnimationCell copy()
+    {
+        AnimationCell newCell = new AnimationCell();
+        newCell.setDelay(this.getDelay());
+        
+        for (int i=0; i<graphicOrderList.size(); ++i)
+        {
+            GraphicObject graphic = graphicOrderList.get(i);
+            GraphicObject newGraphic = graphic.copy();
+            newCell.addSprite(this.nodeForGraphic(graphic), newGraphic);
+            newCell.setZOrder(newGraphic, this.zOrderOfGraphic(graphic));
+        }
+        
+        return newCell;
+        
+    }
 
 }

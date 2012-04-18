@@ -88,6 +88,11 @@ public class SelectionBox extends GraphicObject
                 aColour.getAlpha() / 2);
     }
 
+    public GraphicObject copy()
+    {
+        // TODO:
+        return null;
+    }
 
 
 //    public void fadeIn()

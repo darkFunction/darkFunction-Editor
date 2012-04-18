@@ -32,7 +32,7 @@ import javax.swing.plaf.basic.*;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.awt.*;
-
+import java.awt.event.FocusListener;
 /**
  *
  * @author Owner
@@ -281,6 +281,7 @@ public class AnimationController extends dfEditorPanel implements
     {
         return workingCell;
     }
+    
 
     /** This method is called from within the constructor to
      * initialize the form.

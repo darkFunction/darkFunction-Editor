@@ -28,7 +28,7 @@ public class Animation implements NamedElement
         
         for (int i=0; i<cellList.size(); ++i)
         {
-            copy.addCell(this.getCellAtIndex(i));
+            copy.addCell(this.getCellAtIndex(i).copy());
         }
         
         return copy;
