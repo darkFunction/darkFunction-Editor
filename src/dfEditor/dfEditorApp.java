@@ -91,7 +91,9 @@ public class dfEditorApp extends SingleFrameApplication
                     daysUsed = (dateNow.getTime() / oneDay) - (dateInstalled.getTime() / oneDay);
                 }
                 else
+                {
                     daysUsed = -1;
+                }
                 
                 
                 try {
