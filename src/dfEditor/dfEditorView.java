@@ -32,7 +32,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         
         initComponents();
         
-        //feedbackMenu.setVisible(false);
+        feedbackMenu.setVisible(false);
 
         checkRegistered();
 

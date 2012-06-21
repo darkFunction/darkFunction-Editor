@@ -7,10 +7,12 @@ package dfEditor;
 import java.awt.Color;
 import org.jdesktop.application.Action;
 import dfEditor.license.LicenseReader;
+import java.awt.image.ImageObserver;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JDialog;
 
-public class dfEditorAboutBox extends javax.swing.JDialog {
+public class dfEditorAboutBox extends JDialog {
 
     private java.awt.Frame parent;
     private Timer countDownTimer;
@@ -20,7 +22,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
         this.parent = parent;
         initComponents();
         getRootPane().setDefaultButton(CloseButton);
-        this.setDefaultCloseOperation(javax.swing.JDialog.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         String license = dfEditorApp.getApplication().getRegKey();
 
@@ -30,6 +32,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
             licenseTextField.setEnabled(false);
             registerButton.setText("Registered");
             registerButton.setEnabled(false);
+            buyButton.setVisible(false);
             daysLeftLabel.setText("This product has been registered.");
         }
         else
@@ -39,18 +42,17 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
             daysLeftLabel.setText(daysRemaining + " days remaining in your trial period.");
 
             if (daysRemaining == 0)
-            {
-                
+            {  
                 CloseButton.setEnabled(false);
                 
                 daysLeftLabel.setForeground(Color.red);
 
                 countDownTimer = new Timer();
-                final javax.swing.JDialog self = this;
+                final JDialog self = this;
 
                 TimerTask countDownTask = new TimerTask()
                 {
-                    int count = 9;
+                    int count = 14;
                     public void run()
                     {
                         CloseButton.setText("     " + count + "     ");
@@ -96,6 +98,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
         daysLeftLabel = new javax.swing.JLabel();
         licenseTextField = new javax.swing.JTextField();
         registerButton = new javax.swing.JButton();
+        buyButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(dfEditor.dfEditorApp.class).getContext().getResourceMap(dfEditorAboutBox.class);
@@ -211,6 +214,14 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        buyButton.setText(resourceMap.getString("buyButton.text")); // NOI18N
+        buyButton.setName("buyButton"); // NOI18N
+        buyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buyButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,7 +229,9 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(397, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(buyButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(CloseButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -274,7 +287,9 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
                 .addGap(28, 28, 28)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(CloseButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CloseButton)
+                    .addComponent(buyButton))
                 .addContainerGap())
         );
 
@@ -298,12 +313,24 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
             registerButton.setText("Success!");
             registerButton.setEnabled(false);
             daysLeftLabel.setText("Thank you for purchasing darkFunction Editor!");
+            buyButton.setVisible(false);
         }
         else
         {
 
         }
     }//GEN-LAST:event_registerButtonActionPerformed
+
+private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
+   try { 
+         String url = "http://darkfunction.com/editor/#purchase";
+         java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+   }
+   catch (java.io.IOException e) {
+       javax.swing.JOptionPane.showMessageDialog(this, "Failed to launch your web browser...\nTo purchase a license please visit darkfunction.com", "Nuts!", javax.swing.JOptionPane.ERROR_MESSAGE);
+   }
+   
+}//GEN-LAST:event_buyButtonActionPerformed
 
     private void checkRegKey()
     {
@@ -312,6 +339,7 @@ public class dfEditorAboutBox extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;
+    private javax.swing.JButton buyButton;
     private javax.swing.JLabel daysLeftLabel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

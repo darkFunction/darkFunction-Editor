@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import java.awt.Toolkit;
 
 import de.muntjak.tinylookandfeel.*;
+import javax.swing.JOptionPane;
 //import org.jvnet.substance.skin.SubstanceNebulaBrickWallLookAndFeel  ;
 
 /**
@@ -37,6 +38,7 @@ public class dfEditorApp extends SingleFrameApplication
      */
     @Override protected void startup()
     {          
+        final String userDir = dfEditorApp.getUserDataDirectory();
         final dfEditorApp self = this;
         java.awt.EventQueue.invokeLater(new Runnable()
         {
@@ -59,26 +61,19 @@ public class dfEditorApp extends SingleFrameApplication
                     javax.swing.UIManager.setLookAndFeel(javax.swing.plaf.UIResour
                 } catch (javax.swing.UnsupportedLookAndFeelException e) {}
                 */
-                StringBuffer strContent = new StringBuffer();
-
+                
                 try
                 {
-                    FileInputStream input = new FileInputStream("./license.lic");
-
-                    int ch;
-                    while( (ch = input.read()) != -1)
-                        strContent.append((char)ch);
-                    input.close();
-
-                    self.setRegKey(strContent.toString());
+                    String licenseKey = contentsOfFileWithPath(userDir + "license.lic");
+                    self.setRegKey(licenseKey);
                 }
                 catch(java.io.IOException e)
                 {
 
                 }
                 
-                // Create an instance of file object.
-                File file = new File("./dfEditor.jar");
+                String filePath = userDir + ".conf";
+                File file = new File(filePath);
                 if (file.exists())
                 {
                     Long lastModified = file.lastModified();
@@ -92,7 +87,17 @@ public class dfEditorApp extends SingleFrameApplication
                 }
                 else
                 {
-                    daysUsed = -1;
+                    daysUsed = 0;
+                    
+                    try {
+                        FileOutputStream output = new FileOutputStream(filePath);
+                        // just write any old bullshit to the file really it doesn't matter
+                        Date dateNow = new Date(System.currentTimeMillis());
+                        output.write(dateNow.toString().getBytes());
+                        output.close();
+                    } catch (IOException e) {
+                        
+                    }
                 }
                 
                 
@@ -110,6 +115,15 @@ public class dfEditorApp extends SingleFrameApplication
                 show(sv);
             }
         });
+    }
+    
+    private static String getUserDataDirectory()
+    {
+        String dir = System.getProperty("user.home") + File.separator + ".dfEditor" + File.separator;
+        File test = new File(dir);
+        if (!test.exists())
+            test.mkdir();
+        return dir;
     }
     
     public void registerForMacOSXEvents() {
@@ -174,6 +188,20 @@ public class dfEditorApp extends SingleFrameApplication
     {
         super.shutdown();
     }
+    
+    private String contentsOfFileWithPath(String path) throws IOException
+    {
+        FileInputStream input = new FileInputStream(path);
+
+        StringBuffer strContent = new StringBuffer();
+        
+        int ch;
+        while( (ch = input.read()) != -1)
+            strContent.append((char)ch);
+        input.close();
+        
+        return strContent.toString();
+    }
 
     public boolean setRegKey(String key)
     {
@@ -186,13 +214,12 @@ public class dfEditorApp extends SingleFrameApplication
             
             try
             {
-                FileOutputStream output = new FileOutputStream( "./license.lic");
+                FileOutputStream output = new FileOutputStream(getUserDataDirectory() + "license.lic");
                 output.write(key.getBytes());
                 output.close();
             }
             catch (Exception e)
             {
-            
             }
             
             return true;
