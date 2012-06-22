@@ -461,10 +461,15 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
                 if (Utils.getExtension(selectedFile).equals(CustomFilter.EXT_ANIM)) // meh
                 {
                     AnimationController animController = new AnimationController(new CommandManager(undoMenuItem, redoMenuItem), false, helpLabel, this, fileChooser);
-                    bLoaded = animController.load(new AnimationSetReader(selectedFile));                    
-                    task = animController;
-                    if (helpLabel != null)
-                        helpLabel.setText("Loaded animations " + selectedFile.toString());
+                    try {
+                        AnimationSetReader reader = new AnimationSetReader(selectedFile);
+                        bLoaded = animController.load(reader);                    
+                        task = animController;
+                        if (helpLabel != null)
+                            helpLabel.setText("Loaded animations " + selectedFile.toString());
+                    } catch (Exception e) {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Could not load animation file!", "File error", JOptionPane.ERROR_MESSAGE);
+                    }                    
                 }
                 else if (Utils.getExtension(selectedFile).equals(CustomFilter.EXT_SPRITE))
                 {

@@ -25,19 +25,12 @@ public class AnimationSetReader
     private File file = null;
     private float version = 1;
 
-    public AnimationSetReader(File aFile)
+    public AnimationSetReader(File aFile) throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException, java.io.IOException
     {
-        try
-        {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            doc = builder.parse(aFile);
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        doc = builder.parse(aFile);
 
-            file = aFile;
-        }
-        catch (Exception e)
-        {
-            // TODO
-        }
+        file = aFile;
     }
 
     public String getSpriteSheetPath()

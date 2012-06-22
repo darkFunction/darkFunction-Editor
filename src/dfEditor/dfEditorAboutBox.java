@@ -52,7 +52,7 @@ public class dfEditorAboutBox extends JDialog {
 
                 TimerTask countDownTask = new TimerTask()
                 {
-                    int count = 14;
+                    int count = 59;
                     public void run()
                     {
                         CloseButton.setText("     " + count + "     ");

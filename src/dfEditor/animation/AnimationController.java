@@ -1255,7 +1255,6 @@ public class AnimationController extends dfEditorPanel implements
         }
     }//GEN-LAST:event_delaySpinnerStateChanged
 
-    // TODO
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
        Animation animation = getWorkingAnimation();
 
