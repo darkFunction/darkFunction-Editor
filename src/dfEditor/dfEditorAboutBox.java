@@ -16,7 +16,8 @@ public class dfEditorAboutBox extends JDialog {
 
     private java.awt.Frame parent;
     private Timer countDownTimer;
-
+    public boolean continueButtonClicked = false;
+    
     public dfEditorAboutBox(java.awt.Frame parent) {
         super(parent);
         this.parent = parent;
@@ -43,10 +44,10 @@ public class dfEditorAboutBox extends JDialog {
 
             if (daysRemaining == 0)
             {  
-                CloseButton.setEnabled(false);
-                
+                CloseButton.setEnabled(false);                
                 daysLeftLabel.setForeground(Color.red);
-
+            
+                /* Timer to allow program use
                 countDownTimer = new Timer();
                 final JDialog self = this;
 
@@ -66,6 +67,7 @@ public class dfEditorAboutBox extends JDialog {
                     }
                 };
                 countDownTimer.scheduleAtFixedRate(countDownTask, 0, 1000);
+                */
             }
         }
     }
@@ -235,7 +237,7 @@ public class dfEditorAboutBox extends JDialog {
                         .addComponent(CloseButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,7 +267,7 @@ public class dfEditorAboutBox extends JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(appTitleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                         .addComponent(appDescLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -297,7 +299,8 @@ public class dfEditorAboutBox extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
-        dispose();
+        continueButtonClicked = true;
+        dispose();        
     }//GEN-LAST:event_CloseButtonActionPerformed
 
     private void licenseTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licenseTextFieldActionPerformed

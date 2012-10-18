@@ -15,7 +15,8 @@ import java.io.File;
 import java.util.Date;
 import javax.swing.UIManager;
 import java.awt.Toolkit;
-
+import javax.swing.JDialog;
+import java.awt.event.*;
 import de.muntjak.tinylookandfeel.*;
 import javax.swing.JOptionPane;
 //import org.jvnet.substance.skin.SubstanceNebulaBrickWallLookAndFeel  ;
@@ -110,11 +111,41 @@ public class dfEditorApp extends SingleFrameApplication
                 //com.apple.eawt.Application.getApplication().setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
                 registerForMacOSXEvents();
                 
-                sv = new dfEditorView(self);
-                self.addExitListener(sv);
-                show(sv);
+                if (!self.isRegistered()) 
+                {
+                    JDialog aboutBox = null;
+                    if (self.isFreeVersion)
+                        aboutBox = new dfEditorAboutBoxFree(self.getMainFrame());
+                    else
+                        aboutBox = new dfEditorAboutBox(self.getMainFrame());
+
+                    aboutBox.setLocationRelativeTo(self.getMainFrame());
+                    
+                    show(aboutBox);
+                    
+                    aboutBox.addWindowListener(new WindowAdapter() {
+                        public void windowClosed(WindowEvent e) {
+                            dfEditorAboutBox aboutBox = (dfEditorAboutBox) e.getSource();
+                            if (aboutBox.continueButtonClicked)
+                                self.showMainView();
+                            else
+                                self.exit();
+                        }
+                    });
+                } 
+                else 
+                {
+                    self.showMainView();
+                }
             }
         });
+    }
+    
+    private void showMainView()
+    {
+        sv = new dfEditorView(this);
+        this.addExitListener(sv);
+        show(sv);
     }
     
     private static String getUserDataDirectory()
@@ -185,7 +216,8 @@ public class dfEditorApp extends SingleFrameApplication
 
     @Override
     public void shutdown()
-    {
+    {        
+        dfEditorApp.closeDeskMetrics();
         super.shutdown();
     }
     

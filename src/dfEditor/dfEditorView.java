@@ -36,18 +36,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
 
         checkRegistered();
 
-        if (dfEditorApp.isFreeVersion)
-        {
-            //this.showAboutBox();
-        }
-        else
-        {
-            if (! dfEditorApp.getApplication().isRegistered())// && dfEditorApp.getApplication().getDaysRemaining() < 10)
-            {
-                this.showAboutBox();
-            }
-        }
-
         java.net.URL imgURL = this.getClass().getResource("resources/main_icons/Star.png");
         ImageIcon ii = new ImageIcon(imgURL);
         this.getFrame().setIconImage(ii.getImage());
@@ -56,8 +44,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
 
             @Override
             public void windowClosing(WindowEvent e) {
-                dfEditorApp.closeDeskMetrics();
-                System.exit(0);
+                dfEditorApp.getApplication().exit();
             }
         });
         
@@ -331,7 +318,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(helpLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
+                .addComponent(helpLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
                 .addContainerGap())
         );
         statusPanelLayout.setVerticalGroup(
@@ -346,6 +333,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         mainPanel.setName("mainPanel"); // NOI18N
 
         tabbedPane.setName("tabbedPane"); // NOI18N
+        tabbedPane.setPreferredSize(new java.awt.Dimension(796, 551));
         tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabbedPaneStateChanged(evt);
@@ -360,7 +348,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
         );
 
         setComponent(mainPanel);
