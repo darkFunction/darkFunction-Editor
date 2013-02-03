@@ -20,7 +20,6 @@
 
 package dfEditor;
 
-import com.DeskMetrics.DeskMetrics;
 import dfEditor.animation.AnimationController;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -47,8 +46,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         fileChooser = new JFileChooser();
         
         initComponents();
-        
-        feedbackMenu.setVisible(false);
 
         helpLabel.setText("http://www.darkfunction.com");
 
@@ -152,8 +149,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         redoMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
-        feedbackMenu = new javax.swing.JMenu();
-        feedbackMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         helpLabel = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
@@ -278,20 +273,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
 
         menuBar.add(helpMenu);
 
-        feedbackMenu.setText(resourceMap.getString("feedbackMenu.text")); // NOI18N
-        feedbackMenu.setName("feedbackMenu"); // NOI18N
-
-        feedbackMenuItem.setText(resourceMap.getString("feedbackMenuItem.text")); // NOI18N
-        feedbackMenuItem.setName("feedbackMenuItem"); // NOI18N
-        feedbackMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                feedbackMenuItemActionPerformed(evt);
-            }
-        });
-        feedbackMenu.add(feedbackMenuItem);
-
-        menuBar.add(feedbackMenu);
-
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
 
@@ -319,7 +300,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         mainPanel.setName("mainPanel"); // NOI18N
 
         tabbedPane.setName("tabbedPane"); // NOI18N
-        tabbedPane.setPreferredSize(new java.awt.Dimension(796, 551));
         tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabbedPaneStateChanged(evt);
@@ -531,19 +511,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         }
     }//GEN-LAST:event_menuItemSaveActionPerformed
 
-private void feedbackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_feedbackMenuItemActionPerformed
-    this.showFeedbackForm();
-}//GEN-LAST:event_feedbackMenuItemActionPerformed
-
-    public void showFeedbackForm() 
-    {
-        JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
-        FeedbackDialog feedback = new FeedbackDialog(mainFrame, true);
-        feedback.setLocationRelativeTo(mainFrame);
-
-        dfEditorApp.getApplication().show(feedback);
-    }
-
     private void updateMenuBar()
     {
         dfEditorTask selectedTask = (dfEditorTask)(tabbedPane.getSelectedComponent());
@@ -582,8 +549,6 @@ private void feedbackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenu editMenu;
-    private javax.swing.JMenu feedbackMenu;
-    private javax.swing.JMenuItem feedbackMenuItem;
     private javax.swing.JLabel helpLabel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem loadMenuItem;

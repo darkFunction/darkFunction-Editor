@@ -20,26 +20,14 @@
 
 package dfEditor;
 
-import com.DeskMetrics.DeskMetrics;
-//import com.apple.eawt.QuitStrategy;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.File;
-import java.util.Date;
 import javax.swing.UIManager;
 import java.awt.Toolkit;
-import javax.swing.JDialog;
-import java.awt.event.*;
 import de.muntjak.tinylookandfeel.*;
-import javax.swing.JOptionPane;
-//import org.jvnet.substance.skin.SubstanceNebulaBrickWallLookAndFeel  ;
 
-/**
- * The main class of the application.
- */
+
 public class dfEditorApp extends SingleFrameApplication
 {
     private dfEditorView sv;
