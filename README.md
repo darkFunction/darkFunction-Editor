@@ -6,3 +6,6 @@ darkFunction-Editor
 For feature list and screenshots see here:
 http://darkfunction.com/editor/
 
+For example output and third-party plugins see here:
+http://darkfunction.com/editor/documentation
+
