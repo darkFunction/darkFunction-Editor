@@ -19,7 +19,7 @@
 
 package dfEditor.io;
 
-import java.io.File;
+import java.io.*;
 
 public class Utils {
 
@@ -44,4 +44,20 @@ public class Utils {
         }
         return ext;
     }
+    
+    public static String contentsOfFileWithPath(String path) throws IOException
+    {
+        FileInputStream input = new FileInputStream(path);
+
+        StringBuffer strContent = new StringBuffer();
+        
+        int ch;
+        while( (ch = input.read()) != -1)
+            strContent.append((char)ch);
+        input.close();
+        
+        return strContent.toString();
+    }
+
+
 }

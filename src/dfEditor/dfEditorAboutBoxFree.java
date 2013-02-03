@@ -21,22 +21,21 @@
 
 package dfEditor;
 
-import java.awt.Color;
+import java.io.IOException;
 import org.jdesktop.application.Action;
-import dfEditor.license.LicenseReader;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class dfEditorAboutBoxFree extends javax.swing.JDialog {
 
-    private java.awt.Frame parent;
-    private Timer countDownTimer;
-
     public dfEditorAboutBoxFree(java.awt.Frame parent) {
         super(parent);
-        this.parent = parent;
         initComponents();
         getRootPane().setDefaultButton(CloseButton);
+        
+        try {
+            this.licenseArea.setText(dfEditor.io.Utils.contentsOfFileWithPath("./license.txt"));
+        } catch (java.io.IOException e) {
+            this.licenseArea.setText("darkFunction Editor is released under the terms of the GNU General Public License. See http://www.gnu.org/licenses/");
+        }
     }
 
     @Action public void closeAboutBox() {
@@ -62,7 +61,7 @@ public class dfEditorAboutBoxFree extends javax.swing.JDialog {
         javax.swing.JLabel imageLabel = new javax.swing.JLabel();
         CloseButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        licenseArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(dfEditor.dfEditorApp.class).getContext().getResourceMap(dfEditorAboutBoxFree.class);
@@ -115,15 +114,15 @@ public class dfEditorAboutBoxFree extends javax.swing.JDialog {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setEditable(false);
-        jTextArea1.setFont(resourceMap.getFont("jTextArea1.font")); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText(resourceMap.getString("jTextArea1.text")); // NOI18N
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
+        licenseArea.setColumns(20);
+        licenseArea.setEditable(false);
+        licenseArea.setFont(resourceMap.getFont("licenseArea.font")); // NOI18N
+        licenseArea.setLineWrap(true);
+        licenseArea.setRows(5);
+        licenseArea.setText(resourceMap.getString("licenseArea.text")); // NOI18N
+        licenseArea.setWrapStyleWord(true);
+        licenseArea.setName("licenseArea"); // NOI18N
+        jScrollPane1.setViewportView(licenseArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -146,10 +145,10 @@ public class dfEditorAboutBoxFree extends javax.swing.JDialog {
                                     .addComponent(appVersionLabel)
                                     .addComponent(appVendorLabel)
                                     .addComponent(appHomepageLabel)))
-                            .addComponent(appTitleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                            .addComponent(appDescLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)))
+                            .addComponent(appTitleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                            .addComponent(appDescLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(425, Short.MAX_VALUE)
+                        .addContainerGap(446, Short.MAX_VALUE)
                         .addComponent(CloseButton)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -164,7 +163,7 @@ public class dfEditorAboutBoxFree extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(appTitleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                         .addComponent(appDescLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -193,15 +192,11 @@ public class dfEditorAboutBoxFree extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_CloseButtonActionPerformed
 
-    private void checkRegKey()
-    {
-
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea licenseArea;
     // End of variables declaration//GEN-END:variables
     
 }

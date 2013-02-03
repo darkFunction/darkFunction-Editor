@@ -50,7 +50,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
         
         feedbackMenu.setVisible(false);
 
-        checkRegistered();
+        helpLabel.setText("http://www.darkfunction.com");
 
         java.net.URL imgURL = this.getClass().getResource("resources/main_icons/Star.png");
         ImageIcon ii = new ImageIcon(imgURL);
@@ -64,33 +64,6 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
             }
         });
         
-    }
-
-    public void checkRegistered()
-    {
-        if (dfEditorApp.isFreeVersion)
-        {
-            helpLabel.setText("Please visit http://www.darkfunction.com for updates!");
-        }
-        else
-        {
-            if (dfEditorApp.getApplication().isRegistered())
-            {
-                helpLabel.setText("darkFunction Editor: Licensed version.");
-            }
-            else
-            {
-                long remainingDays = dfEditorApp.getApplication().getDaysRemaining();
-                if (remainingDays > 0)
-                {
-                    helpLabel.setText("Unregistered trial: " + remainingDays + " days remaining. Licenses can be purchased at http://www.darkfunction.com");
-                }
-                else
-                {
-                    helpLabel.setText("Trial period expired. Licenses can be purchased at http://www.darkfunction.com");
-                }
-            }
-        }
     }
 
     public void willExit(java.util.EventObject aObj)
@@ -150,10 +123,7 @@ public class dfEditorView extends FrameView implements TaskChangeListener, org.j
     public void showAboutBox() {
         if (aboutBox == null) {
             JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
-            if (dfEditorApp.isFreeVersion)
-                aboutBox = new dfEditorAboutBoxFree(mainFrame);
-            else
-                aboutBox = new dfEditorAboutBox(mainFrame);
+            aboutBox = new dfEditorAboutBoxFree(mainFrame);
             aboutBox.setLocationRelativeTo(mainFrame);
         }
         dfEditorApp.getApplication().show(aboutBox);
