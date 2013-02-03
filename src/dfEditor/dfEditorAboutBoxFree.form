@@ -46,12 +46,12 @@
                                   <Component id="appHomepageLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="appTitleLabel" alignment="0" pref="330" max="32767" attributes="0"/>
-                          <Component id="appDescLabel" alignment="0" pref="330" max="32767" attributes="0"/>
+                          <Component id="appTitleLabel" alignment="0" pref="332" max="32767" attributes="0"/>
+                          <Component id="appDescLabel" alignment="0" pref="332" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="425" max="32767" attributes="0"/>
+                      <EmptySpace pref="446" max="32767" attributes="0"/>
                       <Component id="CloseButton" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -71,7 +71,7 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="appTitleLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="24" max="32767" attributes="0"/>
                       <Component id="appDescLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
