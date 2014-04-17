@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright 2012 Samuel Taylor
- * 
+ *
  *  This file is part of darkFunction Editor
  *
  *  darkFunction Editor is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ import dfEditor.MathUtil;
  * @author s4m20
  */
 public class AnimationStripPanel extends javax.swing.JPanel implements AnimationDataListener, MouseMotionListener, MouseListener, ActionListener
-{   
+{
     private Animation animation = null;
     private ArrayList<Slot> slotList = null;
     private AnimationController controller = null;
@@ -64,7 +64,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         super();
 
         slotList = new ArrayList<Slot>();
-        addMouseListener(this);        
+        addMouseListener(this);
         addMouseMotionListener(this);
 
         Dimension d = new Dimension(0,0);
@@ -104,7 +104,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     {
         this.commandManager = aManager;
     }
-    
+
     public void cellAdded(Animation aAnimation, AnimationCell aCell)
     {
         if (aAnimation == animation)
@@ -120,7 +120,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
             setAnimation(aAnimation); // rebuilds slot positions
         }
     }
-    
+
     public void cellOrderChanged(Animation aAnimation)
     {
         if (aAnimation == animation)
@@ -226,7 +226,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         for (int i=0; i<slotList.size(); ++i)
         {
             Slot slot = slotList.get(i);
-            slot.draw(g);          
+            slot.draw(g);
         }
 
         // dragged slots
@@ -283,7 +283,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         }
         return null;
     }
-    
+
     // not used
 //    public void removeSelected()
 //    {
@@ -333,16 +333,14 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         return -1;
     }
 
-    public void play()
+    public void play(int timeout)
     {
         if (slotList.size() == 0)
             return;
-        
-        currentLoop = animation.getLoops();
-        
-        if (timer == null)
-            timer = new Timer(30, this);
 
+        currentLoop = animation.getLoops();
+
+        timer = new Timer(timeout, this);
         timer.start();
 
         currentSlotInAnimation = getSelectedSlotIndex();
@@ -358,9 +356,11 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
 
     public void stop()
     {
-        if (timer != null)
+        if (timer != null) {
             timer.stop();
-        
+            timer = null;
+        }
+
         currentSlotInAnimation = -1;
 
         repaint();
@@ -400,13 +400,16 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         {
             currentSlotInAnimation = 0;
         }
-        
+
         for (int i=0; i<stripListeners.size(); ++i)
         {
            stripListeners.get(i).animatedToCell(slotList.get(currentSlotInAnimation).getCell());
         }
     }
 
+    /**
+     * Triggered by timer to refresh current frame in preview.
+     */
     public void actionPerformed(ActionEvent e)
     {
         currentSlotInAnimationFramesLeft --;
@@ -414,11 +417,11 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         {
             currentSlotInAnimation ++;
             currentSlotInAnimation %= slotList.size();
-                        
+
             currentSlotInAnimationFramesLeft = slotList.get(currentSlotInAnimation).getCell().getDelay();
-                        
+
             if (currentSlotInAnimation == 0)
-            {          
+            {
                 if (--currentLoop == 0)
                     this.stop();
             }
@@ -472,12 +475,12 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
                     {
                         if (imgCentreX < slotCentreX + slot.getRect().width)
                         {
-                            insertBeforeSlotIndex = j;                           
-                        }                        
+                            insertBeforeSlotIndex = j;
+                        }
                         else
                         {
                             insertBeforeSlotIndex = j+1;
-                        }                         
+                        }
                     }
                 }
             }
@@ -521,21 +524,21 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     public void mouseReleased(MouseEvent evt)
     {
         boolean orderChanged = false;
-        
+
         for (int i=0; i<slotList.size(); ++i)
-        {            
-            Slot slot = slotList.get(i);          
-            
+        {
+            Slot slot = slotList.get(i);
+
             if (!slot.isDragged())
                 continue;
             if (insertBeforeSlotIndex >= 0)
             {
                 orderChanged = true;
                 animation.moveCell(i, insertBeforeSlotIndex);
-                // TODO: do a command for this 
+                // TODO: do a command for this
             }
-        }       
-        
+        }
+
         // relayout slots
         if (orderChanged)
         {
@@ -551,7 +554,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         if (orderChanged && insertBeforeSlotIndex < slotList.size())
                 slotList.get(insertBeforeSlotIndex).setSelected(true);
 
-        insertBeforeSlotIndex = -1;        
+        insertBeforeSlotIndex = -1;
     }
 
     public void mouseExited(MouseEvent evt)
@@ -576,7 +579,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     {
         static final int MARGIN = 3;
 
-        private AnimationCell cell;        
+        private AnimationCell cell;
         private Rectangle innerRect;
         private boolean isSelected;
         private boolean isDragged;
@@ -623,8 +626,8 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         {
             isDragged = aDragged;
 
-            if (aDragged)            
-                dragImage = createTranslucentCopy();            
+            if (aDragged)
+                dragImage = createTranslucentCopy();
             else
                 dragImage = null;
         }
@@ -661,25 +664,25 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
 
             this.drawCellInRect(cell, g, innerRect);
         }
-        
+
         // scales to fit inside rect amd centres it
         private void drawCellInRect(final AnimationCell aCell, final Graphics aGraphics, final Rectangle aRect)
         {
             Rectangle r = new Rectangle(aRect.x, aRect.y, aRect.width, aRect.height);
-            
+
             Point size = aCell.getImageSize();
             int w = size.x;
             int h = size.y;
             float aspectRatio = (float)w / (float)h;
-         
+
             if (w > h)
             {
                 int oldHeight = r.height;
                 r.height /= aspectRatio;
-                r.y += (oldHeight - r.height)/2;                
+                r.y += (oldHeight - r.height)/2;
             }
             else if (h > w)
-            {                
+            {
                 int oldWidth = r.width;
                 r.width *= aspectRatio;
                 r.x += (oldWidth - r.width)/2;
@@ -696,9 +699,9 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 
             this.drawCellInRect(cell, g, new Rectangle(0, 0, img.getWidth(), img.getHeight()));
-           
+
             g.dispose();
-            
+
             return img;
         }
 
