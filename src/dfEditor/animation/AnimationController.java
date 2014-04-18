@@ -328,6 +328,7 @@ public class AnimationController extends dfEditorPanel implements
         jPanel2 = new javax.swing.JPanel();
         animationPanel1 = new dfEditor.animation.AnimationPanel();
         playButton = new javax.swing.JButton();
+        previewDelaySpinner = new javax.swing.JSpinner();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         delaySpinner = new javax.swing.JSpinner();
@@ -512,18 +513,31 @@ public class AnimationController extends dfEditorPanel implements
             }
         });
 
+        // Set the preview delay to something sensible (default was 30 before)
+        previewDelaySpinner.setValue(500);
+        previewDelaySpinner.setMaximumSize(new java.awt.Dimension(30, 30));
+        previewDelaySpinner.setName("previewDelayspinner"); // NOI18N
+        previewDelaySpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+//                TODO: loopSpinnerStateChanged(evt);
+            }
+        });
+
+
         javax.swing.GroupLayout animationPanel1Layout = new javax.swing.GroupLayout(animationPanel1);
         animationPanel1.setLayout(animationPanel1Layout);
         animationPanel1Layout.setHorizontalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
                 .addContainerGap(131, Short.MAX_VALUE)
+                .addComponent(previewDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         animationPanel1Layout.setVerticalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
                 .addContainerGap(115, Short.MAX_VALUE)
+                .addComponent(previewDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1265,21 +1279,19 @@ public class AnimationController extends dfEditorPanel implements
 
         if (workingCell != null)
         {
-            int value = (Integer)spinner.getValue();        
+            int value = (Integer)spinner.getValue();
             workingCell.setDelay(value);
             spinner.setValue(workingCell.getDelay());
         }
     }//GEN-LAST:event_delaySpinnerStateChanged
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
-       Animation animation = getWorkingAnimation();
-
        animationStripPanel.addAnimationStripListener(this);
 
        boolean playing = animationStripPanel.isPlaying();
 
        if (!playing)
-           animationStripPanel.play();
+           animationStripPanel.play((Integer) previewDelaySpinner.getValue());
        else
            animationStripPanel.stop();
 
@@ -2161,6 +2173,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JToggleButton modifySpriteToggle;
     private javax.swing.JCheckBox onionSkinsCheckBox;
     private javax.swing.JButton playButton;
+    private javax.swing.JSpinner previewDelaySpinner;
     private javax.swing.JButton removeAnimationButton;
     private javax.swing.JButton removeCellButton;
     private javax.swing.JButton removeSpriteButton;

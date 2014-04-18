@@ -333,16 +333,14 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         return -1;
     }
 
-    public void play()
+    public void play(int timeout)
     {
         if (slotList.size() == 0)
             return;
-        
-        currentLoop = animation.getLoops();
-        
-        if (timer == null)
-            timer = new Timer(30, this);
 
+        currentLoop = animation.getLoops();
+
+        timer = new Timer(timeout, this);
         timer.start();
 
         currentSlotInAnimation = getSelectedSlotIndex();
@@ -358,9 +356,11 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
 
     public void stop()
     {
-        if (timer != null)
+        if (timer != null) {
             timer.stop();
-        
+            timer = null;
+        }
+
         currentSlotInAnimation = -1;
 
         repaint();
@@ -400,13 +400,16 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         {
             currentSlotInAnimation = 0;
         }
-        
+
         for (int i=0; i<stripListeners.size(); ++i)
         {
            stripListeners.get(i).animatedToCell(slotList.get(currentSlotInAnimation).getCell());
         }
     }
 
+    /**
+     * Triggered by timer to refresh current frame in preview.
+     */
     public void actionPerformed(ActionEvent e)
     {
         currentSlotInAnimationFramesLeft --;
