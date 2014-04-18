@@ -1,6 +1,6 @@
-/*
+/* 
  *  Copyright 2009 Samuel Taylor
- *
+ * 
  *  This file is part of darkFunction Editor
  *
  *  darkFunction Editor is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ public class AnimationController extends dfEditorPanel implements
             InternalFrameListener
 {
     private BufferedImage bufferedImage = null;
-    private AnimationCell workingCell = null;
+    private AnimationCell workingCell = null;    
     private File loadedSpritesheetFile = null;
     private Timer spinnerStateTimer = null;
     ArrayList<GraphicObject> _rotatingGraphics = null;
@@ -78,23 +78,23 @@ public class AnimationController extends dfEditorPanel implements
 
         viewPanel.addGraphicChangeListener(this);
         animationStripPanel.setController(this);
-
+        
         animationStripPanel.setCommandManager(aCmdManager);
         viewPanel.setCommandManager(aCmdManager);
 
-        animationList.addListSelectionListener(this);
-
+        animationList.addListSelectionListener(this);   
+        
         spriteList.addListSelectionListener(this);
         spriteList.addNodeDroppedListener(this);
         spriteList.setDragSource(spriteTree);
-
-        spriteTree.addTreeListener(this);
+        
+        spriteTree.addTreeListener(this);        
         viewPanel.addNodeDroppedListener(this);
         viewPanel.setDragSource(spriteTree);
 
         controlPanel.addInternalFrameListener(this);
         spriteListControlPanel.addInternalFrameListener(this);
-
+        
         setWorkingCell(null);
 
         if (aNew)
@@ -105,10 +105,10 @@ public class AnimationController extends dfEditorPanel implements
                 }
             });
         }
-
-        viewPanel.requestFocus();
-
-        postInit();
+        
+        viewPanel.requestFocus();        
+        
+        postInit();      
     }
 
     private void showSpritesheetChooser()
@@ -120,7 +120,7 @@ public class AnimationController extends dfEditorPanel implements
         chooser.resetChoosableFileFilters();
         chooser.setFileFilter(filter);
         chooser.setDialogTitle("Select spritesheet");
-
+        
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
         int returnVal = chooser.showOpenDialog(mainFrame);
         if(returnVal == JFileChooser.APPROVE_OPTION)
@@ -133,7 +133,7 @@ public class AnimationController extends dfEditorPanel implements
     {
         SpritesheetReader reader = new SpritesheetReader(aFile);
         loadedSpritesheetFile = aFile;
-
+       
         try
         {
             String imgPath = reader.getImagePath();
@@ -159,21 +159,21 @@ public class AnimationController extends dfEditorPanel implements
             return;
         }
     }
-
+    
     private void buildAnimatedGif(String filePath)
     {
         Animation animation = this.getWorkingAnimation();
-
+        
         if (animation != null && animation.numCells() > 0)
         {
             Rectangle firstCellRect = animation.getCellAtIndex(0).getSpreadRect();
             Point topLeft = new Point(firstCellRect.x, firstCellRect.y);
             Point bottomRight = new Point(firstCellRect.x + firstCellRect.width, firstCellRect.y + firstCellRect.height);
-
+            
             for (int i=1; i<animation.numCells(); i++)
             {
                 Rectangle r = animation.getCellAtIndex(i).getSpreadRect();
-
+                
                 if (r.x < topLeft.x)
                     topLeft.x = r.x;
                 if (r.y < topLeft.y)
@@ -181,39 +181,39 @@ public class AnimationController extends dfEditorPanel implements
                 if (r.x + r.width > bottomRight.x)
                     bottomRight.x = r.x + r.width;
                 if (r.y + r.height > bottomRight.y)
-                    bottomRight.y = r.y + r.height;
+                    bottomRight.y = r.y + r.height;             
             }
-
+                
             AnimatedGifEncoder e = new AnimatedGifEncoder();
             e.setTransparent(new Color(0,0,0,0));
-            e.start(filePath);
+            e.start(filePath);            
             e.setRepeat(animation.getLoops());
             e.setQuality(1);
             e.setSize(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
-
+            
             for (int i=0; i<animation.numCells(); i++)
             {
                 BufferedImage image = new BufferedImage(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y, BufferedImage.TYPE_INT_ARGB);
                 Graphics ig = image.getGraphics();
-
-                AnimationCell cell = animation.getCellAtIndex(i);
+            
+                AnimationCell cell = animation.getCellAtIndex(i);                
                 cell.rebuild();
-
+                
                 Rectangle r = cell.getSpreadRect();
                 r.x -= topLeft.x;
-                r.y -= topLeft.y;
-                cell.draw(ig, r);
-
+                r.y -= topLeft.y; 
+                cell.draw(ig, r);              
+                
                 e.addFrame(image);
                 e.setDelay(cell.getDelay());
             }
-
-            e.finish();
+            
+            e.finish();           
         }
     }
-
+    
     private void showParseError()
-    {
+    {        
         JOptionPane.showMessageDialog(this, "File could not be loaded", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -231,7 +231,7 @@ public class AnimationController extends dfEditorPanel implements
 
         if (workingCell != aCell)
             viewPanel.unselectAllGraphics();
-
+        
         workingCell = aCell;
         viewPanel.setCell(workingCell);
         animationStripPanel.selectCell(aCell);
@@ -248,8 +248,8 @@ public class AnimationController extends dfEditorPanel implements
         spriteList.setEnabled(bActiveCell);
         try {
             spriteListControlPanel.setSelected(bActiveCell);
-        } catch (java.beans.PropertyVetoException e) {}
-
+        } catch (java.beans.PropertyVetoException e) {}       
+        
         populateSpriteListFromCell(aCell);
 
         if (bActiveCell)
@@ -260,9 +260,9 @@ public class AnimationController extends dfEditorPanel implements
             aCell.rebuild();
             animationStripPanel.repaint();
         }
-
-        setOnionSkins(onionSkinsCheckBox.isSelected());
-
+        
+        setOnionSkins(onionSkinsCheckBox.isSelected());         
+        
         this.repaint();
     }
 
@@ -294,12 +294,12 @@ public class AnimationController extends dfEditorPanel implements
 
         }
     }
-
+    
     public void cellOrderChanged(Animation aAnimation)
     {
         if (aAnimation == this.getWorkingAnimation())
         {
-
+            
         }
     }
 
@@ -307,7 +307,7 @@ public class AnimationController extends dfEditorPanel implements
     {
         return workingCell;
     }
-
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -1136,7 +1136,7 @@ public class AnimationController extends dfEditorPanel implements
     {
         if (aNode == null)
             return null;
-
+        
         if (aNode.isLeaf())
         {
             if (aCell != null)
@@ -1168,11 +1168,11 @@ public class AnimationController extends dfEditorPanel implements
 
         if (aCell != null)
             aCell.rebuild();
-
+        
         animationStripPanel.repaint();
-
+        
         return aGraphics;
-
+        
         //
     }
 
@@ -1190,10 +1190,10 @@ public class AnimationController extends dfEditorPanel implements
     private void addAnimation(final Animation aAnimation)
     {
         boolean bExists = false;
-        String name = aAnimation.getName();
+        String name = aAnimation.getName();      
         int animationNameCounter = 1;
         do
-        {
+        {           
             bExists = false;
             for (int i=0; i<animationList.getModel().getSize(); ++i)
             {
@@ -1205,23 +1205,23 @@ public class AnimationController extends dfEditorPanel implements
                  }
             }
             if (bExists)
-            {
+            {                
                 name = aAnimation.getName() + " " + animationNameCounter;
                 animationNameCounter++;
             }
         }
         while(bExists == true);
-
+        
         aAnimation.setName(name);
         aAnimation.addAnimationListener(this);
 
         if (aAnimation != null)
-        {
+        {           
             animationStripPanel.setAnimation(aAnimation);
-            cmdManager.execute(new AddAnimationCommand(animationList, aAnimation));
+            cmdManager.execute(new AddAnimationCommand(animationList, aAnimation));            
         }
     }
-
+    
     private void addAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAnimationButtonActionPerformed
 
         this.addAnimation(new Animation("Animation"));
@@ -1231,13 +1231,13 @@ public class AnimationController extends dfEditorPanel implements
 
 
     private void removeAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAnimationButtonActionPerformed
-
+        
         int index = animationList.getSelectedIndex();
         if (index >= 0)
         {
             animationStripPanel.stop();
             cmdManager.execute(new RemoveAnimationCommand(animationList, (Animation)animationList.getModel().getElementAt(index)));
-        }
+        }        
 }//GEN-LAST:event_removeAnimationButtonActionPerformed
 
     private Animation getWorkingAnimation()
@@ -1301,17 +1301,17 @@ public class AnimationController extends dfEditorPanel implements
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void spriteTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_spriteTreeValueChanged
-
+        
         int numSelected = 0;
         if (spriteTree.getSelectedNodes() != null)
             numSelected = spriteTree.getSelectedNodes().length;
-
+                
         CustomNode node = (CustomNode)spriteTree.getLastSelectedPathComponent();
 
         boolean bSelected = (node != null);
-
+        
         addToFrameButton.setEnabled(bSelected);
-
+        
         if (bSelected)
         {
             if (numSelected == 1 && node.isLeaf())
@@ -1323,7 +1323,7 @@ public class AnimationController extends dfEditorPanel implements
                 spritePreviewTitle.setText(node.getFullPathName());
             }
             else if (numSelected > 1 || !node.isLeaf())
-            {
+            {               
                 spritePreviewTitle.setHorizontalTextPosition(JLabel.CENTER);
                 spritePreviewTitle.setText("<multiple sprites selected>");
                 spritePreviewPanel.setGraphic(null);
@@ -1334,7 +1334,7 @@ public class AnimationController extends dfEditorPanel implements
             spritePreviewTitle.setText(" ");
             spritePreviewPanel.setGraphic(null);
         }
-
+        
         spritePreviewPanel.repaint();
     }//GEN-LAST:event_spriteTreeValueChanged
 
@@ -1365,9 +1365,9 @@ public class AnimationController extends dfEditorPanel implements
         ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
 
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-        for (int i=0; i<selectedGraphics.size(); ++i)
+        for (int i=0; i<selectedGraphics.size(); ++i)        
             commands.add(new RemoveAnimGraphicCommand(animation, cell, selectedGraphics.get(i), viewPanel));
-
+        
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
         if (cmdManager != null)
             cmdManager.execute(groupedCommand);
@@ -1376,83 +1376,83 @@ public class AnimationController extends dfEditorPanel implements
     }//GEN-LAST:event_removeSpriteButtonActionPerformed
 
 private void rotateCWButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateCWButtonActionPerformed
-
+    
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-
+    
     cmdManager.execute(new RotateGraphicListCommand(selectedGraphics, 90.0f, viewPanel));
-
+    
     this.getWorkingCell().rebuild();
     repaint();
 }//GEN-LAST:event_rotateCWButtonActionPerformed
 
 private void rotateACWButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateACWButtonActionPerformed
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-
+     
     cmdManager.execute(new RotateGraphicListCommand(selectedGraphics, -90.0f, viewPanel));
-
+    
     this.getWorkingCell().rebuild();
     repaint();}//GEN-LAST:event_rotateACWButtonActionPerformed
 
 private void zOrderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_zOrderSpinnerStateChanged
-
+    
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
     AnimationCell cell = this.getWorkingCell();
-
+        
     if (cell != null && selectedGraphics != null && selectedGraphics.size() > 0)
     {
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-
+        
         for (int i=0; i<selectedGraphics.size(); ++i)
         {
             Integer val = null;
-
-            try
-            {
+            
+            try 
+            { 
                 val = new Integer((String)zOrderSpinner.getValue());
             }
             catch (NumberFormatException exc){}
-
-            if (val != null)
+            
+            if (val != null) 
             {
                 int value = val.intValue();
                 GraphicObject graphic = selectedGraphics.get(i);
-
+                
                 if (value != cell.zOrderOfGraphic(graphic))
-                {
-                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));
+                {   
+                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));                    
                 }
-            }
+            }            
         }
-
+        
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
         if (cmdManager != null)
             cmdManager.execute(groupedCommand);
         else
             groupedCommand.execute();
-    }
+    }         
 }//GEN-LAST:event_zOrderSpinnerStateChanged
 
     public void zOrdersChanged(final AnimationCell aCell)
     {
         if (this.getWorkingCell() == aCell)
         {
-            populateSpriteListFromCell(aCell);
+            populateSpriteListFromCell(aCell);      
             updateControlPanel(viewPanel);
-            viewPanel.setCell(aCell); // refresh
+            viewPanel.setCell(aCell); // refresh            
         }
-        setModified(true);
+        setModified(true); 
     }
 
     private void populateSpriteListFromCell(AnimationCell aCell)
     {
         ArrayList<GraphicObject> selected = null;
-
+        
         if (aCell == getWorkingCell())
             selected = viewPanel.selectedGraphics();
-
+        
         DefaultListModel model = (DefaultListModel)spriteList.getModel();
         model.clear();
-
+        
         if (aCell != null)
         {
             ArrayList<GraphicObject> array = aCell.getGraphicList();
@@ -1460,112 +1460,112 @@ private void zOrderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN
             {
                 array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());
                 model.addElement(array.get(i));
-                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());
+                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());                
             }
-
+                        
             if (selected != null)
             {
-                int[] indices = new int[selected.size()];
+                int[] indices = new int[selected.size()];            
                 for (int i=0; i<selected.size(); ++i)
                 {
                     indices[i] = model.indexOf(selected.get(i));
-                }
+                }                    
                 spriteList.setSelectedIndices(indices);
             }
-
-
-        }
+            
+            
+        }      
     }
 
 private void onionSkinsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onionSkinsCheckBoxActionPerformed
-    setWorkingCell(this.getWorkingCell());
+    setWorkingCell(this.getWorkingCell());    
 }//GEN-LAST:event_onionSkinsCheckBoxActionPerformed
 
     /**
      * Timer callback
-     * @param e
+     * @param e 
      */
     public void actionPerformed(ActionEvent e)
     {
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
         AnimationCell cell = this.getWorkingCell();
-
+    
         if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0)
-        {
+        {        
             for (int i=0; i<_rotatingGraphics.size(); ++i)
             {
                 Integer val = null;
 
-                try
-                {
+                try 
+                { 
                     val = (Integer)angleSpinner.getValue();
                 }
                 catch (NumberFormatException exc){}
 
-                if (val != null)
+                if (val != null) 
                 {
                     int value = val.intValue();
                     GraphicObject graphic = _rotatingGraphics.get(i);
 
                     if (value != graphic.getSavedAngle())
-                    {
-                        commands.add(new SetGraphicAngleCommand(graphic, value, viewPanel));
+                    {   
+                        commands.add(new SetGraphicAngleCommand(graphic, value, viewPanel));                    
                     }
                 }
             }
         }
-
+        
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
         if (cmdManager != null)
             cmdManager.execute(groupedCommand);
         else
             groupedCommand.execute();
-
-        this.setModified(true);
-
+        
+        this.setModified(true);              
+        
         getWorkingCell().rebuild();
         animationStripPanel.repaint();
-
+        
         _rotatingGraphics = null;
     }
-
+    
 private void angleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_angleSpinnerStateChanged
-
+    
     if (spinnerStateTimer == null)
     {
         spinnerStateTimer = new Timer(400, this);
         spinnerStateTimer.setRepeats(false);
         spinnerStateTimer.setActionCommand(null);
     }
-
+   
     if (!spinnerStateTimer.isRunning())
-    {
-        spinnerStateTimer.start();
+    {        
+        spinnerStateTimer.start();        
     }
     else
         spinnerStateTimer.restart();
-
+    
     _rotatingGraphics = viewPanel.selectedGraphics();
-    AnimationCell cell = this.getWorkingCell();
+    AnimationCell cell = this.getWorkingCell();        
     if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0)
-    {
+    {           
         for (int i=0; i<_rotatingGraphics.size(); ++i)
         {
             Integer val = null;
-
-            try
-            {
+            
+            try 
+            { 
                 val = (Integer)angleSpinner.getValue();
             }
             catch (NumberFormatException exc){}
-
-            if (val != null)
+            
+            if (val != null) 
             {
                 int value = val.intValue();
                 GraphicObject graphic = _rotatingGraphics.get(i);
-
+                
                 if (value != graphic.getAngle())
-                {
+                {   
                     graphic.setAngle(value);
                 }
             }
@@ -1575,28 +1575,28 @@ private void angleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-
 }//GEN-LAST:event_angleSpinnerStateChanged
 
 private void flipHCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHCheckBoxActionPerformed
-    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-
+    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
+    
     if (selectedGraphics != null)
         cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, true, viewPanel));
-
+    
     AnimationCell cell = this.getWorkingCell();
     if (cell != null)
         cell.rebuild();
-
+    
     repaint();
 }//GEN-LAST:event_flipHCheckBoxActionPerformed
 
 private void flipVCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipVCheckBoxActionPerformed
-    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-
+    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
+    
     if (selectedGraphics != null)
         cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, false, viewPanel));
-
+    
     AnimationCell cell = this.getWorkingCell();
     if (cell != null)
         cell.rebuild();
-
+    
     repaint();
 }//GEN-LAST:event_flipVCheckBoxActionPerformed
 
@@ -1610,11 +1610,11 @@ private void spriteListToggleActionPerformed(java.awt.event.ActionEvent evt) {//
 
 private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateAnimationButtonActionPerformed
     Animation currentAnimation = this.getWorkingAnimation();
-
+    
     if (currentAnimation != null)
     {
-        Animation copy = currentAnimation.copy();
-        this.addAnimation(copy);
+        Animation copy = currentAnimation.copy();    
+        this.addAnimation(copy);   
     }
 }//GEN-LAST:event_duplicateAnimationButtonActionPerformed
 
@@ -1623,7 +1623,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_exportGifButtonActionPerformed
 
     public void saveGifAs()
-    {
+    {        
         JFileChooser chooser = fileChooser;
 
         CustomFilter filter = new CustomFilter();
@@ -1634,7 +1634,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         chooser.setApproveButtonText("Export");
         chooser.setDialogTitle("Export animation as GIF");
         chooser.setSelectedFile(new File(this.getWorkingAnimation().getName() + "." + CustomFilter.EXT_GIF));
-
+        
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
         while (true)
         {
@@ -1658,47 +1658,47 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                         continue;
                 }
 
-                buildAnimatedGif(f.getAbsolutePath());
+                buildAnimatedGif(f.getAbsolutePath());            
             }
             break;
-        }
+        }           
     }
-
+    
     public void animatedToCell(AnimationCell aCell)
     {
         animationPanel1.setCell(aCell);
     }
-
+    
     private void setOnionSkins(boolean bOn)
     {
         if (!bOn)
         {
-            viewPanel.setOnionSkins(null);
+            viewPanel.setOnionSkins(null);    
             return;
         }
-
+        
         Animation animation = this.getWorkingAnimation();
         AnimationCell[] cells = null;
-
+        
         if (animation != null)
-        {
+        {        
             int currentIndex = animation.indexOfCell(workingCell);
             if (currentIndex > 0)
-            {
+            {                
                 cells = new AnimationCell[currentIndex];
 
                 for (int i=0; i<currentIndex; ++i)
                 {
                     AnimationCell cell = animation.getCellAtIndex((currentIndex-1)-i);
                     cells[i] = cell;
-                }
+                }               
             }
         }
         viewPanel.setOnionSkins(cells);
     }
-
+    
     public boolean saveCoords(File aFile)
-    {
+    {       
         this.setName(aFile.getName());
 
         DefaultMutableListModel model = (DefaultMutableListModel)animationList.getModel();
@@ -1708,7 +1708,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
             list.add((Animation)model.elementAt(i));
         }
 
-        AnimationSetWriter writer = new AnimationSetWriter();
+        AnimationSetWriter writer = new AnimationSetWriter();                
         writer.createAnimationSet(aFile, loadedSpritesheetFile.getName(), list);
 
         if (helpLabel != null)
@@ -1719,20 +1719,20 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         return true;
     }
 
-	public boolean save()
+    public boolean save()
     {
         //buildAnimatedGif(); // test
-
+        
         if (savedFile != null)
             return saveCoords(savedFile);
-
+        
         return saveAs();
     }
-
-	public boolean saveAs()
+    
+    public boolean saveAs()
     {
         boolean bOK = false;
-
+        
         JFileChooser chooser = fileChooser;
 
         CustomFilter filter = new CustomFilter();
@@ -1743,7 +1743,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         chooser.setApproveButtonText("Save");
         chooser.setDialogTitle("Save animation set");
         chooser.setSelectedFile(new File("newAnimation." + CustomFilter.EXT_ANIM));
-
+        
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
         while (true)
         {
@@ -1767,15 +1767,15 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                         continue;
                 }
 
-                saveCoords(f);
+                saveCoords(f);            
                 bOK = true;
             }
             break;
-        }
+        }        
         return bOK;
     }
 
-
+    
 
     public boolean load(AnimationSetReader aReader)
     {
@@ -1793,15 +1793,15 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
 
         setSpritesheetFile(ssFile);
-
+        
         ArrayList<Animation> animations = null;
-        try
+        try 
         {
             animations = aReader.getAnimations(spriteTree, bufferedImage);
         }
         catch (Exception e)
         {
-            showParseError();
+            showParseError();             
         }
 
         if (animations != null)
@@ -1827,7 +1827,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 
             return true;
         }
-
+        
         return false;
     }
 
@@ -1836,17 +1836,17 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         removeCellButton.setEnabled(aIndex >= 0);
         addCellButton.setEnabled(true);
     }
-
+    
     private void updateControlPanel(GraphicPanel aPanel)
-    {
+    {           
         ArrayList<GraphicObject> sprites = aPanel.selectedGraphics();
         boolean bEnabled = (sprites.size() > 0);
-
-        //try {
-            //controlPanel.setSelected(bEnabled);     // steals focus
-            modifySpriteToggle.setSelected(controlPanel.isVisible());
+        
+        //try {            
+            //controlPanel.setSelected(bEnabled);     // steals focus       
+            modifySpriteToggle.setSelected(controlPanel.isVisible());            
         //} catch (java.beans.PropertyVetoException e) {}
-
+        
         removeSpriteButton.setEnabled(bEnabled);
         rotateACWButton.setEnabled(bEnabled);
         rotateCWButton.setEnabled(bEnabled);
@@ -1854,40 +1854,40 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         angleSpinner.setEnabled(bEnabled);
         flipVCheckBox.setEnabled(bEnabled);
         flipHCheckBox.setEnabled(bEnabled);
-
+        
         boolean bSetZ = true;
         boolean bSetA = true;
-
+        
         AnimationCell cell = this.getWorkingCell();
-        for (int i=0; i<sprites.size(); ++i)
+        for (int i=0; i<sprites.size(); ++i)            
         {
-            if (i > 0)
+            if (i > 0)            
             {
                 if (   cell.zOrderOfGraphic(sprites.get(i))
                     != cell.zOrderOfGraphic(sprites.get(i-1)))
-                {
-                    zOrderSpinner.setValue(null);
-                    bSetZ = false;
+                {                    
+                    zOrderSpinner.setValue(null);                    
+                    bSetZ = false;                    
                 }
-
+                
                 if ((int)sprites.get(i).getAngle() != (int)sprites.get(i-1).getAngle())
                 {
-                    bSetA = false;
+                    bSetA = false;                                        
                 }
             }
         }
-
+        
         //zOrderSpinner.setEnabled(bSetZ);
-
-        for (int i=0; i<sprites.size(); ++i)
+        
+        for (int i=0; i<sprites.size(); ++i)            
         {
             SpriteGraphic graphic = (SpriteGraphic)sprites.get(i);
-
+            
             if (bSetZ)
                 zOrderSpinner.setValue(cell.zOrderOfGraphic(graphic));
             if (bSetA)
                 angleSpinner.setValue(new Integer((int)graphic.getAngle()));
-
+            
             boolean hFlipped = graphic.isFlippedH();
             if (flipHCheckBox.isSelected() != hFlipped)
                 flipHCheckBox.setSelected(hFlipped);
@@ -1895,15 +1895,15 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
             boolean vFlipped = graphic.isFlippedV();
             if (flipVCheckBox.isSelected() != vFlipped)
                 flipVCheckBox.setSelected(vFlipped);
-        }
+        }    
         repaint();
     }
 
     // Panel listener callbacks ///////////////////////////////////////////////
     public void graphicAdded(GraphicPanel aPanel, GraphicObject aGraphic)
-    {
+    {    
         updateControlPanel(aPanel);
-
+             
         boolean bFound = false;
         for (int i=0; i<spriteList.getModel().getSize(); ++i)
         {
@@ -1912,54 +1912,54 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         }
         if (!bFound)
             ((DefaultListModel)spriteList.getModel()).addElement(aGraphic);
-
+        
         workingCell.rebuild();
         animationStripPanel.repaint();
     }
-
+    
     public void graphicMoved(GraphicPanel aPanel, GraphicObject aGraphic)
     {
         updateControlPanel(aPanel);
-
+        
         if (workingCell != null)
         {
             workingCell.rebuild();
         }
         animationStripPanel.repaint();
     }
-
+    
     // messy business, should tidy
     public void graphicsErased(GraphicPanel aPanel, ArrayList<GraphicObject> aGraphics)
     {
         Animation animation = getWorkingAnimation();
         AnimationCell cell =  animationStripPanel.selectedCell();
-
+        
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-        for (int i=0; i<aGraphics.size(); ++i)
+        for (int i=0; i<aGraphics.size(); ++i)        
             commands.add(new RemoveAnimGraphicCommand(animation, cell, aGraphics.get(i), aPanel));
-
+        
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
         if (cmdManager != null)
             cmdManager.execute(groupedCommand);
         else
-            groupedCommand.execute();
+            groupedCommand.execute();       
     }
-
+    
     public void graphicErased(GraphicPanel aPanel, GraphicObject aGraphic)
     {
         updateControlPanel(aPanel);
-
-        workingCell.removeGraphic(aGraphic);
-
+                
+        workingCell.removeGraphic(aGraphic);        
+        
         workingCell.rebuild();
         ((DefaultListModel)spriteList.getModel()).removeElement(aGraphic);
-        animationStripPanel.repaint();
+        animationStripPanel.repaint();        
     }
 
     public void graphicSelectionChanged(GraphicPanel aPanel, GraphicObject aGraphic)
-    {
+    {    
         updateControlPanel(aPanel);
-
+        
         for (int i=0; i<spriteList.getModel().getSize(); ++i)
         {
             if (spriteList.getModel().getElementAt(i) == aGraphic)
@@ -1983,13 +1983,13 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (! e.getValueIsAdjusting()) //finished adjusting
         {
             JList list = (JList)e.getSource();
-
+                                    
             int selectedIndices[] = list.getSelectedIndices();
 
             if (list == animationList)
             {
                 DefaultMutableListModel model = (DefaultMutableListModel)list.getModel();
-
+                
                 if(selectedIndices.length > 0)
                 {
                     Animation selectedAnimation = (Animation)model.get(selectedIndices[0]);
@@ -2017,7 +2017,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                 removeAnimationButton.setEnabled(bEnabled);
                 duplicateAnimationButton.setEnabled(bEnabled);
                 exportGifButton.setEnabled(bEnabled);
-            }
+            } 
             else if (list == spriteList)
             {
                 DefaultListModel model = (DefaultListModel)spriteList.getModel();
@@ -2036,8 +2036,8 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                     {
                         GraphicObject graphic = (GraphicObject)model.getElementAt(i);
                         if (graphic.isSelected())
-                        {
-                            viewPanel.selectGraphic(graphic, false);
+                        {                            
+                            viewPanel.selectGraphic(graphic, false);                            
                         }
                     }
                 }
@@ -2056,8 +2056,8 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 
     // internal frame listener callbacks
     public void internalFrameOpened(InternalFrameEvent e) {}
-    public void internalFrameClosing(InternalFrameEvent e) {}
-    public void internalFrameClosed(InternalFrameEvent e) {}
+    public void internalFrameClosing(InternalFrameEvent e) {}    
+    public void internalFrameClosed(InternalFrameEvent e) {}    
     public void internalFrameIconified(InternalFrameEvent e) {}
     public void internalFrameDeiconified(InternalFrameEvent e) {}
     public void internalFrameActivated(InternalFrameEvent e) {}
@@ -2068,78 +2068,78 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (e.getSource() == spriteListControlPanel)
             spriteListToggle.setSelected(false);
     }
-
+    
     private class RollOverSpinModel extends javax.swing.SpinnerNumberModel
     {
         public RollOverSpinModel(int aValue, int aMin, int aMax, int aStepSize)
         {
             super(aValue, aMin, aMax, aStepSize);
         }
-
-		public Object getNextValue()
+        
+        public Object getNextValue()
         {
             Integer i = (Integer)super.getNextValue();
             Integer max = (Integer)this.getMaximum();
-
+            
             if (i== null)
                 return new Integer(this.getStepSize().intValue());
             if (i.intValue() >= max.intValue())
             {
                 return new Integer(i.intValue() % max.intValue());
             }
-
+            
             return i;
         }
-
-		public Object getPreviousValue()
+        
+        public Object getPreviousValue()
         {
             Object o = super.getPreviousValue();
             if (o != null)
                 return o;
-
+            
             return new Integer (((Integer)this.getMaximum()).intValue() - this.getStepSize().intValue());
-
+                
         }
     }
-
-    private class CustomSpinModel extends AbstractSpinnerModel
+    
+    private class CustomSpinModel extends AbstractSpinnerModel 
     {
         protected String value = "";
 
-        public void setValue(Object o)
+        public void setValue(Object o) 
         {
-            if (o != null)
-                value = o.toString();
+            if (o != null)               
+                value = o.toString();                                        
             else
-                value = " ";
-
+                value = " ";    
+            
             fireStateChanged();
         }
 
-        public Object getValue() { return value; }
+        public Object getValue() { return value; }    
 
-        public Object getPreviousValue()
-        {
+        public Object getPreviousValue() 
+        {    
             Integer i = parse();
             if (i == null) return "0"; // default to 0 from indeterminate
             else return "" + (i.intValue() - 1);
         }
 
-        public Object getNextValue()
+        public Object getNextValue() 
         {
             Integer i = parse();
             if (i == null) return "0"; // default to 0 from indeterminate
             else return "" + (i.intValue() + 1);
         }
 
-        private Integer parse()
+        private Integer parse() 
         {
             try { return new Integer(value); }
             catch (NumberFormatException exc) { return null; }
         }
     }
-
-
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnimationButton;
     private javax.swing.JButton addCellButton;
