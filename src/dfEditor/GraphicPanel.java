@@ -810,6 +810,12 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
 
             case SELECT_BUTTON:
             {
+                if (System.getProperty("os.name").startsWith("Mac OS X") &&
+                        (evt.getModifiers() & ActionEvent.META_MASK) != 0)
+                {
+                    moveContent(dist, _lastOrigin);
+                    break;
+                }
                 if (!_bAllowsEditing)
                     break;
                 
@@ -874,6 +880,10 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
                     if (_movingGraphic == null || !_movingGraphic.isSelected())
                         unselectAllGraphics();
                 }
+                
+                if (System.getProperty("os.name").startsWith("Mac OS X") &&
+                        (evt.getModifiers() & ActionEvent.META_MASK) != 0)
+                    setCursor(Cursor.HAND_CURSOR);
                 
                 if (_movingGraphic != null)
                 {
