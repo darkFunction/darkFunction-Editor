@@ -319,10 +319,8 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     
     protected void drawStack(Graphics g, Point aOrigin, float aZoom, float aAlpha)
     {
-        for (int i=_drawStack.size(); --i>=0;)
+        for (GraphicObject graphic : _drawStack)
         {
-            GraphicObject graphic = _drawStack.get(i);
-            
             drawGraphicRotated(graphic, g, aOrigin, aZoom, aAlpha);
         }
     }

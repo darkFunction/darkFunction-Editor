@@ -22,6 +22,8 @@ package dfEditor.io;
 import dfEditor.*;
 import java.io.File;
 import dfEditor.animation.*;
+import dfEditor.animation.AnimationCell.GraphicZOrderPair;
+
 import com.generationjava.io.xml.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -89,16 +91,15 @@ public class AnimationSetWriter
             aXmlWriter.writeAttribute("index", aAnimation.getCurrentCellIndex());
             aXmlWriter.writeAttribute("delay", cell.getDelay());
 
-            ArrayList<GraphicObject> graphicList = cell.getGraphicList();
-            for (int i=0; i<graphicList.size(); ++i)
+            for (GraphicZOrderPair pair : cell.getGraphicList())
             {
-                SpriteGraphic graphic = (SpriteGraphic)graphicList.get(i);
+                SpriteGraphic graphic = (SpriteGraphic)pair.graphic;
                 CustomNode node = cell.nodeForGraphic(graphic);
                 aXmlWriter.writeEntity("spr");
                 aXmlWriter.writeAttribute("name", node.getFullPathName());
                 aXmlWriter.writeAttribute("x", graphic.getRect().x + graphic.getRect().width/2);
-                aXmlWriter.writeAttribute("y", graphic.getRect().y + graphic.getRect().height/2);                                
-                aXmlWriter.writeAttribute("z", cell.zOrderOfGraphic(graphic));                                
+                aXmlWriter.writeAttribute("y", graphic.getRect().y + graphic.getRect().height/2);
+                aXmlWriter.writeAttribute("z", pair.zOrder);
                 
                 if (graphic.getAngle() != 0)
                     aXmlWriter.writeAttribute("angle", graphic.getAngle());

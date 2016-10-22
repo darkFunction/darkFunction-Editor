@@ -42,7 +42,9 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import dfEditor.CustomComponents.*; 
+import dfEditor.CustomComponents.*;
+import dfEditor.animation.AnimationCell.GraphicZOrderPair;
+
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.*;
 import java.awt.Dimension;
@@ -1407,7 +1409,7 @@ private void zOrderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN
                 
                 if (value != cell.zOrderOfGraphic(graphic))
                 {   
-                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));                    
+                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));
                 }
             }            
         }
@@ -1443,12 +1445,11 @@ private void zOrderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN
         
         if (aCell != null)
         {
-            ArrayList<GraphicObject> array = aCell.getGraphicList();
-            for (int i=0; i<array.size(); ++i)
+            for (GraphicZOrderPair pair : aCell.getGraphicList())
             {
-                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());
-                model.addElement(array.get(i));
-                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());                
+            	pair.graphic.setDescription(aCell.nodeForGraphic(pair.graphic).getFullPathName());
+                model.addElement(pair.graphic);
+                pair.graphic.setDescription(aCell.nodeForGraphic(pair.graphic).getFullPathName());
             }
                         
             if (selected != null)
