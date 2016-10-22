@@ -20,10 +20,9 @@
 package dfEditor.animation;
 
 import dfEditor.*;
-import java.util.ArrayList;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Color;
 import java.awt.image.VolatileImage;
 import java.awt.GraphicsEnvironment;
 import java.awt.GraphicsConfiguration;
@@ -39,10 +38,9 @@ import java.awt.geom.AffineTransform;
  * @author s4m20
  */
 public class AnimationCell
-{   
-    private Dictionary<GraphicObject, Integer> graphicZOrderDict;
+{
     private Dictionary<GraphicObject, CustomNode> graphicNodeDict;
-    private ArrayList<GraphicObject> graphicOrderList;
+    private ArrayList<GraphicZOrderPair> graphicOrderList;
 
     private VolatileImage vImage = null;
     private int delay;
@@ -51,13 +49,12 @@ public class AnimationCell
     {
         setDelay(1);
         
-        graphicZOrderDict = new Hashtable<GraphicObject, Integer>();
         graphicNodeDict = new Hashtable<GraphicObject, CustomNode>();
-        graphicOrderList = new ArrayList<GraphicObject>();
+        graphicOrderList = new ArrayList<GraphicZOrderPair>();
         rebuild();
     }
     
-    public Point getImageSize()            
+    public Point getImageSize()
     {
         if (vImage == null)
         {
@@ -80,7 +77,7 @@ public class AnimationCell
         //System.out.println("Attempting to rebuild animation cell volatile image");
         
         Rectangle r = getSpreadRect();
-
+        
         if (r.width <= 0 || r.height <= 0)
         {
             vImage = null;
@@ -102,22 +99,21 @@ public class AnimationCell
                 g.setComposite(AlphaComposite.SrcOver);
 
                 //for (Enumeration<GraphicObject> e = graphicNodeDict.keys(); e.hasMoreElements();)
-                for (int i=graphicOrderList.size()-1; i>=0; i--)
+                for (GraphicZOrderPair pair : graphicOrderList)
                 {
-                    //GraphicObject graphic = e.nextElement();
-                    GraphicObject graphic = graphicOrderList.get(i);
+                	GraphicObject graphic = pair.graphic;
                     
                     // backup selected state and remove... don't want to draw it selected in the cell
                     boolean isSelected = graphic.isSelected();
                     graphic.setSelected(false);
 
-                    Graphics2D g2d = (Graphics2D)g;          
+                    Graphics2D g2d = (Graphics2D)g;
             
                     AffineTransform transform = new AffineTransform(g2d.getTransform());
                     AffineTransform oldTransform = g2d.getTransform();
 
                     Rectangle gr = graphic.getRect();
-                    transform.rotate(Math.toRadians(graphic.getAngle()), -r.x+gr.x+gr.width/2, -r.y+gr.y+gr.height/2);            
+                    transform.rotate(Math.toRadians(graphic.getAngle()), -r.x+gr.x+gr.width/2, -r.y+gr.y+gr.height/2);
                     g2d.setTransform(transform);
                     
                     graphic.draw(g2d, new Point(-r.x,-r.y), 1.0f, 1.0f, false);
@@ -237,60 +233,42 @@ public class AnimationCell
     {
         if (aNode != null && aGraphic != null)
         {
-            graphicZOrderDict.put(aGraphic, 0);
             graphicNodeDict.put(aGraphic, aNode);
-            graphicOrderList.add(aGraphic);
+            graphicOrderList.add(new GraphicZOrderPair(aGraphic, 0));
         }
     }
     
     public void setZOrder(final GraphicObject aGraphic, final int zOrder)
     {
-        graphicZOrderDict.remove(aGraphic);
-        graphicZOrderDict.put(aGraphic, new Integer(zOrder));
-        
-        boolean bRebuild = false;
-       
-        // bubble
-        int n = graphicOrderList.size();
-        for (int i = 0; i < n; i++)
-        {            
-            for (int j = n-1; j > i; j--)
-            {
-                GraphicObject A = graphicOrderList.get(j-1);
-                GraphicObject B = graphicOrderList.get(j);
-                
-                int a = graphicZOrderDict.get(A).intValue();
-                int b = graphicZOrderDict.get(B).intValue();
-                
-                if (a > b)
-                {
-                    this.swapGraphics(A, B);
-                    bRebuild = true;
-                }
-            }
-        }
-        
-        if (bRebuild)
+        boolean orderDirty = false;
+        int lastZOrder = Integer.MIN_VALUE;
+
+        for (GraphicZOrderPair pair : graphicOrderList)
         {
-            this.rebuild();            
+            if (pair.graphic == aGraphic) pair.zOrder = zOrder;
+
+            if (pair.zOrder < lastZOrder) orderDirty = true;
+            lastZOrder = pair.zOrder;
         }
+
+        if (orderDirty)
+        {
+            Collections.sort(graphicOrderList);
+            rebuild();
+        }
+
     }
 
     public int zOrderOfGraphic(final GraphicObject aGraphic)
     {
-        return graphicZOrderDict.get(aGraphic).intValue();
+    	for (GraphicZOrderPair pair : graphicOrderList) {
+    		if (pair.graphic == aGraphic) return pair.zOrder;
+    	}
+    	return 0;
     }
     
-    public ArrayList<GraphicObject> getGraphicList()
+    public ArrayList<GraphicZOrderPair> getGraphicList()
     {
-//        ArrayList<GraphicObject> list = new ArrayList<GraphicObject>();
-//        for (Enumeration<GraphicObject> e = graphicNodeDict.keys(); e.hasMoreElements();)
-//        {
-//            GraphicObject graphic = e.nextElement();
-//            list.add(graphic);
-//        }
-//        return list;
-
         return graphicOrderList;
     }
 
@@ -302,35 +280,50 @@ public class AnimationCell
     public void removeGraphic(GraphicObject aGraphic)
     {
         graphicNodeDict.remove(aGraphic);
-        graphicOrderList.remove(aGraphic);
+        
+        for (GraphicZOrderPair pair : graphicOrderList)
+        {
+            if (pair.graphic == aGraphic)
+            {
+                graphicOrderList.remove(pair);
+                break;
+            }
+        }
     }
 
-    public void swapGraphics(GraphicObject aA, GraphicObject aB)
-    {
-        int indexA = graphicOrderList.indexOf(aA);
-        int indexB = graphicOrderList.indexOf(aB);
-
-        graphicOrderList.set(indexA, aB);
-        graphicOrderList.set(indexB, aA);
-
-        //this.rebuild();
-    }
     
     public AnimationCell copy()
     {
         AnimationCell newCell = new AnimationCell();
         newCell.setDelay(this.getDelay());
         
-        for (int i=0; i<graphicOrderList.size(); ++i)
+        for (GraphicZOrderPair pair : graphicOrderList)
         {
-            GraphicObject graphic = graphicOrderList.get(i);
+            GraphicObject graphic = pair.graphic;
             GraphicObject newGraphic = graphic.copy();
             newCell.addSprite(this.nodeForGraphic(graphic), newGraphic);
-            newCell.setZOrder(newGraphic, this.zOrderOfGraphic(graphic));
+            newCell.setZOrder(newGraphic, pair.zOrder);
         }
         
         return newCell;
         
     }
 
+    public static class GraphicZOrderPair implements Comparable<GraphicZOrderPair>
+    {
+        public int zOrder;
+        public GraphicObject graphic;
+
+        public GraphicZOrderPair(GraphicObject graphic, int zOrder)
+        {
+            this.graphic = graphic;
+            this.zOrder = zOrder;
+        }
+
+        @Override
+        public int compareTo(GraphicZOrderPair other)
+        {
+            return Integer.compare(zOrder, other.zOrder);
+        }
+    }
 }

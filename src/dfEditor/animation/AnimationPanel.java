@@ -19,6 +19,8 @@
 
 package dfEditor.animation;
 import dfEditor.*;
+import dfEditor.animation.AnimationCell.GraphicZOrderPair;
+
 import java.awt.dnd.*;
 import java.awt.datatransfer.*;
 import java.util.ArrayList;
@@ -111,9 +113,14 @@ public class AnimationPanel extends GraphicPanel implements DropTargetListener
     {
         if (aCell != null)
         {
-            setDrawStack(aCell.getGraphicList());
-        }
-        else
+            ArrayList<GraphicObject> graphicObjectList = new ArrayList<GraphicObject>();
+            for (GraphicZOrderPair pair : aCell.getGraphicList())
+            {
+                graphicObjectList.add(pair.graphic);
+            }
+
+            setDrawStack(graphicObjectList);
+        } else
             clear();
 
         //populateFromCell(aCell);
@@ -192,13 +199,10 @@ public class AnimationPanel extends GraphicPanel implements DropTargetListener
         {
             alpha /= 3.0f;
             AnimationCell cell = onionSkins[i];
-            ArrayList<GraphicObject> graphics = cell.getGraphicList();
             
-            for (int j=0; j<graphics.size(); ++j)
+            for (GraphicZOrderPair pair : cell.getGraphicList())
             {
-                GraphicObject graphic = graphics.get(j);
-                
-                this.drawGraphicRotated(graphic, g, _origin, _zoom, alpha);
+                this.drawGraphicRotated(pair.graphic, g, _origin, _zoom, alpha);
             }           
         }
     }
