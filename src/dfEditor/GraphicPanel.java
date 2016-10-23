@@ -45,6 +45,8 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     private static final int SELECT_BUTTON = MouseEvent.BUTTON1;
     private static final int DRAG_BUTTON = MouseEvent.BUTTON3;
     private static final int DRAG_BUTTON_2 = MouseEvent.BUTTON2;
+    
+    protected static final float MIN_ZOOM = 0.1f;
 
     private static final Color[] checkerBoardCols = {new Color(210,210,210), new Color(255,255,255)};//{new Color(255,200,200), new Color(255,210,210)};
     
@@ -62,7 +64,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     private ArrayList<GraphicPanelChangeListener> _changeListeners;
     protected boolean _bAllowsEditing;
     protected GraphicObject _lastAddedGraphic;
-    protected Rectangle _multiSelectRect;    
+    protected Rectangle _multiSelectRect;
     private static final Color _multiSelectFill = new Color(0,0,0,20);
     private GraphicObject _movingGraphic = null;
     private int _keyDeltaX = 0;
@@ -217,8 +219,8 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
  
     public void setZoom(float zoom)
     {
-        if (zoom < 0.1f)
-            zoom = 0.1f;
+        if (zoom < MIN_ZOOM)
+            zoom = MIN_ZOOM;
 
         this._zoom = zoom;
         
@@ -327,7 +329,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
         }
     }
     
-    protected void drawGraphicRotated(GraphicObject graphic, Graphics g, Point aOrigin, float aZoom, float aAlpha)            
+    protected void drawGraphicRotated(GraphicObject graphic, Graphics g, Point aOrigin, float aZoom, float aAlpha)
     {
         Graphics2D g2d = (Graphics2D)g;            
             
@@ -580,11 +582,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     protected void setDrawStack(ArrayList<GraphicObject> aDrawStack)
     {
         _drawStack.clear();
-
-        for (int i=0; i<aDrawStack.size(); ++i)
-        {
-            _drawStack.add(aDrawStack.get(i));
-        }
+        _drawStack.addAll(aDrawStack);
 
         repaint();
     }
@@ -776,12 +774,10 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
         if (!_bAllowsEditing)
             return;
         
-        Point p = evt.getPoint();
-
         if (_resizingGraphic != null)
         {
-            _resizeDirection = getResizeDirectionFromPointOnRect(p, convertRectToViewRect(_resizingGraphic.getRect()));
-            setCursorToResizeCursor(_resizeDirection);            
+            _resizeDirection = getResizeDirectionFromPointOnRect(evt.getPoint(), convertRectToViewRect(_resizingGraphic.getRect()));
+            setCursorToResizeCursor(_resizeDirection);
         }
         else
         {
@@ -911,7 +907,20 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
 
     public void mouseWheelMoved(MouseWheelEvent evt)
     {
-        setZoom(getZoom() - (evt.getWheelRotation() * 0.2f));
+        float oldZoom = getZoom();
+        float newZoom = oldZoom - (evt.getWheelRotation() * 0.2f);
+        
+        if (oldZoom == MIN_ZOOM && newZoom <= MIN_ZOOM) return;
+        
+        float zoomDiffFactor = newZoom / oldZoom;
+        setZoom(newZoom);
+        
+        Point mousePosition = evt.getPoint();
+        Point originDiff = new Point(getOrigin().x - mousePosition.x, getOrigin().y - mousePosition.y);
+        originDiff.x *= zoomDiffFactor;
+        originDiff.y *= zoomDiffFactor;
+        
+        moveContent(originDiff, mousePosition);
     }
 
     public void mouseReleased(MouseEvent evt)
