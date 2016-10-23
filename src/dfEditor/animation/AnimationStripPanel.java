@@ -46,11 +46,16 @@ import dfEditor.MathUtil;
  * @author s4m20
  */
 public class AnimationStripPanel extends javax.swing.JPanel implements AnimationDataListener, MouseMotionListener, MouseListener, ActionListener
-{   
+{
+    // the distance in pixels an animation cell needs to be dragged to count as dragging
+    private static final int MOUSE_DRAG_THRESHOLD = 10;
+    
     private Animation animation = null;
     private ArrayList<Slot> slotList = null;
     private AnimationController controller = null;
     private Point mousePoint = null;
+    private Point mousePressedPoint = null;
+    private boolean dragging = false;
     private int insertBeforeSlotIndex = -1;
     private Timer timer = null;
     private int currentSlotInAnimation = -1;
@@ -446,6 +451,13 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         Point p = evt.getPoint();
 
         mousePoint = p;
+        
+        if (!dragging && (Math.abs(p.x - mousePressedPoint.x) <= MOUSE_DRAG_THRESHOLD))
+        {
+            return;
+        }
+        
+        dragging = true;
 
         int xOffset = 0;
 
@@ -490,6 +502,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     public void mousePressed(MouseEvent evt)
     {
         Point p = evt.getPoint();
+        mousePressedPoint = p;
         controller.stripIndexSelected(-1);
 
         boolean selectedSlot = false;
@@ -551,7 +564,8 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         if (orderChanged && insertBeforeSlotIndex < slotList.size())
                 slotList.get(insertBeforeSlotIndex).setSelected(true);
 
-        insertBeforeSlotIndex = -1;        
+        insertBeforeSlotIndex = -1;
+        dragging = false;
     }
 
     public void mouseExited(MouseEvent evt)
@@ -572,7 +586,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     // just a dumb object really... could have come up with an elaborate
     // design for this whole strip class but just got it working... can always
     // revisit!
-    private class Slot
+    private static class Slot
     {
         static final int MARGIN = 3;
 

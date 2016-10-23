@@ -25,11 +25,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.Cursor;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+
 import dfEditor.command.*;
 import dfEditor.commands.*;
 import java.awt.geom.AffineTransform;
@@ -45,13 +48,29 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     private static final int SELECT_BUTTON = MouseEvent.BUTTON1;
     private static final int DRAG_BUTTON = MouseEvent.BUTTON3;
     private static final int DRAG_BUTTON_2 = MouseEvent.BUTTON2;
+    
+    protected static final float MIN_ZOOM = 0.1f;
 
-    private static final Color[] checkerBoardCols = {new Color(210,210,210), new Color(255,255,255)};//{new Color(255,200,200), new Color(255,210,210)};
+    private static final int[] checkerBoardColors = {210, 255};
+    private static final int CHECKER_BOARD_SIZE = 16;
+    
+    private static TexturePaint checkerBoardPaint;
+    
+    static {
+        BufferedImage checkerBoardImage = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY);
+        int[] pixels = {
+                checkerBoardColors[0], checkerBoardColors[1],
+                checkerBoardColors[1], checkerBoardColors[0],
+        };
+        
+        checkerBoardImage.getRaster().setPixels(0, 0, 2, 2, pixels);
+        
+        checkerBoardPaint = new TexturePaint(checkerBoardImage, new Rectangle(CHECKER_BOARD_SIZE * 2, CHECKER_BOARD_SIZE * 2));
+    }
     
     protected ArrayList<GraphicObject> _drawStack;
     protected float _zoom;
     protected Point _origin;
-    protected BufferedImage _checkerBoard;
     private Point _lastOrigin;
     private Point _lastClickPoint;
     protected Rectangle _graphicBounds;
@@ -62,7 +81,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     private ArrayList<GraphicPanelChangeListener> _changeListeners;
     protected boolean _bAllowsEditing;
     protected GraphicObject _lastAddedGraphic;
-    protected Rectangle _multiSelectRect;    
+    protected Rectangle _multiSelectRect;
     private static final Color _multiSelectFill = new Color(0,0,0,20);
     private GraphicObject _movingGraphic = null;
     private int _keyDeltaX = 0;
@@ -217,8 +236,8 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
  
     public void setZoom(float zoom)
     {
-        if (zoom < 0.1f)
-            zoom = 0.1f;
+        if (zoom < MIN_ZOOM)
+            zoom = MIN_ZOOM;
 
         this._zoom = zoom;
         
@@ -327,9 +346,9 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
         }
     }
     
-    protected void drawGraphicRotated(GraphicObject graphic, Graphics g, Point aOrigin, float aZoom, float aAlpha)            
+    protected void drawGraphicRotated(GraphicObject graphic, Graphics g, Point aOrigin, float aZoom, float aAlpha)
     {
-        Graphics2D g2d = (Graphics2D)g;            
+        Graphics2D g2d = (Graphics2D)g;
             
         Rectangle graphicRect = graphic.getRect();
 
@@ -580,11 +599,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
     protected void setDrawStack(ArrayList<GraphicObject> aDrawStack)
     {
         _drawStack.clear();
-
-        for (int i=0; i<aDrawStack.size(); ++i)
-        {
-            _drawStack.add(aDrawStack.get(i));
-        }
+        _drawStack.addAll(aDrawStack);
 
         repaint();
     }
@@ -695,67 +710,25 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
         return selectedGraphics;
     }
     
-    protected void drawCheckerBoardBuffer(final Graphics g, final Rectangle aRect)
+    protected void drawCheckerBoard(final Graphics g, final Rectangle aRect)
     {
-        if (_checkerBoard == null)
-            _checkerBoard = this.makeCheckerBoardBuffer(new Rectangle(0, 0, 256, 256));
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.setPaint(checkerBoardPaint);
         
-        g.clipRect(aRect.x, aRect.y, aRect.width, aRect.height);
-        for (int x=aRect.x; x<aRect.x + aRect.width; ++x)
-        {            
-            for (int y=aRect.y; y<aRect.y + aRect.height; ++y)
-            {                
-                g.drawImage(_checkerBoard, x, y, null);
-                y += _checkerBoard.getHeight()-1;
-            }
-            x += _checkerBoard.getWidth()-1;
-        }
-        g.setClip(0, 0, this.getWidth(), this.getHeight());
-    }
-
-    protected BufferedImage makeCheckerBoardBuffer(Rectangle r)
-    {
-        BufferedImage img = new BufferedImage(r.width, r.height, BufferedImage.TYPE_INT_ARGB);
-
-        if (img != null)
-        {
-            Graphics gImg = img.getGraphics();
-            this.drawTransparencyCheckerBoard(gImg, r);
-        }
-
-        return img;
-    }
-
-    private void drawTransparencyCheckerBoard(Graphics g, Rectangle r)
-    {
-        final int SQUARE_SIZE = r.width / 8;
-
-        g.setClip(r.x,r.y,r.width,r.height);
+        // because the TexturePaint is anchored at (0, 0), we need to draw our recangle at (0, 0) to get
+        // the right texture coordinates. To still have our checkerboard end up at the right location, we can
+        // use an affine transformation.
+        AffineTransform oldTransform = g2d.getTransform();
+        AffineTransform transform = new AffineTransform(oldTransform);
+        transform.translate(aRect.x, aRect.y);
+        g2d.setTransform(transform);
         
-        g.setColor(checkerBoardCols[0]);
-        g.fillRect(r.x,r.y,r.width,r.height);
-
-        Point squarePoint = new Point(0,0);
-        for (int y=0; y<(r.height/SQUARE_SIZE)+1; ++y)
-        {
-            for (int x=0; x<(r.width/SQUARE_SIZE)+1; ++x)
-            {
-                int index = (x + (y % checkerBoardCols.length)) % checkerBoardCols.length;
-                if (index != 0) //already painted as large bg rect
-                {
-                    Color curCol = checkerBoardCols[index];
-                    g.setColor(curCol);
-                    g.fillRect(r.x + squarePoint.x, r.y + squarePoint.y, SQUARE_SIZE, SQUARE_SIZE);
-                }
-                squarePoint.x += SQUARE_SIZE;
-            }
-            squarePoint.x = 0;
-            squarePoint.y += SQUARE_SIZE;
-        }
-
-        g.setClip(null);
+        g2d.fillRect(0, 0, aRect.width, aRect.height);
+        
+        g2d.setPaint(null);
+        g2d.setTransform(oldTransform);
     }
-    
+
     public void notifyGraphicMoved(GraphicObject aGraphic)
     {
         for (int i=0; i<_changeListeners.size(); ++i)
@@ -776,12 +749,10 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
         if (!_bAllowsEditing)
             return;
         
-        Point p = evt.getPoint();
-
         if (_resizingGraphic != null)
         {
-            _resizeDirection = getResizeDirectionFromPointOnRect(p, convertRectToViewRect(_resizingGraphic.getRect()));
-            setCursorToResizeCursor(_resizeDirection);            
+            _resizeDirection = getResizeDirectionFromPointOnRect(evt.getPoint(), convertRectToViewRect(_resizingGraphic.getRect()));
+            setCursorToResizeCursor(_resizeDirection);
         }
         else
         {
@@ -911,7 +882,20 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
 
     public void mouseWheelMoved(MouseWheelEvent evt)
     {
-        setZoom(getZoom() - (evt.getWheelRotation() * 0.2f));
+        float oldZoom = getZoom();
+        float newZoom = oldZoom - (evt.getWheelRotation() * 0.2f);
+        
+        if (oldZoom == MIN_ZOOM && newZoom <= MIN_ZOOM) return;
+        
+        float zoomDiffFactor = newZoom / oldZoom;
+        setZoom(newZoom);
+        
+        Point mousePosition = evt.getPoint();
+        Point originDiff = new Point(getOrigin().x - mousePosition.x, getOrigin().y - mousePosition.y);
+        originDiff.x *= zoomDiffFactor;
+        originDiff.y *= zoomDiffFactor;
+        
+        moveContent(originDiff, mousePosition);
     }
 
     public void mouseReleased(MouseEvent evt)

@@ -52,7 +52,7 @@ public class SpritesheetPanel extends GraphicPanel
 
     @Override
     protected void draw(Graphics g)
-    {          
+    {
         super.draw(g);
         
         if (_pix != null)
@@ -61,9 +61,9 @@ public class SpritesheetPanel extends GraphicPanel
             Point origin = getOrigin();
             Rectangle r = new Rectangle(origin.x, origin.y, actualSize.x, actualSize.y);
           
-            this.drawCheckerBoardBuffer(g, r);
+            this.drawCheckerBoard(g, r);
            
-            g.drawImage(_pix.getImage(), r.x, r.y, r.width, r.height, this);            
+            g.drawImage(_pix.getImage(), r.x, r.y, r.width, r.height, this);
         }
     }
 
@@ -94,26 +94,6 @@ public class SpritesheetPanel extends GraphicPanel
         setGraphicsBounds(new Rectangle(0, 0, aImage.getWidth(), aImage.getHeight()));        
 
         _pix = new PixelBuffer(aImage);
-    }
-
-    @Override
-    public void setZoom(float aZoom)
-    {
-        if (_pix == null)
-        {
-            super.setZoom(aZoom);
-            return;
-        }
-        
-        Point oldImgSize = actualImageSize();
-        super.setZoom(aZoom);
-        Point imgSize = actualImageSize();
-
-        int xDiff = imgSize.x - oldImgSize.x;
-        int yDiff = imgSize.y - oldImgSize.y;
-
-        getOrigin().x -= xDiff >> 1;
-        getOrigin().y -= yDiff >> 1;
     }
 
     public Rectangle suggestVisibleSpriteRect()
@@ -223,8 +203,6 @@ public class SpritesheetPanel extends GraphicPanel
                 new Point(_pix.getImage().getWidth(), _pix.getImage().getHeight()),
                 getZoom() );         
     }   
-
-    
 
     @Override
     public void mouseClicked(MouseEvent e)
