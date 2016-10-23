@@ -61,7 +61,7 @@ public class SpritesheetPanel extends GraphicPanel
             Point origin = getOrigin();
             Rectangle r = new Rectangle(origin.x, origin.y, actualSize.x, actualSize.y);
           
-            this.drawCheckerBoardBuffer(g, r);
+            this.drawCheckerBoard(g, r);
            
             g.drawImage(_pix.getImage(), r.x, r.y, r.width, r.height, this);
         }
