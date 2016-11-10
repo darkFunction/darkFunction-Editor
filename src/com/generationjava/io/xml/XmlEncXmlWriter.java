@@ -109,7 +109,7 @@ public class XmlEncXmlWriter extends AbstractXmlWriter {
      * @param String name of entity.
      */
     private XmlWriter openEntity(String name) throws IOException {
-        boolean wasClosed = this.closed;
+//        boolean wasClosed = this.closed;
         closeOpeningTag();
         this.closed = false;
         this.xmlenc.startTag(name);
@@ -137,7 +137,7 @@ public class XmlEncXmlWriter extends AbstractXmlWriter {
     public XmlWriter writeAttribute(String attr, Object value) throws IOException {
 
         // maintain api
-        if (false) throw new IOException();
+//        if (false) throw new IOException();
 
         this.xmlenc.attribute(attr, ""+value);
         return this;

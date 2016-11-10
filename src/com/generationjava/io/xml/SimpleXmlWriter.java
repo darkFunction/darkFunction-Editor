@@ -48,7 +48,7 @@ import java.util.Stack;
 public class SimpleXmlWriter extends AbstractXmlWriter {
 
     private Writer writer;      // underlying writer
-    private Stack stack;        // of xml entity names
+    private Stack<String> stack;        // of xml entity names
     private StringBuffer attrs; // current attribute string
     private boolean empty;      // is the current node empty
     private boolean closed;     // is the current node closed...
@@ -61,7 +61,7 @@ public class SimpleXmlWriter extends AbstractXmlWriter {
     public SimpleXmlWriter(Writer writer) {
         this.writer = writer;
         this.closed = true;
-        this.stack = new Stack();
+        this.stack = new Stack<String>();
     }
 
     /**
@@ -121,7 +121,7 @@ public class SimpleXmlWriter extends AbstractXmlWriter {
      * @param String name of entity.
      */
     private SimpleXmlWriter openEntity(String name) throws IOException {
-        boolean wasClosed = this.closed;
+//        boolean wasClosed = this.closed;
         closeOpeningTag();
         this.closed = false;
         this.writer.write("<");
@@ -161,7 +161,7 @@ public class SimpleXmlWriter extends AbstractXmlWriter {
     public XmlWriter writeAttribute(String attr, Object value) throws IOException {
 
         // maintain api
-        if (false) throw new IOException();
+//        if (false) throw new IOException();
 
         if (this.attrs == null) {
             this.attrs = new StringBuffer();

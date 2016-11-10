@@ -23,7 +23,6 @@ import dfEditor.*;
 import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Color;
 import java.awt.image.VolatileImage;
 import java.awt.GraphicsEnvironment;
 import java.awt.GraphicsConfiguration;

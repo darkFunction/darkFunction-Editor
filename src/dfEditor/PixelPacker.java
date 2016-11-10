@@ -20,7 +20,6 @@
 package dfEditor;
 import java.awt.Rectangle;
 //import java.util.ArrayList;
-import java.util.Enumeration;
 import java.awt.image.BufferedImage;
 
 /**

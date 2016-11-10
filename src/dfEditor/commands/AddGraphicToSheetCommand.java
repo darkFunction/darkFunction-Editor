@@ -19,10 +19,8 @@
 
 package dfEditor.commands;
 
-import dfEditor.commands.*;
 import dfEditor.*;
 import dfEditor.command.UndoableCommand;
-import java.awt.Color;
 
 /**
  *

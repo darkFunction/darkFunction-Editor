@@ -19,7 +19,6 @@
 
 package dfEditor;
 
-import dfEditor.*;
 import javax.swing.JTree;
 import javax.swing.tree.*;
 import java.util.Observer;
@@ -29,7 +28,6 @@ import java.awt.Color;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.awt.dnd.*;
-import java.awt.datatransfer.*;
 import java.awt.Cursor;
 import java.awt.datatransfer.StringSelection;
 /**
@@ -38,6 +36,8 @@ import java.awt.datatransfer.StringSelection;
  */
 public class SpriteTree extends JTree implements Observer, DragGestureListener, DragSourceListener
 {
+    private static final long serialVersionUID = 6639226174395866378L;
+
     private ArrayList<SpriteTreeListener> treeListeners = new ArrayList<SpriteTreeListener>();
     private DragSource dragSource = null;
     
@@ -159,6 +159,8 @@ public class SpriteTree extends JTree implements Observer, DragGestureListener, 
 
         setCellRenderer(new DefaultTreeCellRenderer()
         {
+            private static final long serialVersionUID = 2859544854853678378L;
+
             public Component getTreeCellRendererComponent(javax.swing.JTree pTree,
                      Object pValue, boolean pIsSelected, boolean pIsExpanded,
                      boolean pIsLeaf, int pRow, boolean pHasFocus)
@@ -252,7 +254,7 @@ public class SpriteTree extends JTree implements Observer, DragGestureListener, 
             if (selectedNodes != null)
                 for (int i=0; i<treePaths.length; ++i)
                 {
-                    TreePath path = treePaths[i];
+//                    TreePath path = treePaths[i];
                     selectedNodes[i] = (CustomNode)treePaths[i].getLastPathComponent();
                 }
         }

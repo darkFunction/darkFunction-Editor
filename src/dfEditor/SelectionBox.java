@@ -19,7 +19,6 @@
 
 package dfEditor;
 
-import dfEditor.*;
 import java.awt.Rectangle;
 import java.awt.Graphics;
 import java.awt.Color;

@@ -21,7 +21,6 @@ package dfEditor.commands;
 
 import dfEditor.command.UndoableCommand;
 import dfEditor.animation.*;
-import java.util.ArrayList;
 import dfEditor.*;
 /**
  *

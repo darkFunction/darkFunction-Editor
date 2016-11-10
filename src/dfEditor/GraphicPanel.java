@@ -33,7 +33,6 @@ import java.awt.image.BufferedImage;
 import dfEditor.command.*;
 import dfEditor.commands.*;
 import java.awt.geom.AffineTransform;
-import java.awt.KeyboardFocusManager;
 import java.awt.Polygon;
 
 /**
@@ -42,6 +41,8 @@ import java.awt.Polygon;
  */
 public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotionListener, MouseWheelListener, MouseListener, KeyListener
 {
+    private static final long serialVersionUID = -4899540286578963025L;
+
     private static final int SELECT_BUTTON = MouseEvent.BUTTON1;
     private static final int DRAG_BUTTON = MouseEvent.BUTTON3;
     private static final int DRAG_BUTTON_2 = MouseEvent.BUTTON2;

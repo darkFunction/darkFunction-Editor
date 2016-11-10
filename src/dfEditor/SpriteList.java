@@ -28,11 +28,12 @@ import javax.swing.JList;
 import java.awt.dnd.*;
 import java.awt.datatransfer.*;
 import java.awt.Component;
-import dfEditor.*;
 import java.util.ArrayList;
 
-public class SpriteList extends JList implements DropTargetListener
+public class SpriteList extends JList<GraphicObject> implements DropTargetListener
 {
+    private static final long serialVersionUID = 5474951744601103787L;
+
     Component dragOrigin = null;
     private ArrayList<NodeDroppedListener> nodeDroppedListeners = new ArrayList<NodeDroppedListener>();
 
@@ -45,7 +46,7 @@ public class SpriteList extends JList implements DropTargetListener
     {
         dragOrigin = aDragSource;
 
-        DropTarget dropTarget = new DropTarget(this, this);
+//        DropTarget dropTarget = new DropTarget(this, this);
 
     }
     
@@ -78,7 +79,7 @@ public class SpriteList extends JList implements DropTargetListener
         }        
     }
 
-    public void dragEnter(DropTargetDragEvent dtde)     
+    public void dragEnter(DropTargetDragEvent dtde)
     {
 
     }

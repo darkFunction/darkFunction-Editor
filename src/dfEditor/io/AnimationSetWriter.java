@@ -80,7 +80,7 @@ public class AnimationSetWriter
          aXmlWriter.writeAttribute("name", aAnimation.getName());
          aXmlWriter.writeAttribute("loops", aAnimation.getLoops());
 
-         int backupIndex = aAnimation.getCurrentCellIndex();
+//         int backupIndex = aAnimation.getCurrentCellIndex();
          aAnimation.setCurrentCellIndex(0);
          AnimationCell cell = aAnimation.getCurrentCell();
          while(cell !=  null)

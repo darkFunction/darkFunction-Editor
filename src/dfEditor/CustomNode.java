@@ -24,6 +24,8 @@ import java.awt.Color;
 
 public class CustomNode extends DefaultMutableTreeNode
 {
+    private static final long serialVersionUID = 4107423710895404131L;
+
     private Color colour = Color.BLUE;
     private int childDirUniqueID;
     private int childLeafUniqueID;

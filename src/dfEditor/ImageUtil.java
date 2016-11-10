@@ -56,8 +56,8 @@ public class ImageUtil
 
     public static VolatileImage createVolatileImage(BufferedImage bi)
     {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//	GraphicsConfiguration gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
 
         VolatileImage vimage = createVolatileImage(bi.getWidth(), bi.getHeight(), java.awt.Transparency.TRANSLUCENT);
 

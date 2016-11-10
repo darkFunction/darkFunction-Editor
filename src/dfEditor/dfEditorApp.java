@@ -22,11 +22,8 @@ package dfEditor;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
-import java.io.File;
 import javax.swing.UIManager;
 import java.awt.Toolkit;
-import de.muntjak.tinylookandfeel.*;
-
 
 public class dfEditorApp extends SingleFrameApplication
 {
@@ -35,8 +32,8 @@ public class dfEditorApp extends SingleFrameApplication
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup()
-    {          
-        final String userDir = dfEditorApp.getUserDataDirectory();
+    {
+//        final String userDir = dfEditorApp.getUserDataDirectory();
         final dfEditorApp self = this;
         java.awt.EventQueue.invokeLater(new Runnable()
         {
@@ -46,7 +43,7 @@ public class dfEditorApp extends SingleFrameApplication
                 System.setProperty("sun.awt.noerasebackground", "true");
                 
                 try {
-                    TinyLookAndFeel tiny = new TinyLookAndFeel();
+//                    TinyLookAndFeel tiny = new TinyLookAndFeel();
                     UIManager.setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel");
                 } catch(Exception ex) {
                     ex.printStackTrace();
@@ -64,14 +61,14 @@ public class dfEditorApp extends SingleFrameApplication
         show(sv);
     }
     
-    private static String getUserDataDirectory()
-    {
-        String dir = System.getProperty("user.home") + File.separator + ".dfEditor" + File.separator;
-        File test = new File(dir);
-        if (!test.exists())
-            test.mkdir();
-        return dir;
-    }
+//    private static String getUserDataDirectory()
+//    {
+//        String dir = System.getProperty("user.home") + File.separator + ".dfEditor" + File.separator;
+//        File test = new File(dir);
+//        if (!test.exists())
+//            test.mkdir();
+//        return dir;
+//    }
 
     
     /**

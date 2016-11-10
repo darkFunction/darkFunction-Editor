@@ -20,8 +20,6 @@
 package dfEditor.commands;
 
 import dfEditor.CustomNode;
-import dfEditor.commands.*;
-import dfEditor.*;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;

@@ -64,7 +64,7 @@ public final class XmlUtils {
     public static String removeXml(String str) {
         int sz = str.length();
         StringBuffer buffer = new StringBuffer(sz);
-        boolean inString = false;
+//        boolean inString = false;
         boolean inTag = false;
         for(int i=0; i<sz; i++) {
             char ch = str.charAt(i);

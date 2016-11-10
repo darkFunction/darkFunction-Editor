@@ -21,6 +21,8 @@ package dfEditor.commands;
 
 import dfEditor.command.UndoableCommand;
 import dfEditor.animation.*;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import dfEditor.CustomComponents.DefaultMutableListModel;
 
@@ -31,17 +33,17 @@ import dfEditor.CustomComponents.DefaultMutableListModel;
 public class AddAnimationCommand extends UndoableCommand
 {
     Animation _animation;
-    JList _animationList;    
+    JList<Animation> _animationList;    
 
-    public AddAnimationCommand(JList aAnimationList, Animation aAnimation)
+    public AddAnimationCommand(JList<Animation> aAnimationList, Animation aAnimation)
     {
         _animation = aAnimation;
-        _animationList = aAnimationList;        
+        _animationList = aAnimationList;
     }
 
     public boolean execute()
     {
-        ((DefaultMutableListModel)_animationList.getModel()).addElement(_animation);
+        ((DefaultListModel<Animation>)_animationList.getModel()).addElement(_animation);
         _animationList.setSelectedValue(_animation, true);
         
         return true;
@@ -49,7 +51,7 @@ public class AddAnimationCommand extends UndoableCommand
 
     public void undo()
     {
-        DefaultMutableListModel model = (DefaultMutableListModel)_animationList.getModel();
+        DefaultMutableListModel<Animation> model = (DefaultMutableListModel<Animation>)_animationList.getModel();
         model.removeElement(_animation);
     }
 }

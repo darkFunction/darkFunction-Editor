@@ -32,6 +32,8 @@ import java.io.File;
  */
 public abstract class dfEditorPanel extends javax.swing.JPanel implements dfEditorTask, CommandManagerListener
 {
+    private static final long serialVersionUID = 439956594408806566L;
+
     protected CommandManager cmdManager = null;
     protected JLabel helpLabel = null;
     protected TaskChangeListener taskChangeListener = null;

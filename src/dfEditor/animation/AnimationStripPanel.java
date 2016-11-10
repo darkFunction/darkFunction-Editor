@@ -36,7 +36,6 @@ import java.awt.AlphaComposite;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import dfEditor.command.*;
 
 import dfEditor.MathUtil;
 
@@ -47,6 +46,8 @@ import dfEditor.MathUtil;
  */
 public class AnimationStripPanel extends javax.swing.JPanel implements AnimationDataListener, MouseMotionListener, MouseListener, ActionListener
 {   
+    private static final long serialVersionUID = -9050639784626405443L;
+
     private Animation animation = null;
     private ArrayList<Slot> slotList = null;
     private AnimationController controller = null;
@@ -56,7 +57,7 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
     private int currentSlotInAnimation = -1;
     private int currentSlotInAnimationFramesLeft = -1;
     private ArrayList<AnimationStripListener> stripListeners = null;
-    private CommandManager commandManager = null;
+//    private CommandManager commandManager = null;
     int currentLoop = 0;
 
     public AnimationStripPanel()
@@ -100,10 +101,10 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         repaint();
     }
 
-    public void setCommandManager(CommandManager aManager)
-    {
-        this.commandManager = aManager;
-    }
+//    public void setCommandManager(CommandManager aManager)
+//    {
+//        this.commandManager = aManager;
+//    }
     
     public void cellAdded(Animation aAnimation, AnimationCell aCell)
     {
@@ -174,29 +175,29 @@ public class AnimationStripPanel extends javax.swing.JPanel implements Animation
         repaint();
     }
 
-    private void removeCell(AnimationCell aCell)
-    {
-        for (int i=0; i<slotList.size(); ++i)
-        {
-            Slot slot = slotList.get(i);
-
-            if (slot.getCell() == aCell)
-            {
-                //animation.removeCell(aCell);
-                slotList.remove(slot);
-            }
-
-            if (i == currentSlotInAnimation)
-            {
-                currentSlotInAnimation --;
-                if (currentSlotInAnimation < 0)
-                    currentSlotInAnimation = 0;
-
-            }
-        }
-
-        repaint();
-    }
+//    private void removeCell(AnimationCell aCell)
+//    {
+//        for (int i=0; i<slotList.size(); ++i)
+//        {
+//            Slot slot = slotList.get(i);
+//
+//            if (slot.getCell() == aCell)
+//            {
+//                //animation.removeCell(aCell);
+//                slotList.remove(slot);
+//            }
+//
+//            if (i == currentSlotInAnimation)
+//            {
+//                currentSlotInAnimation --;
+//                if (currentSlotInAnimation < 0)
+//                    currentSlotInAnimation = 0;
+//
+//            }
+//        }
+//
+//        repaint();
+//    }
 
     private Dimension getStripSize()
     {

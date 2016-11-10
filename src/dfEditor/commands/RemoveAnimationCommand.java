@@ -21,8 +21,8 @@ package dfEditor.commands;
 
 import dfEditor.command.UndoableCommand;
 import dfEditor.animation.*;
-import java.util.ArrayList;
-import dfEditor.*;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import dfEditor.CustomComponents.DefaultMutableListModel;
 
@@ -34,10 +34,10 @@ import dfEditor.CustomComponents.DefaultMutableListModel;
 public class RemoveAnimationCommand extends UndoableCommand
 {
     private Animation _animation;
-    JList _animationList;
+    JList<Animation> _animationList;
     int index = -1;
 
-    public RemoveAnimationCommand(JList aAnimationList, Animation aAnimation)
+    public RemoveAnimationCommand(JList<Animation> aAnimationList, Animation aAnimation)
     {
         _animation = aAnimation;
         _animationList = aAnimationList;
@@ -51,7 +51,7 @@ public class RemoveAnimationCommand extends UndoableCommand
         index = getIndexOfObjectInList(_animation, _animationList);
         if (index >= 0 && index < _animationList.getModel().getSize())
         {
-            ((DefaultMutableListModel)_animationList.getModel()).removeElement(_animation);
+            ((DefaultMutableListModel<Animation>)_animationList.getModel()).removeElement(_animation);
             return true;
         }
 
@@ -63,10 +63,10 @@ public class RemoveAnimationCommand extends UndoableCommand
         if (_animation == null)
             return;
             
-        ((DefaultMutableListModel)_animationList.getModel()).add(index, _animation);
+        ((DefaultListModel<Animation>)_animationList.getModel()).add(index, _animation);
     }
 
-    private int getIndexOfObjectInList(Object aObj, JList aList)
+    private int getIndexOfObjectInList(Object aObj, JList<Animation> aList)
     {
         for (int i=0; i<aList.getModel().getSize(); ++i)
         {

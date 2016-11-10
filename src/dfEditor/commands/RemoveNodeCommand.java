@@ -19,7 +19,6 @@
 
 package dfEditor.commands;
 
-import dfEditor.commands.*;
 import dfEditor.CustomNode;
 import dfEditor.command.UndoableCommand;
 import javax.swing.tree.DefaultMutableTreeNode;

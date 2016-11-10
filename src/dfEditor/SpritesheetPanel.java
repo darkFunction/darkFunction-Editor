@@ -32,6 +32,8 @@ import java.awt.Cursor;
  */
 public class SpritesheetPanel extends GraphicPanel
 {
+    private static final long serialVersionUID = 5655250269255383916L;
+
     private PixelBuffer _pix;
     private SpritesheetController _controller;
     private ImageModifiedListener _imgModifiedListener;

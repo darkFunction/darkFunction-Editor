@@ -21,7 +21,6 @@ package dfEditor.commands;
 
 import java.util.ArrayList;
 import dfEditor.command.*;
-import dfEditor.commands.*;
 import dfEditor.*;
 
 /**
