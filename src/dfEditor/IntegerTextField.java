@@ -30,6 +30,8 @@ import javax.swing.JTextField;
 
 public class IntegerTextField extends JTextField {
 
+    private static final long serialVersionUID = 8460196509077061513L;
+
     final static String badchars
        = "`~!@#$%^&*()_+=\\|\"':;?/>.<, ";
 

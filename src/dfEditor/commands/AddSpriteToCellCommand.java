@@ -19,7 +19,6 @@
 
 package dfEditor.commands;
 
-import dfEditor.commands.*;
 import dfEditor.animation.*;
 import dfEditor.*;
 import dfEditor.command.UndoableCommand;

@@ -30,6 +30,8 @@ import java.awt.*;
  */
 public class AnimationPanel extends GraphicPanel implements DropTargetListener
 {
+    private static final long serialVersionUID = -7780118853307151731L;
+
     private boolean bFirstDraw = true;
     private ArrayList<NodeDroppedListener> nodeDroppedListeners = new ArrayList<NodeDroppedListener>();
     private AnimationCell[] onionSkins = null;
@@ -210,7 +212,7 @@ public class AnimationPanel extends GraphicPanel implements DropTargetListener
     
     public void setDragSource(Component aDragSource)
     {
-        DropTarget dropTarget = new DropTarget(this, this);
+//        DropTarget dropTarget = new DropTarget(this, this);
 
     }
 

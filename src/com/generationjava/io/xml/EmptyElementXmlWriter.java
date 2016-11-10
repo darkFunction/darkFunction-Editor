@@ -57,9 +57,9 @@ public class EmptyElementXmlWriter extends DelegatingXmlWriter {
      */
     public static final Object EMPTY_MODE = new Object();
 
-    private StringBuffer attrs; // current attribute string
-    private boolean empty;      // is the current node empty
-    private boolean closed;     // is the current node closed...
+//    private StringBuffer attrs; // current attribute string
+//    private boolean empty;      // is the current node empty
+//    private boolean closed;     // is the current node closed...
 
     private Object emptyMode;  // the strategy to use for emptiness
 

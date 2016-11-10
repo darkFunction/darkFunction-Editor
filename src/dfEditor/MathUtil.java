@@ -21,7 +21,6 @@ package dfEditor;
 
 import java.awt.Rectangle;
 import java.awt.Point;
-import java.awt.geom.*;
 
 /**
  *

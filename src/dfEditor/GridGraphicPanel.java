@@ -32,6 +32,8 @@ import java.awt.Rectangle;
  */
 public class GridGraphicPanel extends GraphicPanel
 {
+    private static final long serialVersionUID = -4080529562213762191L;
+
     protected Dimension tileSize = null;
     protected Dimension padding = null;
 

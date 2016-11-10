@@ -32,6 +32,8 @@ import java.awt.image.BufferedImage;
 
 public class SpriteImagePanel extends GraphicPanel
 {
+    private static final long serialVersionUID = 8437599175661202782L;
+
     public SpriteImagePanel()
     {
         _graphicBounds = new Rectangle(0, 0, 0, 0);
@@ -73,6 +75,4 @@ public class SpriteImagePanel extends GraphicPanel
         
         return image;
     }
-
-
 }

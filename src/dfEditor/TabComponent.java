@@ -38,6 +38,8 @@ import javax.swing.JOptionPane;
  */
 public class TabComponent extends JPanel
 {
+    private static final long serialVersionUID = 497302787512471532L;
+
     private JTabbedPane tabbedPane;
     
     public TabComponent(JTabbedPane aPane)
@@ -48,6 +50,8 @@ public class TabComponent extends JPanel
 
         JLabel title = new JLabel()
         {
+            private static final long serialVersionUID = -5960294279327934898L;
+
             public String getText()
             {
                 int index = tabbedPane.indexOfTabComponent(TabComponent.this);
@@ -69,6 +73,8 @@ public class TabComponent extends JPanel
 
     private class CloseButton extends JButton implements ActionListener
     {
+        private static final long serialVersionUID = 7329789728650956272L;
+
         public CloseButton()
         {
             super();

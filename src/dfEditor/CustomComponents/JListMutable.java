@@ -9,13 +9,15 @@ import java.util.EventObject;
 import java.applet.Applet;
 
 // @author Santhosh Kumar T - santhosh@in.fiorano.com 
-public class JListMutable extends JList implements CellEditorListener { 
+public class JListMutable<T> extends JList<T> implements CellEditorListener { 
+    private static final long serialVersionUID = -8376374319089296337L;
+
     protected Component editorComp = null; 
     protected int editingIndex = -1; 
-    protected ListCellEditor editor = null; 
+    protected ListCellEditor<T> editor = null; 
     private PropertyChangeListener editorRemover = null; 
  
-    public JListMutable(ListModel dataModel){ 
+    public JListMutable(ListModel<T> dataModel){ 
         super(dataModel); 
         init(); 
     } 
@@ -29,13 +31,13 @@ public class JListMutable extends JList implements CellEditorListener {
         putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);                                                              //NOI18N 
     } 
  
-    public void setListCellEditor(ListCellEditor editor){ 
-        this.editor = editor; 
+    public void setListCellEditor(ListCellEditor<T> editor){
+        this.editor = editor;
     } 
  
-    public ListCellEditor getListCellEditor(){ 
-        return editor; 
-    } 
+    public ListCellEditor<T> getListCellEditor(){
+        return editor;
+    }
  
     public boolean isEditing() { 
         return (editorComp == null)? false : true; 
@@ -161,12 +163,12 @@ public class JListMutable extends JList implements CellEditorListener {
  
     public boolean isCellEditable(int index){ 
         if(getModel() instanceof MutableListModel) 
-            return ((MutableListModel)getModel()).isCellEditable(index); 
+            return ((MutableListModel<T>)getModel()).isCellEditable(index); 
         return false; 
     } 
  
     public void setValueAt(Object value, int index){ 
-        ((NamedElement)((MutableListModel)getModel()).getElementAt(index)).setName((String)value); 
+        ((NamedElement)((MutableListModel<T>)getModel()).getElementAt(index)).setName((String)value); 
     } 
  
     /*-------------------------------------------------[ CellEditorListener ]---------------------------------------------------*/ 
@@ -186,8 +188,10 @@ public class JListMutable extends JList implements CellEditorListener {
     /*-------------------------------------------------[ Editing Actions]---------------------------------------------------*/ 
  
     private static class StartEditingAction extends AbstractAction { 
-        public void actionPerformed(ActionEvent e) { 
-            JListMutable list = (JListMutable)e.getSource(); 
+        private static final long serialVersionUID = 2378126151125982434L;
+
+        public void actionPerformed(ActionEvent e) {
+            JListMutable<?> list = (JListMutable<?>)e.getSource(); 
             if (!list.hasFocus()) { 
                 CellEditor cellEditor = list.getListCellEditor(); 
                 if(cellEditor!=null && !cellEditor.stopCellEditing()) { 
@@ -207,8 +211,11 @@ public class JListMutable extends JList implements CellEditorListener {
     } 
  
     private class CancelEditingAction extends AbstractAction { 
-        public void actionPerformed(ActionEvent e) { 
-            JListMutable list = (JListMutable)e.getSource(); 
+        private static final long serialVersionUID = 3414959167369764270L;
+
+        public void actionPerformed(ActionEvent e) {
+            @SuppressWarnings("unchecked")
+            JListMutable<T> list = (JListMutable<T>)e.getSource(); 
             list.removeEditor(); 
         } 
  

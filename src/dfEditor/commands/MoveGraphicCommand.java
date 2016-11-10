@@ -23,7 +23,6 @@ import dfEditor.command.UndoableCommand;
 import java.awt.Rectangle;
 import dfEditor.GraphicObject;
 import dfEditor.GraphicPanel;
-import java.util.ArrayList;
 
 /**
  *

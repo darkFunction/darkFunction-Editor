@@ -29,8 +29,8 @@ import dfEditor.CommandManagerListener;
  */
 public class CommandManager
 {
-    private Stack undoStack;
-    private Stack redoStack;
+    private Stack<Command> undoStack;
+    private Stack<Command> redoStack;
     
     private Component undoComponent;
     private Component redoComponent;
@@ -56,8 +56,8 @@ public class CommandManager
 
     private void init()
     {
-        undoStack = new Stack();
-        redoStack = new Stack();
+        undoStack = new Stack<Command>();
+        redoStack = new Stack<Command>();
     }
 
     public void setUndoComponent(Component aUndoComponent)

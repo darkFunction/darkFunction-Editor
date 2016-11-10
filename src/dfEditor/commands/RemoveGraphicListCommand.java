@@ -26,8 +26,6 @@ package dfEditor.commands;
 
 import java.util.ArrayList;
 import dfEditor.command.*;
-import dfEditor.commands.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import dfEditor.*;
 
 public class RemoveGraphicListCommand extends UndoableCommand

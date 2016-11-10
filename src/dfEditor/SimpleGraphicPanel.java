@@ -19,7 +19,6 @@
 
 
 package dfEditor;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -29,6 +28,8 @@ import java.awt.Point;
  */
 public class SimpleGraphicPanel extends javax.swing.JPanel
 {
+    private static final long serialVersionUID = 8476099771120754394L;
+
     private GraphicObject graphic = null;
 
     public SimpleGraphicPanel()         

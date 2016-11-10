@@ -32,7 +32,7 @@ import dfEditor.PixelBuffer;
 public class SpriteGraphic extends GraphicObject
 {
     private static final Color SELECTION_COLOUR = new Color(100, 255, 100, 150);
-    private static final int SELECTION_BORDER = 0;
+//    private static final int SELECTION_BORDER = 0;
 
     private VolatileImage vImage;
     private VolatileImage selectedVImage;

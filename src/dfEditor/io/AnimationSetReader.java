@@ -22,7 +22,6 @@ package dfEditor.io;
 import java.io.File;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
-import javax.swing.tree.DefaultTreeModel;
 import dfEditor.CustomNode;
 import dfEditor.SpriteTree;
 import java.awt.Rectangle;
@@ -73,7 +72,7 @@ public class AnimationSetReader
 
     public ArrayList<Animation> getAnimations(SpriteTree aSpriteTree, BufferedImage aImage) throws Exception
     {
-        ArrayList animations = new ArrayList<Animation>();
+        ArrayList<Animation> animations = new ArrayList<Animation>();
         NodeList animNodeList = doc.getElementsByTagName("anim");
 
         for (int i=0; i<animNodeList.getLength(); ++i)

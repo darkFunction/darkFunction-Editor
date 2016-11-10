@@ -21,10 +21,10 @@
 
 package dfEditor;
 
-import java.io.IOException;
 import org.jdesktop.application.Action;
 
 public class dfEditorAboutBoxFree extends javax.swing.JDialog {
+    private static final long serialVersionUID = 8130033394816519358L;
 
     public dfEditorAboutBoxFree(java.awt.Frame parent) {
         super(parent);

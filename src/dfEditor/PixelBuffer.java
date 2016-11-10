@@ -271,10 +271,10 @@ public class PixelBuffer
     public void makeColourTransparent(int aCol32)
     {
         int c = aCol32;
-        int a = (c & 0xff000000) >> 24;
-        int r = (c & 0x00ff0000) >> 16;
-        int g = (c & 0x0000ff00) >> 8;
-        int b = (c & 0x000000ff);
+//        int a = (c & 0xff000000) >> 24;
+//        int r = (c & 0x00ff0000) >> 16;
+//        int g = (c & 0x0000ff00) >> 8;
+//        int b = (c & 0x000000ff);
         c = aCol32 & 0x00ffffff;
 
         for (int y=0; y<_imgH; ++y)
