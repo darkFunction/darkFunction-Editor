@@ -194,6 +194,7 @@ public class SpritesheetController extends dfEditorPanel implements ImageModifie
 
                 String[] choices = {" Power of two ", " Smallest " };
 
+                // TODO: a full dialog with options here instead of hard-coding
                 int choice = JOptionPane.showOptionDialog(
                                    this                        // Center in window.
                                  , "Would you like the resulting image to use power of two dimensions (eg, 256x512)?"              // Message
@@ -205,9 +206,10 @@ public class SpritesheetController extends dfEditorPanel implements ImageModifie
                                  , " "      // Default button's label
                                );
 
+                int padding = 2;
 
                 PixelPacker packer = new PixelPacker();
-                BufferedImage newImage = packer.packPixels(viewPanel.getImage(), array, (choice == 0));
+                BufferedImage newImage = packer.packPixels(viewPanel.getImage(), array, (choice == 0), padding);
                 viewPanel.setImage(newImage);
 
                 bImageModified = true;
