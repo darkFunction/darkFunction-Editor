@@ -102,6 +102,12 @@ public class AnimationSetWriter
                 
                 if (graphic.getAngle() != 0)
                     aXmlWriter.writeAttribute("angle", graphic.getAngle());
+                if (graphic.getScale() != 100)
+                    aXmlWriter.writeAttribute("scale", graphic.getScale());
+                if (graphic.getOpacity() != 255)
+                    aXmlWriter.writeAttribute("opacity", graphic.getOpacity());
+                if (graphic.getId().length() > 0)
+                    aXmlWriter.writeAttribute("id", graphic.getId());
                 if (graphic.isFlippedV())
                     aXmlWriter.writeAttribute("flipV", graphic.isFlippedV() ? 1 : 0);
                 if (graphic.isFlippedH())

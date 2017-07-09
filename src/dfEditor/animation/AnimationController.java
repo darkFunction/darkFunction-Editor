@@ -16,15 +16,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with darkFunction Editor.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
-/*
+ /*
  * AnimationController.java
  *
  * Created on 06-Dec-2009, 23:39:51
  */
-
 package dfEditor.animation;
 
 import dfEditor.*;
@@ -42,77 +38,80 @@ import java.awt.Point;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import dfEditor.CustomComponents.*; 
+import dfEditor.CustomComponents.*;
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.*;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.awt.*;
 import java.awt.event.FocusListener;
+
 /**
  *
  * @author Owner
  */
 public class AnimationController extends dfEditorPanel implements
-            ListSelectionListener,
-            GraphicPanelChangeListener,
-            AnimationStripListener,
-            AnimationDataListener,
-            SpriteTreeListener,
-            NodeDroppedListener,
-            ActionListener,
-            InternalFrameListener
-{
+        ListSelectionListener,
+        GraphicPanelChangeListener,
+        AnimationStripListener,
+        AnimationDataListener,
+        SpriteTreeListener,
+        NodeDroppedListener,
+        ActionListener,
+        InternalFrameListener {
+
     private BufferedImage bufferedImage = null;
-    private AnimationCell workingCell = null;    
+    private AnimationCell workingCell = null;
     private File loadedSpritesheetFile = null;
     private Timer spinnerStateTimer = null;
     ArrayList<GraphicObject> _rotatingGraphics = null;
+    ArrayList<GraphicObject> _scalingGraphics = null;
+    ArrayList<GraphicObject> _opacityGraphics = null;
+    ArrayList<GraphicObject> _idGraphics = null;
 
-    /** Creates new form AnimationController */
-    public AnimationController(CommandManager aCmdManager, boolean aNew, JLabel aHelpLabel, TaskChangeListener aListener, JFileChooser aChooser)
-    {
+    /**
+     * Creates new form AnimationController
+     */
+    public AnimationController(CommandManager aCmdManager, boolean aNew, JLabel aHelpLabel, TaskChangeListener aListener, JFileChooser aChooser) {
         super(aCmdManager, aHelpLabel, aListener, aChooser);
 
         initComponents();
 
         viewPanel.addGraphicChangeListener(this);
         animationStripPanel.setController(this);
-        
+
         animationStripPanel.setCommandManager(aCmdManager);
         viewPanel.setCommandManager(aCmdManager);
 
-        animationList.addListSelectionListener(this);   
-        
+        animationList.addListSelectionListener(this);
+
         spriteList.addListSelectionListener(this);
         spriteList.addNodeDroppedListener(this);
         spriteList.setDragSource(spriteTree);
-        
-        spriteTree.addTreeListener(this);        
+
+        spriteTree.addTreeListener(this);
         viewPanel.addNodeDroppedListener(this);
         viewPanel.setDragSource(spriteTree);
 
         controlPanel.addInternalFrameListener(this);
         spriteListControlPanel.addInternalFrameListener(this);
-        
+
         setWorkingCell(null);
 
-        if (aNew)
-        {
+        if (aNew) {
             javax.swing.SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     showSpritesheetChooser();
                 }
             });
         }
-        
-        viewPanel.requestFocus();        
-        
-        postInit();      
+
+        viewPanel.requestFocus();
+
+        postInit();
     }
 
-    private void showSpritesheetChooser()
-    {
+    private void showSpritesheetChooser() {
         JFileChooser chooser = fileChooser;
 
         CustomFilter filter = new CustomFilter();
@@ -120,118 +119,110 @@ public class AnimationController extends dfEditorPanel implements
         chooser.resetChoosableFileFilters();
         chooser.setFileFilter(filter);
         chooser.setDialogTitle("Select spritesheet");
-        
+
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
         int returnVal = chooser.showOpenDialog(mainFrame);
-        if(returnVal == JFileChooser.APPROVE_OPTION)
-        {
-           setSpritesheetFile(chooser.getSelectedFile());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            setSpritesheetFile(chooser.getSelectedFile());
         }
     }
 
-    private void setSpritesheetFile(File aFile)
-    {
+    private void setSpritesheetFile(File aFile) {
         SpritesheetReader reader = new SpritesheetReader(aFile);
         loadedSpritesheetFile = aFile;
-       
-        try
-        {
+
+        try {
             String imgPath = reader.getImagePath();
-            if (imgPath != null)
+            if (imgPath != null) {
                 bufferedImage = ImageIO.read(new File(imgPath));
-        }
-        catch (IOException e)
-        {
+            }
+        } catch (IOException e) {
             showParseError();
             return;
         }
 
         DefaultTreeModel model = reader.getTreeModel();
 
-        if (model != null)
-        {
+        if (model != null) {
             spriteTree.setModel(model);
             addAnimationButton.setEnabled(true);
-        }
-        else
-        {
+        } else {
             showParseError();
             return;
         }
     }
-    
-    private void buildAnimatedGif(String filePath)
-    {
+
+    private void buildAnimatedGif(String filePath) {
         Animation animation = this.getWorkingAnimation();
-        
-        if (animation != null && animation.numCells() > 0)
-        {
+
+        if (animation != null && animation.numCells() > 0) {
             Rectangle firstCellRect = animation.getCellAtIndex(0).getSpreadRect();
             Point topLeft = new Point(firstCellRect.x, firstCellRect.y);
             Point bottomRight = new Point(firstCellRect.x + firstCellRect.width, firstCellRect.y + firstCellRect.height);
-            
-            for (int i=1; i<animation.numCells(); i++)
-            {
+
+            for (int i = 1; i < animation.numCells(); i++) {
                 Rectangle r = animation.getCellAtIndex(i).getSpreadRect();
-                
-                if (r.x < topLeft.x)
+
+                if (r.x < topLeft.x) {
                     topLeft.x = r.x;
-                if (r.y < topLeft.y)
+                }
+                if (r.y < topLeft.y) {
                     topLeft.y = r.y;
-                if (r.x + r.width > bottomRight.x)
+                }
+                if (r.x + r.width > bottomRight.x) {
                     bottomRight.x = r.x + r.width;
-                if (r.y + r.height > bottomRight.y)
-                    bottomRight.y = r.y + r.height;             
+                }
+                if (r.y + r.height > bottomRight.y) {
+                    bottomRight.y = r.y + r.height;
+                }
             }
-                
+
             AnimatedGifEncoder e = new AnimatedGifEncoder();
-            e.setTransparent(new Color(0,0,0,0));
-            e.start(filePath);            
+            e.setTransparent(new Color(0, 0, 0, 0));
+            e.start(filePath);
             e.setRepeat(animation.getLoops());
             e.setQuality(1);
             e.setSize(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
-            
-            for (int i=0; i<animation.numCells(); i++)
-            {
+
+            for (int i = 0; i < animation.numCells(); i++) {
                 BufferedImage image = new BufferedImage(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y, BufferedImage.TYPE_INT_ARGB);
                 Graphics ig = image.getGraphics();
-            
-                AnimationCell cell = animation.getCellAtIndex(i);                
+
+                AnimationCell cell = animation.getCellAtIndex(i);
                 cell.rebuild();
-                
+
                 Rectangle r = cell.getSpreadRect();
                 r.x -= topLeft.x;
-                r.y -= topLeft.y; 
-                cell.draw(ig, r);              
-                
+                r.y -= topLeft.y;
+                cell.draw(ig, r);
+
                 e.addFrame(image);
                 e.setDelay(cell.getDelay());
             }
-            
-            e.finish();           
+
+            e.finish();
         }
     }
-    
-    private void showParseError()
-    {        
+
+    private void showParseError() {
         JOptionPane.showMessageDialog(this, "File could not be loaded", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void spriteTreeDoubleClicked(CustomNode aNode)
-    {
-        if (aNode != null && getWorkingCell() != null && aNode.isLeaf())
-            addNodeToCell(aNode, getWorkingCell(), new Point(0,0));
+    public void spriteTreeDoubleClicked(CustomNode aNode) {
+        if (aNode != null && getWorkingCell() != null && aNode.isLeaf()) {
+            addNodeToCell(aNode, getWorkingCell(), new Point(0, 0));
+        }
     }
 
-    public void setWorkingCell(final AnimationCell aCell)
-    {
+    public void setWorkingCell(final AnimationCell aCell) {
         // commented out to force repaint
         //if(aCell == workingCell)
         //    return;
 
-        if (workingCell != aCell)
+        if (workingCell != aCell) {
             viewPanel.unselectAllGraphics();
-        
+        }
+
         workingCell = aCell;
         viewPanel.setCell(workingCell);
         animationStripPanel.selectCell(aCell);
@@ -248,44 +239,39 @@ public class AnimationController extends dfEditorPanel implements
         spriteList.setEnabled(bActiveCell);
         try {
             spriteListControlPanel.setSelected(bActiveCell);
-        } catch (java.beans.PropertyVetoException e) {}       
-        
+        } catch (java.beans.PropertyVetoException e) {
+        }
+
         populateSpriteListFromCell(aCell);
 
-        if (bActiveCell)
+        if (bActiveCell) {
             delaySpinner.setValue(workingCell.getDelay());
+        }
 
-        if (aCell != null)
-        {
+        if (aCell != null) {
             aCell.rebuild();
             animationStripPanel.repaint();
         }
-        
-        setOnionSkins(onionSkinsCheckBox.isSelected());         
-        
+
+        setOnionSkins(onionSkinsCheckBox.isSelected());
+
         this.repaint();
     }
 
-    public void cellAdded(Animation aAnimation, AnimationCell aCell)
-    {
-        if (aAnimation == this.getWorkingAnimation())
-        {
+    public void cellAdded(Animation aAnimation, AnimationCell aCell) {
+        if (aAnimation == this.getWorkingAnimation()) {
             boolean bPlayable = aAnimation.numCells() > 1;
-            if (!bPlayable)
-            {
+            if (!bPlayable) {
                 animationStripPanel.stop();
             }
             playButton.setEnabled(bPlayable);
         }
     }
 
-    public void cellRemoved(Animation aAnimation, AnimationCell aCell)
-    {
-        if (aAnimation == this.getWorkingAnimation())
-        {
+    public void cellRemoved(Animation aAnimation, AnimationCell aCell) {
+        if (aAnimation == this.getWorkingAnimation()) {
             boolean bPlayable = aAnimation.numCells() > 1;
-            if (!bPlayable)
-            {
+            if (!bPlayable) {
                 animationStripPanel.stop();
             }
             playButton.setEnabled(bPlayable);
@@ -294,25 +280,21 @@ public class AnimationController extends dfEditorPanel implements
 
         }
     }
-    
-    public void cellOrderChanged(Animation aAnimation)
-    {
-        if (aAnimation == this.getWorkingAnimation())
-        {
-            
+
+    public void cellOrderChanged(Animation aAnimation) {
+        if (aAnimation == this.getWorkingAnimation()) {
+
         }
     }
 
-    public AnimationCell getWorkingCell()
-    {
+    public AnimationCell getWorkingCell() {
         return workingCell;
     }
-    
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -354,12 +336,19 @@ public class AnimationController extends dfEditorPanel implements
         jPanel7 = new javax.swing.JPanel();
         flipVCheckBox = new javax.swing.JCheckBox();
         flipHCheckBox = new javax.swing.JCheckBox();
+        idTextField = new javax.swing.JTextField();
+        idLabel = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         angleLabel = new javax.swing.JLabel();
         angleSpinner = new javax.swing.JSpinner(new RollOverSpinModel(0, 0, 360, 1));
         jPanel5 = new javax.swing.JPanel();
         zOrderLabel = new javax.swing.JLabel();
         zOrderSpinner = new javax.swing.JSpinner(new CustomSpinModel());
+        jPanel8 = new javax.swing.JPanel();
+        scaleLabel = new javax.swing.JLabel();
+        scaleSpinner = new javax.swing.JSpinner();
+        opacityLabel = new javax.swing.JLabel();
+        opacitySpinner = new javax.swing.JSpinner();
         spriteListControlPanel = new javax.swing.JInternalFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         spriteList = new dfEditor.SpriteList();
@@ -415,7 +404,6 @@ public class AnimationController extends dfEditorPanel implements
         removeAnimationButton.setMaximumSize(new java.awt.Dimension(100, 100));
         removeAnimationButton.setMinimumSize(new java.awt.Dimension(0, 0));
         removeAnimationButton.setName("removeAnimationButton"); // NOI18N
-        removeAnimationButton.setPreferredSize(new java.awt.Dimension(30, 30));
         removeAnimationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeAnimationButtonActionPerformed(evt);
@@ -471,13 +459,13 @@ public class AnimationController extends dfEditorPanel implements
                 .addComponent(duplicateAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportGifButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addContainerGap(27, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -512,18 +500,20 @@ public class AnimationController extends dfEditorPanel implements
             }
         });
 
+        animationPanel1.setLayer(playButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout animationPanel1Layout = new javax.swing.GroupLayout(animationPanel1);
         animationPanel1.setLayout(animationPanel1Layout);
         animationPanel1Layout.setHorizontalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
-                .addContainerGap(131, Short.MAX_VALUE)
+                .addContainerGap(133, Short.MAX_VALUE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         animationPanel1Layout.setVerticalGroup(
             animationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, animationPanel1Layout.createSequentialGroup()
-                .addContainerGap(115, Short.MAX_VALUE)
+                .addContainerGap(119, Short.MAX_VALUE)
                 .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -584,7 +574,6 @@ public class AnimationController extends dfEditorPanel implements
         removeCellButton.setMaximumSize(new java.awt.Dimension(100, 100));
         removeCellButton.setMinimumSize(new java.awt.Dimension(0, 0));
         removeCellButton.setName("removeCellButton"); // NOI18N
-        removeCellButton.setPreferredSize(new java.awt.Dimension(30, 30));
         removeCellButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeCellButtonActionPerformed(evt);
@@ -603,7 +592,7 @@ public class AnimationController extends dfEditorPanel implements
         animationStripPanel.setLayout(animationStripPanelLayout);
         animationStripPanelLayout.setHorizontalGroup(
             animationStripPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 430, Short.MAX_VALUE)
+            .addGap(0, 525, Short.MAX_VALUE)
         );
         animationStripPanelLayout.setVerticalGroup(
             animationStripPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -628,12 +617,12 @@ public class AnimationController extends dfEditorPanel implements
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(animationStripScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+            .addComponent(animationStripScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(addCellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removeCellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(delaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -736,7 +725,7 @@ public class AnimationController extends dfEditorPanel implements
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spritePreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -753,10 +742,7 @@ public class AnimationController extends dfEditorPanel implements
         zoomInButton.setFocusable(false);
         zoomInButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zoomInButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        zoomInButton.setMaximumSize(new java.awt.Dimension(34, 34));
-        zoomInButton.setMinimumSize(new java.awt.Dimension(34, 34));
         zoomInButton.setName("zoomInButton"); // NOI18N
-        zoomInButton.setPreferredSize(new java.awt.Dimension(34, 34));
         zoomInButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomInButtonActionPerformed(evt);
@@ -771,10 +757,7 @@ public class AnimationController extends dfEditorPanel implements
         zoomOutButton.setFocusable(false);
         zoomOutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zoomOutButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        zoomOutButton.setMaximumSize(new java.awt.Dimension(34, 34));
-        zoomOutButton.setMinimumSize(new java.awt.Dimension(34, 34));
         zoomOutButton.setName("zoomOutButton"); // NOI18N
-        zoomOutButton.setPreferredSize(new java.awt.Dimension(34, 34));
         zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomOutButtonActionPerformed(evt);
@@ -875,13 +858,35 @@ public class AnimationController extends dfEditorPanel implements
             }
         });
 
+        idTextField.setText(resourceMap.getString("idTextField.text")); // NOI18N
+        idTextField.setToolTipText(resourceMap.getString("idTextField.toolTipText")); // NOI18N
+        idTextField.setEnabled(false);
+        idTextField.setName("idTextField"); // NOI18N
+        idTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                idTextFieldFocusLost(evt);
+            }
+        });
+        idTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idTextFieldActionPerformed(evt);
+            }
+        });
+
+        idLabel.setText(resourceMap.getString("idLabel.text")); // NOI18N
+        idLabel.setName("idLabel"); // NOI18N
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(flipHCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(idLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(flipHCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(flipVCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -890,7 +895,9 @@ public class AnimationController extends dfEditorPanel implements
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(flipVCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(flipHCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(flipHCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(idLabel))
         );
 
         jToolBar1.add(jPanel7);
@@ -918,9 +925,9 @@ public class AnimationController extends dfEditorPanel implements
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(angleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addComponent(angleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(3, 3, 3)
-                .addComponent(angleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(angleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -953,9 +960,10 @@ public class AnimationController extends dfEditorPanel implements
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(zOrderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(zOrderSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(zOrderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(zOrderSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -966,10 +974,64 @@ public class AnimationController extends dfEditorPanel implements
 
         jToolBar1.add(jPanel5);
 
-        controlPanel.getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 30));
+        controlPanel.getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 590, 40));
+
+        jPanel8.setName("jPanel8"); // NOI18N
+
+        scaleLabel.setText(resourceMap.getString("scaleLabel.text")); // NOI18N
+        scaleLabel.setName("scaleLabel"); // NOI18N
+
+        scaleSpinner.setEnabled(false);
+        scaleSpinner.setName("scaleSpinner"); // NOI18N
+        scaleSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                scaleSpinnerStateChanged(evt);
+            }
+        });
+
+        opacityLabel.setText(resourceMap.getString("opacityLabel.text")); // NOI18N
+        opacityLabel.setName("opacityLabel"); // NOI18N
+
+        opacitySpinner.setEnabled(false);
+        opacitySpinner.setName("opacitySpinner"); // NOI18N
+        opacitySpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                opacitySpinnerStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scaleLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scaleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(opacityLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(opacitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(330, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(scaleLabel)
+                    .addComponent(scaleSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(opacityLabel)
+                    .addComponent(opacitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        controlPanel.getContentPane().add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 570, 40));
 
         spriteListControlPanel.setClosable(true);
         spriteListControlPanel.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        spriteListControlPanel.setResizable(true);
         spriteListControlPanel.setTitle(resourceMap.getString("spriteListControlPanel.title")); // NOI18N
         spriteListControlPanel.setFocusCycleRoot(false);
         spriteListControlPanel.setFocusable(false);
@@ -988,6 +1050,11 @@ public class AnimationController extends dfEditorPanel implements
 
         spriteListControlPanel.getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 110, 110));
 
+        viewPanel.setLayer(zoomInButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        viewPanel.setLayer(zoomOutButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        viewPanel.setLayer(controlPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        viewPanel.setLayer(spriteListControlPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout viewPanelLayout = new javax.swing.GroupLayout(viewPanel);
         viewPanel.setLayout(viewPanelLayout);
         viewPanelLayout.setHorizontalGroup(
@@ -997,13 +1064,13 @@ public class AnimationController extends dfEditorPanel implements
                 .addGroup(viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(viewPanelLayout.createSequentialGroup()
                         .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(zoomInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(zoomOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(viewPanelLayout.createSequentialGroup()
                         .addComponent(spriteListControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(438, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         viewPanelLayout.setVerticalGroup(
             viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1013,9 +1080,9 @@ public class AnimationController extends dfEditorPanel implements
                         .addComponent(zoomOutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(zoomInButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(viewPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addContainerGap()
                         .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                 .addComponent(spriteListControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1092,7 +1159,7 @@ public class AnimationController extends dfEditorPanel implements
                             .addComponent(modifySpriteToggle, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(viewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1112,30 +1179,26 @@ public class AnimationController extends dfEditorPanel implements
         viewPanel.setZoom(viewPanel.getZoom() - 0.5f);
 }//GEN-LAST:event_zoomOutButtonActionPerformed
 
-    public ArrayList<GraphicObject> addNodeToCell(CustomNode aNode, AnimationCell aCell, Point aPoint)
-    {
+    public ArrayList<GraphicObject> addNodeToCell(CustomNode aNode, AnimationCell aCell, Point aPoint) {
         ArrayList<GraphicObject> graphics = new ArrayList<GraphicObject>();
         return this.addNodeToCell(aNode, aCell, graphics, aPoint);
     }
 
-    private ArrayList<GraphicObject> addNodeToCell(CustomNode aNode, AnimationCell aCell, ArrayList<GraphicObject> aGraphics, Point aPoint)
-    {
-        if (aNode == null)
+    private ArrayList<GraphicObject> addNodeToCell(CustomNode aNode, AnimationCell aCell, ArrayList<GraphicObject> aGraphics, Point aPoint) {
+        if (aNode == null) {
             return null;
-        
-        if (aNode.isLeaf())
-        {
-            if (aCell != null)
-            {
-                SelectionBox spriteArea = (SelectionBox)aNode.getCustomObject();
+        }
+
+        if (aNode.isLeaf()) {
+            if (aCell != null) {
+                SelectionBox spriteArea = (SelectionBox) aNode.getCustomObject();
                 SpriteGraphic graphic = new SpriteGraphic(bufferedImage, aPoint, spriteArea.getRect());
                 graphic.setAnchor(GraphicObject.Anchor.CENTRE);
                 aCell.addSprite(aNode, graphic);
                 graphic.setDescription(aNode.getFullPathName());
-                ((DefaultListModel)spriteList.getModel()).addElement(graphic);
+                ((DefaultListModel) spriteList.getModel()).addElement(graphic);
 
-                if (aCell == workingCell)
-                {
+                if (aCell == workingCell) {
                     viewPanel.addGraphic(graphic);
                     viewPanel.unselectAllGraphics();
                     viewPanel.selectGraphic(graphic);
@@ -1143,71 +1206,60 @@ public class AnimationController extends dfEditorPanel implements
 
                 aGraphics.add(graphic);
             }
-        }
-        else
-        {
-            for (int i=0; i<aNode.getChildCount(); ++i)
-            {
-                addNodeToCell((CustomNode)aNode.getChildAt(i), aCell, aGraphics, aPoint);
+        } else {
+            for (int i = 0; i < aNode.getChildCount(); ++i) {
+                addNodeToCell((CustomNode) aNode.getChildAt(i), aCell, aGraphics, aPoint);
             }
         }
 
-        if (aCell != null)
+        if (aCell != null) {
             aCell.rebuild();
-        
+        }
+
         animationStripPanel.repaint();
-        
+
         return aGraphics;
-        
+
         //
     }
 
-    public void nodeDropped(java.awt.Component aComponent, String aNodePath, Point aPoint)
-    {
+    public void nodeDropped(java.awt.Component aComponent, String aNodePath, Point aPoint) {
         CustomNode node = spriteTree.getNodeForPath(aNodePath);
 
-        if (node != null)
-        {
+        if (node != null) {
             cmdManager.execute(new AddSpriteToCellCommand(node, this, aPoint));
         }
     }
 
     // appends unique number to animation name before adding to list
-    private void addAnimation(final Animation aAnimation)
-    {
+    private void addAnimation(final Animation aAnimation) {
         boolean bExists = false;
-        String name = aAnimation.getName();      
+        String name = aAnimation.getName();
         int animationNameCounter = 1;
-        do
-        {           
+        do {
             bExists = false;
-            for (int i=0; i<animationList.getModel().getSize(); ++i)
-            {
-                 String nameInList =((Animation)(animationList.getModel().getElementAt(i))).getName();
-                 if (nameInList.equals(name) )
-                 {
+            for (int i = 0; i < animationList.getModel().getSize(); ++i) {
+                String nameInList = ((Animation) (animationList.getModel().getElementAt(i))).getName();
+                if (nameInList.equals(name)) {
                     bExists = true;
                     break;
-                 }
+                }
             }
-            if (bExists)
-            {                
+            if (bExists) {
                 name = aAnimation.getName() + " " + animationNameCounter;
                 animationNameCounter++;
             }
-        }
-        while(bExists == true);
-        
+        } while (bExists == true);
+
         aAnimation.setName(name);
         aAnimation.addAnimationListener(this);
 
-        if (aAnimation != null)
-        {           
+        if (aAnimation != null) {
             animationStripPanel.setAnimation(aAnimation);
-            cmdManager.execute(new AddAnimationCommand(animationList, aAnimation));            
+            cmdManager.execute(new AddAnimationCommand(animationList, aAnimation));
         }
     }
-    
+
     private void addAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAnimationButtonActionPerformed
 
         this.addAnimation(new Animation("Animation"));
@@ -1217,22 +1269,19 @@ public class AnimationController extends dfEditorPanel implements
 
 
     private void removeAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAnimationButtonActionPerformed
-        
+
         int index = animationList.getSelectedIndex();
-        if (index >= 0)
-        {
+        if (index >= 0) {
             animationStripPanel.stop();
-            cmdManager.execute(new RemoveAnimationCommand(animationList, (Animation)animationList.getModel().getElementAt(index)));
-        }        
+            cmdManager.execute(new RemoveAnimationCommand(animationList, (Animation) animationList.getModel().getElementAt(index)));
+        }
 }//GEN-LAST:event_removeAnimationButtonActionPerformed
 
-    private Animation getWorkingAnimation()
-    {
-        DefaultMutableListModel model = (DefaultMutableListModel)animationList.getModel();
+    private Animation getWorkingAnimation() {
+        DefaultMutableListModel model = (DefaultMutableListModel) animationList.getModel();
         int index = animationList.getSelectedIndex();
-        if (index >= 0)
-        {
-            return (Animation)model.get(index);
+        if (index >= 0) {
+            return (Animation) model.get(index);
         }
         return null;
     }
@@ -1240,8 +1289,7 @@ public class AnimationController extends dfEditorPanel implements
     private void addCellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCellButtonActionPerformed
         Animation animation = getWorkingAnimation();
 
-        if (animation != null)
-        {
+        if (animation != null) {
             cmdManager.execute(new AddCellCommand(animation, this.getWorkingCell()));
             this.getWorkingCell().rebuild();
             animationStripPanel.repaint();
@@ -1253,95 +1301,88 @@ public class AnimationController extends dfEditorPanel implements
         //animationStripPanel.removeSelected();
 
         Animation animation = getWorkingAnimation();
-        AnimationCell cell =  animationStripPanel.selectedCell();
-        if (animation != null)
-        {
+        AnimationCell cell = animationStripPanel.selectedCell();
+        if (animation != null) {
             cmdManager.execute(new RemoveCellCommand(animation, cell));
         }
     }//GEN-LAST:event_removeCellButtonActionPerformed
 
     private void delaySpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_delaySpinnerStateChanged
-        JSpinner spinner = (JSpinner)evt.getSource();
+        JSpinner spinner = (JSpinner) evt.getSource();
 
-        if (workingCell != null)
-        {
-            int value = (Integer)spinner.getValue();        
+        if (workingCell != null) {
+            int value = (Integer) spinner.getValue();
             workingCell.setDelay(value);
             spinner.setValue(workingCell.getDelay());
         }
     }//GEN-LAST:event_delaySpinnerStateChanged
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
-       Animation animation = getWorkingAnimation();
+        Animation animation = getWorkingAnimation();
 
-       animationStripPanel.addAnimationStripListener(this);
+        animationStripPanel.addAnimationStripListener(this);
 
-       boolean playing = animationStripPanel.isPlaying();
+        boolean playing = animationStripPanel.isPlaying();
 
-       if (!playing)
-           animationStripPanel.play();
-       else
-           animationStripPanel.stop();
+        if (!playing) {
+            animationStripPanel.play();
+        } else {
+            animationStripPanel.stop();
+        }
 
-       removeCellButton.setEnabled(!playing);
-       addCellButton.setEnabled(!playing);
+        removeCellButton.setEnabled(!playing);
+        addCellButton.setEnabled(!playing);
 
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void spriteTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_spriteTreeValueChanged
-        
+
         int numSelected = 0;
-        if (spriteTree.getSelectedNodes() != null)
+        if (spriteTree.getSelectedNodes() != null) {
             numSelected = spriteTree.getSelectedNodes().length;
-                
-        CustomNode node = (CustomNode)spriteTree.getLastSelectedPathComponent();
+        }
+
+        CustomNode node = (CustomNode) spriteTree.getLastSelectedPathComponent();
 
         boolean bSelected = (node != null);
-        
+
         addToFrameButton.setEnabled(bSelected);
-        
-        if (bSelected)
-        {
-            if (numSelected == 1 && node.isLeaf())
-            {
+
+        if (bSelected) {
+            if (numSelected == 1 && node.isLeaf()) {
                 spritePreviewTitle.setHorizontalTextPosition(JLabel.LEADING);
-                SelectionBox spriteArea = (SelectionBox)node.getCustomObject();
+                SelectionBox spriteArea = (SelectionBox) node.getCustomObject();
                 SpriteGraphic graphic = new SpriteGraphic(bufferedImage, new Point(0, 0), spriteArea.getRect());
                 spritePreviewPanel.setGraphic(graphic);
                 spritePreviewTitle.setText(node.getFullPathName());
-            }
-            else if (numSelected > 1 || !node.isLeaf())
-            {               
+            } else if (numSelected > 1 || !node.isLeaf()) {
                 spritePreviewTitle.setHorizontalTextPosition(JLabel.CENTER);
                 spritePreviewTitle.setText("<multiple sprites selected>");
                 spritePreviewPanel.setGraphic(null);
             }
-        }
-        else
-        {
+        } else {
             spritePreviewTitle.setText(" ");
             spritePreviewPanel.setGraphic(null);
         }
-        
+
         spritePreviewPanel.repaint();
     }//GEN-LAST:event_spriteTreeValueChanged
 
     private void addToFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToFrameButtonActionPerformed
 
         // get selected node
-        CustomNode selectedNode = (CustomNode)spriteTree.getSelectedNode();
+        CustomNode selectedNode = (CustomNode) spriteTree.getSelectedNode();
 
-        cmdManager.execute(new AddSpriteToCellCommand(selectedNode, this, new Point(0,0)));
+        cmdManager.execute(new AddSpriteToCellCommand(selectedNode, this, new Point(0, 0)));
         //addNodeToCell(selectedNode, workingCell);
     }//GEN-LAST:event_addToFrameButtonActionPerformed
 
     private void loopSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_loopSpinnerStateChanged
-        JSpinner spinner = (JSpinner)evt.getSource();
+        JSpinner spinner = (JSpinner) evt.getSource();
 
         Animation animation = getWorkingAnimation();
-        if (animation != null)
-        {
-            int value = (Integer)spinner.getValue();
+        if (animation != null) {
+            int value = (Integer) spinner.getValue();
             animation.setLoops(value);
             spinner.setValue(animation.getLoops()); // verify
         }
@@ -1349,211 +1390,234 @@ public class AnimationController extends dfEditorPanel implements
 
     private void removeSpriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSpriteButtonActionPerformed
         Animation animation = getWorkingAnimation();
-        AnimationCell cell =  animationStripPanel.selectedCell();
+        AnimationCell cell = animationStripPanel.selectedCell();
         ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
 
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-        for (int i=0; i<selectedGraphics.size(); ++i)        
+        for (int i = 0; i < selectedGraphics.size(); ++i) {
             commands.add(new RemoveAnimGraphicCommand(animation, cell, selectedGraphics.get(i), viewPanel));
-        
+        }
+
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
-        if (cmdManager != null)
+        if (cmdManager != null) {
             cmdManager.execute(groupedCommand);
-        else
+        } else {
             groupedCommand.execute();
+        }
     }//GEN-LAST:event_removeSpriteButtonActionPerformed
 
 private void rotateCWButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateCWButtonActionPerformed
-    
+
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-    
+
     cmdManager.execute(new RotateGraphicListCommand(selectedGraphics, 90.0f, viewPanel));
-    
+
     this.getWorkingCell().rebuild();
     repaint();
 }//GEN-LAST:event_rotateCWButtonActionPerformed
 
 private void rotateACWButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateACWButtonActionPerformed
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
-     
+
     cmdManager.execute(new RotateGraphicListCommand(selectedGraphics, -90.0f, viewPanel));
-    
+
     this.getWorkingCell().rebuild();
     repaint();}//GEN-LAST:event_rotateACWButtonActionPerformed
 
 private void zOrderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_zOrderSpinnerStateChanged
-    
+
     ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
     AnimationCell cell = this.getWorkingCell();
-        
-    if (cell != null && selectedGraphics != null && selectedGraphics.size() > 0)
-    {
+
+    if (cell != null && selectedGraphics != null && selectedGraphics.size() > 0) {
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-        
-        for (int i=0; i<selectedGraphics.size(); ++i)
-        {
+
+        for (int i = 0; i < selectedGraphics.size(); ++i) {
             Integer val = null;
-            
-            try 
-            { 
-                val = new Integer((String)zOrderSpinner.getValue());
+
+            try {
+                val = new Integer((String) zOrderSpinner.getValue());
+            } catch (NumberFormatException exc) {
             }
-            catch (NumberFormatException exc){}
-            
-            if (val != null) 
-            {
+
+            if (val != null) {
                 int value = val.intValue();
                 GraphicObject graphic = selectedGraphics.get(i);
-                
-                if (value != cell.zOrderOfGraphic(graphic))
-                {   
-                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));                    
+
+                if (value != cell.zOrderOfGraphic(graphic)) {
+                    commands.add(new SetGraphicZOrderCommand(cell, graphic, this, value));
                 }
-            }            
+            }
         }
-        
+
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
-        if (cmdManager != null)
+        if (cmdManager != null) {
             cmdManager.execute(groupedCommand);
-        else
+        } else {
             groupedCommand.execute();
-    }         
+        }
+    }
 }//GEN-LAST:event_zOrderSpinnerStateChanged
 
-    public void zOrdersChanged(final AnimationCell aCell)
-    {
-        if (this.getWorkingCell() == aCell)
-        {
-            populateSpriteListFromCell(aCell);      
+    public void zOrdersChanged(final AnimationCell aCell) {
+        if (this.getWorkingCell() == aCell) {
+            populateSpriteListFromCell(aCell);
             updateControlPanel(viewPanel);
             viewPanel.setCell(aCell); // refresh            
         }
-        setModified(true); 
+        setModified(true);
     }
 
-    private void populateSpriteListFromCell(AnimationCell aCell)
-    {
+    private void populateSpriteListFromCell(AnimationCell aCell) {
         ArrayList<GraphicObject> selected = null;
-        
-        if (aCell == getWorkingCell())
+
+        if (aCell == getWorkingCell()) {
             selected = viewPanel.selectedGraphics();
-        
-        DefaultListModel model = (DefaultListModel)spriteList.getModel();
+        }
+
+        DefaultListModel model = (DefaultListModel) spriteList.getModel();
         model.clear();
-        
-        if (aCell != null)
-        {
+
+        if (aCell != null) {
             ArrayList<GraphicObject> array = aCell.getGraphicList();
-            for (int i=0; i<array.size(); ++i)
-            {
+            for (int i = 0; i < array.size(); ++i) {
                 array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());
                 model.addElement(array.get(i));
-                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());                
+                array.get(i).setDescription(aCell.nodeForGraphic(array.get(i)).getFullPathName());
             }
-                        
-            if (selected != null)
-            {
-                int[] indices = new int[selected.size()];            
-                for (int i=0; i<selected.size(); ++i)
-                {
+
+            if (selected != null) {
+                int[] indices = new int[selected.size()];
+                for (int i = 0; i < selected.size(); ++i) {
                     indices[i] = model.indexOf(selected.get(i));
-                }                    
+                }
                 spriteList.setSelectedIndices(indices);
             }
-            
-            
-        }      
+
+        }
     }
 
 private void onionSkinsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onionSkinsCheckBoxActionPerformed
-    setWorkingCell(this.getWorkingCell());    
+    setWorkingCell(this.getWorkingCell());
 }//GEN-LAST:event_onionSkinsCheckBoxActionPerformed
 
     /**
      * Timer callback
-     * @param e 
+     *
+     * @param e
      */
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
         AnimationCell cell = this.getWorkingCell();
-    
-        if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0)
-        {        
-            for (int i=0; i<_rotatingGraphics.size(); ++i)
-            {
+
+        if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0) {
+            for (int i = 0; i < _rotatingGraphics.size(); ++i) {
                 Integer val = null;
 
-                try 
-                { 
-                    val = (Integer)angleSpinner.getValue();
+                try {
+                    val = (Integer) angleSpinner.getValue();
+                } catch (NumberFormatException exc) {
                 }
-                catch (NumberFormatException exc){}
 
-                if (val != null) 
-                {
+                if (val != null) {
                     int value = val.intValue();
                     GraphicObject graphic = _rotatingGraphics.get(i);
 
-                    if (value != graphic.getSavedAngle())
-                    {   
-                        commands.add(new SetGraphicAngleCommand(graphic, value, viewPanel));                    
+                    if (value != graphic.getSavedAngle()) {
+                        commands.add(new SetGraphicAngleCommand(graphic, value, viewPanel));
+                    }
+                }
+            }
+        }
+        
+        if (cell != null && _scalingGraphics != null && _scalingGraphics.size() > 0) {
+            for (int i = 0; i < _scalingGraphics.size(); ++i) {
+                Integer val = null;
+
+                try {
+                    val = (Integer) scaleSpinner.getValue();
+                } catch (NumberFormatException exc) {
+                }
+
+                if (val != null) {
+                    int value = val.intValue();
+                    GraphicObject graphic = _scalingGraphics.get(i);
+
+                    if (value != graphic.getSavedScale()) {
+                        commands.add(new SetGraphicScaleCommand(graphic, value, viewPanel));
+                    }
+                }
+            }
+        }
+        
+        if (cell != null && _opacityGraphics != null && _opacityGraphics.size() > 0) {
+            for (int i = 0; i < _opacityGraphics.size(); ++i) {
+                Integer val = null;
+
+                try {
+                    val = (Integer) opacitySpinner.getValue();
+                } catch (NumberFormatException exc) {
+                }
+
+                if (val != null) {
+                    int value = val.intValue();
+                    GraphicObject graphic = _opacityGraphics.get(i);
+
+                    if (value != graphic.getSavedOpacity()) {
+                        commands.add(new SetGraphicOpacityCommand(graphic, value, viewPanel));
                     }
                 }
             }
         }
         
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
-        if (cmdManager != null)
+        if (cmdManager != null) {
             cmdManager.execute(groupedCommand);
-        else
+        } else {
             groupedCommand.execute();
-        
-        this.setModified(true);              
-        
+        }
+
+        this.setModified(true);
+
         getWorkingCell().rebuild();
         animationStripPanel.repaint();
-        
+
         _rotatingGraphics = null;
+        _scalingGraphics = null;
+        _opacityGraphics = null;
+        _idGraphics = null;
     }
-    
+
 private void angleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_angleSpinnerStateChanged
-    
-    if (spinnerStateTimer == null)
-    {
+
+    if (spinnerStateTimer == null) {
         spinnerStateTimer = new Timer(400, this);
         spinnerStateTimer.setRepeats(false);
         spinnerStateTimer.setActionCommand(null);
     }
-   
-    if (!spinnerStateTimer.isRunning())
-    {        
-        spinnerStateTimer.start();        
-    }
-    else
+
+    if (!spinnerStateTimer.isRunning()) {
+        spinnerStateTimer.start();
+    } else {
         spinnerStateTimer.restart();
-    
+    }
+
     _rotatingGraphics = viewPanel.selectedGraphics();
-    AnimationCell cell = this.getWorkingCell();        
-    if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0)
-    {           
-        for (int i=0; i<_rotatingGraphics.size(); ++i)
-        {
+    AnimationCell cell = this.getWorkingCell();
+    if (cell != null && _rotatingGraphics != null && _rotatingGraphics.size() > 0) {
+        for (int i = 0; i < _rotatingGraphics.size(); ++i) {
             Integer val = null;
-            
-            try 
-            { 
-                val = (Integer)angleSpinner.getValue();
+
+            try {
+                val = (Integer) angleSpinner.getValue();
+            } catch (NumberFormatException exc) {
             }
-            catch (NumberFormatException exc){}
-            
-            if (val != null) 
-            {
+
+            if (val != null) {
                 int value = val.intValue();
                 GraphicObject graphic = _rotatingGraphics.get(i);
-                
-                if (value != graphic.getAngle())
-                {   
+
+                if (value != graphic.getAngle()) {
                     graphic.setAngle(value);
                 }
             }
@@ -1563,28 +1627,32 @@ private void angleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-
 }//GEN-LAST:event_angleSpinnerStateChanged
 
 private void flipHCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHCheckBoxActionPerformed
-    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
-    
-    if (selectedGraphics != null)
+    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
+
+    if (selectedGraphics != null) {
         cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, true, viewPanel));
-    
+    }
+
     AnimationCell cell = this.getWorkingCell();
-    if (cell != null)
+    if (cell != null) {
         cell.rebuild();
-    
+    }
+
     repaint();
 }//GEN-LAST:event_flipHCheckBoxActionPerformed
 
 private void flipVCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipVCheckBoxActionPerformed
-    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();    
-    
-    if (selectedGraphics != null)
+    ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
+
+    if (selectedGraphics != null) {
         cmdManager.execute(new FlipSpriteListCommand(selectedGraphics, false, viewPanel));
-    
+    }
+
     AnimationCell cell = this.getWorkingCell();
-    if (cell != null)
+    if (cell != null) {
         cell.rebuild();
-    
+    }
+
     repaint();
 }//GEN-LAST:event_flipVCheckBoxActionPerformed
 
@@ -1598,11 +1666,10 @@ private void spriteListToggleActionPerformed(java.awt.event.ActionEvent evt) {//
 
 private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateAnimationButtonActionPerformed
     Animation currentAnimation = this.getWorkingAnimation();
-    
-    if (currentAnimation != null)
-    {
-        Animation copy = currentAnimation.copy();    
-        this.addAnimation(copy);   
+
+    if (currentAnimation != null) {
+        Animation copy = currentAnimation.copy();
+        this.addAnimation(copy);
     }
 }//GEN-LAST:event_duplicateAnimationButtonActionPerformed
 
@@ -1610,8 +1677,104 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     saveGifAs();
 }//GEN-LAST:event_exportGifButtonActionPerformed
 
-    public void saveGifAs()
-    {        
+    private void scaleSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_scaleSpinnerStateChanged
+        if (spinnerStateTimer == null) {
+            spinnerStateTimer = new Timer(400, this);
+            spinnerStateTimer.setRepeats(false);
+            spinnerStateTimer.setActionCommand(null);
+        }
+
+        if (!spinnerStateTimer.isRunning()) {
+            spinnerStateTimer.start();
+        } else {
+            spinnerStateTimer.restart();
+        }
+
+        _scalingGraphics = viewPanel.selectedGraphics();
+        AnimationCell cell = this.getWorkingCell();
+        if (cell != null && _scalingGraphics != null && _scalingGraphics.size() > 0) {
+            for (int i = 0; i < _scalingGraphics.size(); ++i) {
+                Integer val = null;
+
+                try {
+                    val = (Integer) scaleSpinner.getValue();
+                } catch (NumberFormatException exc) {
+                }
+
+                if (val != null) {
+                    int value = val.intValue();
+                    GraphicObject graphic = _scalingGraphics.get(i);
+
+                    if (value != graphic.getAngle()) {
+                        graphic.setScale(value);
+                    }
+                }
+            }
+            viewPanel.repaint();
+        }
+    }//GEN-LAST:event_scaleSpinnerStateChanged
+
+    private void opacitySpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_opacitySpinnerStateChanged
+        if (spinnerStateTimer == null) {
+            spinnerStateTimer = new Timer(400, this);
+            spinnerStateTimer.setRepeats(false);
+            spinnerStateTimer.setActionCommand(null);
+        }
+
+        if (!spinnerStateTimer.isRunning()) {
+            spinnerStateTimer.start();
+        } else {
+            spinnerStateTimer.restart();
+        }
+
+        _opacityGraphics = viewPanel.selectedGraphics();
+        AnimationCell cell = this.getWorkingCell();
+        if (cell != null && _opacityGraphics != null && _opacityGraphics.size() > 0) {
+            for (int i = 0; i < _opacityGraphics.size(); ++i) {
+                Integer val = null;
+
+                try {
+                    val = (Integer) opacitySpinner.getValue();
+                } catch (NumberFormatException exc) {
+                }
+
+                if (val != null) {
+                    int value = val.intValue();
+                    GraphicObject graphic = _opacityGraphics.get(i);
+
+                    if (value != graphic.getAngle()) {
+                        graphic.setOpacity(value);
+                    }
+                }
+            }
+            viewPanel.repaint();
+        }
+    }//GEN-LAST:event_opacitySpinnerStateChanged
+
+    private void idTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idTextFieldFocusLost
+        onIdTextFieldChanged(evt);
+    }//GEN-LAST:event_idTextFieldFocusLost
+
+    private void idTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idTextFieldActionPerformed
+        onIdTextFieldChanged(evt);
+    }//GEN-LAST:event_idTextFieldActionPerformed
+
+    private void onIdTextFieldChanged(java.awt.event.ActionEvent evt) {
+        ArrayList<GraphicObject> selectedGraphics = viewPanel.selectedGraphics();
+
+        if (selectedGraphics != null) {
+            cmdManager.execute(new SetSpriteListIdCommand(selectedGraphics, idTextField.getText(), viewPanel));
+        }
+
+        AnimationCell cell = this.getWorkingCell();
+        if (cell != null) {
+            cell.rebuild();
+        }
+
+        repaint();
+    }
+    
+    public void saveGifAs() {
         JFileChooser chooser = fileChooser;
 
         CustomFilter filter = new CustomFilter();
@@ -1622,105 +1785,94 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         chooser.setApproveButtonText("Export");
         chooser.setDialogTitle("Export animation as GIF");
         chooser.setSelectedFile(new File(this.getWorkingAnimation().getName() + "." + CustomFilter.EXT_GIF));
-        
+
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
-        while (true)
-        {
+        while (true) {
             int returnVal = chooser.showSaveDialog(mainFrame);
-            if(returnVal == JFileChooser.APPROVE_OPTION)
-            {
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
                 java.io.File f = chooser.getSelectedFile();
-                if(null == dfEditor.io.Utils.getExtension(f))
-                {
+                if (null == dfEditor.io.Utils.getExtension(f)) {
                     f = new java.io.File(new String(f.getAbsolutePath() + "." + filter.getExtension()));
                 }
 
-                if (f.exists())
-                {
+                if (f.exists()) {
                     //Custom button text
-                    int response = JOptionPane.showConfirmDialog (null,
-                       "Overwrite existing file?","Confirm Overwrite",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-                    if (response == JOptionPane.CANCEL_OPTION)
+                    int response = JOptionPane.showConfirmDialog(null,
+                            "Overwrite existing file?", "Confirm Overwrite",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (response == JOptionPane.CANCEL_OPTION) {
                         continue;
+                    }
                 }
 
-                buildAnimatedGif(f.getAbsolutePath());            
+                buildAnimatedGif(f.getAbsolutePath());
             }
             break;
-        }           
+        }
     }
-    
-    public void animatedToCell(AnimationCell aCell)
-    {
+
+    public void animatedToCell(AnimationCell aCell) {
         animationPanel1.setCell(aCell);
     }
-    
-    private void setOnionSkins(boolean bOn)
-    {
-        if (!bOn)
-        {
-            viewPanel.setOnionSkins(null);    
+
+    private void setOnionSkins(boolean bOn) {
+        if (!bOn) {
+            viewPanel.setOnionSkins(null);
             return;
         }
-        
+
         Animation animation = this.getWorkingAnimation();
         AnimationCell[] cells = null;
-        
-        if (animation != null)
-        {        
+
+        if (animation != null) {
             int currentIndex = animation.indexOfCell(workingCell);
-            if (currentIndex > 0)
-            {                
+            if (currentIndex > 0) {
                 cells = new AnimationCell[currentIndex];
 
-                for (int i=0; i<currentIndex; ++i)
-                {
-                    AnimationCell cell = animation.getCellAtIndex((currentIndex-1)-i);
+                for (int i = 0; i < currentIndex; ++i) {
+                    AnimationCell cell = animation.getCellAtIndex((currentIndex - 1) - i);
                     cells[i] = cell;
-                }               
+                }
             }
         }
         viewPanel.setOnionSkins(cells);
     }
-    
-    public boolean saveCoords(File aFile)
-    {       
+
+    public boolean saveCoords(File aFile) {
         this.setName(aFile.getName());
 
-        DefaultMutableListModel model = (DefaultMutableListModel)animationList.getModel();
+        DefaultMutableListModel model = (DefaultMutableListModel) animationList.getModel();
         ArrayList<Animation> list = new ArrayList<Animation>();
-        for (int i=0; i<model.getSize(); ++i)
-        {
-            list.add((Animation)model.elementAt(i));
+        for (int i = 0; i < model.getSize(); ++i) {
+            list.add((Animation) model.elementAt(i));
         }
 
-        AnimationSetWriter writer = new AnimationSetWriter();                
+        AnimationSetWriter writer = new AnimationSetWriter();
         writer.createAnimationSet(aFile, loadedSpritesheetFile.getName(), list);
 
-        if (helpLabel != null)
+        if (helpLabel != null) {
             helpLabel.setText("Animation set saved as " + aFile.toString());
+        }
 
         savedFile = aFile;
         this.setModified(false);
         return true;
     }
 
-    public boolean save()
-    {
+    public boolean save() {
         //buildAnimatedGif(); // test
-        
-        if (savedFile != null)
+
+        if (savedFile != null) {
             return saveCoords(savedFile);
-        
+        }
+
         return saveAs();
     }
-    
-    public boolean saveAs()
-    {
+
+    public boolean saveAs() {
         boolean bOK = false;
-        
+
         JFileChooser chooser = fileChooser;
 
         CustomFilter filter = new CustomFilter();
@@ -1731,71 +1883,59 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
         chooser.setApproveButtonText("Save");
         chooser.setDialogTitle("Save animation set");
         chooser.setSelectedFile(new File("newAnimation." + CustomFilter.EXT_ANIM));
-        
+
         JFrame mainFrame = dfEditorApp.getApplication().getMainFrame();
-        while (true)
-        {
+        while (true) {
             int returnVal = chooser.showSaveDialog(mainFrame);
-            if(returnVal == JFileChooser.APPROVE_OPTION)
-            {
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
                 java.io.File f = chooser.getSelectedFile();
-                if(null == dfEditor.io.Utils.getExtension(f))
-                {
+                if (null == dfEditor.io.Utils.getExtension(f)) {
                     f = new java.io.File(new String(f.getAbsolutePath() + "." + filter.getExtension()));
                 }
 
-                if (f.exists())
-                {
+                if (f.exists()) {
                     //Custom button text
-                    int response = JOptionPane.showConfirmDialog (null,
-                       "Overwrite existing file?","Confirm Overwrite",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-                    if (response == JOptionPane.CANCEL_OPTION)
+                    int response = JOptionPane.showConfirmDialog(null,
+                            "Overwrite existing file?", "Confirm Overwrite",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (response == JOptionPane.CANCEL_OPTION) {
                         continue;
+                    }
                 }
 
-                saveCoords(f);            
+                saveCoords(f);
                 bOK = true;
             }
             break;
-        }        
+        }
         return bOK;
     }
 
-    
-
-    public boolean load(AnimationSetReader aReader)
-    {
+    public boolean load(AnimationSetReader aReader) {
         String spriteSheetPath = aReader.getSpriteSheetPath();
 
         File ssFile = new File(spriteSheetPath);
-        if (!ssFile.exists())
-        {
+        if (!ssFile.exists()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Could not find sprite sheet: \n\n"+spriteSheetPath,
+                    "Could not find sprite sheet: \n\n" + spriteSheetPath,
                     "Sprite sheet not found",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         setSpritesheetFile(ssFile);
-        
+
         ArrayList<Animation> animations = null;
-        try 
-        {
+        try {
             animations = aReader.getAnimations(spriteTree, bufferedImage);
-        }
-        catch (Exception e)
-        {
-            showParseError();             
+        } catch (Exception e) {
+            showParseError();
         }
 
-        if (animations != null)
-        {
-            for (int i=0; i<animations.size(); ++i)
-            {
+        if (animations != null) {
+            for (int i = 0; i < animations.size(); ++i) {
                 Animation animation = animations.get(i);
                 animation.addAnimationListener(this);
 
@@ -1805,8 +1945,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 
                 animation.setCurrentCellIndex(0);
                 AnimationCell cell = animation.getCurrentCell();
-                while (cell != null)
-                {
+                while (cell != null) {
                     cell.rebuild();
                     cell = animation.getNextCell();
                 }
@@ -1815,172 +1954,189 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 
             return true;
         }
-        
+
         return false;
     }
 
-    public void stripIndexSelected(int aIndex)
-    {
+    public void stripIndexSelected(int aIndex) {
         removeCellButton.setEnabled(aIndex >= 0);
         addCellButton.setEnabled(true);
     }
-    
-    private void updateControlPanel(GraphicPanel aPanel)
-    {           
+
+    private void updateControlPanel(GraphicPanel aPanel) {
         ArrayList<GraphicObject> sprites = aPanel.selectedGraphics();
         boolean bEnabled = (sprites.size() > 0);
-        
+
         //try {            
-            //controlPanel.setSelected(bEnabled);     // steals focus       
-            modifySpriteToggle.setSelected(controlPanel.isVisible());            
+        //controlPanel.setSelected(bEnabled);     // steals focus       
+        modifySpriteToggle.setSelected(controlPanel.isVisible());
         //} catch (java.beans.PropertyVetoException e) {}
-        
+
         removeSpriteButton.setEnabled(bEnabled);
         rotateACWButton.setEnabled(bEnabled);
         rotateCWButton.setEnabled(bEnabled);
         zOrderSpinner.setEnabled(bEnabled);
         angleSpinner.setEnabled(bEnabled);
+        idTextField.setEnabled(bEnabled);
+        scaleSpinner.setEnabled(bEnabled);
+        opacitySpinner.setEnabled(bEnabled);
         flipVCheckBox.setEnabled(bEnabled);
         flipHCheckBox.setEnabled(bEnabled);
-        
+
         boolean bSetZ = true;
         boolean bSetA = true;
-        
+        boolean bSetS = true;
+        boolean bSetO = true;
+        boolean bSetI = true;
+
         AnimationCell cell = this.getWorkingCell();
-        for (int i=0; i<sprites.size(); ++i)            
-        {
-            if (i > 0)            
-            {
-                if (   cell.zOrderOfGraphic(sprites.get(i))
-                    != cell.zOrderOfGraphic(sprites.get(i-1)))
-                {                    
-                    zOrderSpinner.setValue(null);                    
-                    bSetZ = false;                    
+        for (int i = 0; i < sprites.size(); ++i) {
+            if (i > 0) {
+                if (cell.zOrderOfGraphic(sprites.get(i))
+                        != cell.zOrderOfGraphic(sprites.get(i - 1))) {
+                    zOrderSpinner.setValue(null);
+                    bSetZ = false;
+                }
+
+                if ((int) sprites.get(i).getAngle() != (int) sprites.get(i - 1).getAngle()) {
+                    bSetA = false;
                 }
                 
-                if ((int)sprites.get(i).getAngle() != (int)sprites.get(i-1).getAngle())
-                {
-                    bSetA = false;                                        
+                if ((int)(sprites.get(i).getScale()) != (int)(sprites.get(i - 1).getScale())) {
+                    bSetS = false;
                 }
+                
+                if ((int)(sprites.get(i).getOpacity()) != (int)(sprites.get(i - 1).getOpacity())) {
+                    bSetO = false;
+                }
+                
+                if (!sprites.get(i).getId().equals(sprites.get(i - 1).getId())) {
+                    bSetI = false;
+                }                
             }
         }
-        
+
         //zOrderSpinner.setEnabled(bSetZ);
-        
-        for (int i=0; i<sprites.size(); ++i)            
-        {
-            SpriteGraphic graphic = (SpriteGraphic)sprites.get(i);
-            
-            if (bSetZ)
+        for (int i = 0; i < sprites.size(); ++i) {
+            SpriteGraphic graphic = (SpriteGraphic) sprites.get(i);
+
+            if (bSetZ) {
                 zOrderSpinner.setValue(cell.zOrderOfGraphic(graphic));
-            if (bSetA)
-                angleSpinner.setValue(new Integer((int)graphic.getAngle()));
+            }
+            if (bSetA) {
+                angleSpinner.setValue(new Integer((int) graphic.getAngle()));
+            }
             
+            if (bSetS) {
+                scaleSpinner.setValue(new Integer((int) graphic.getScale()));
+            }
+            
+            if (bSetO) {
+                opacitySpinner.setValue(new Integer((int) graphic.getOpacity()));
+            }
+            
+            if (bSetI) {
+                idTextField.setText(graphic.getId());
+            }
+
             boolean hFlipped = graphic.isFlippedH();
-            if (flipHCheckBox.isSelected() != hFlipped)
+            if (flipHCheckBox.isSelected() != hFlipped) {
                 flipHCheckBox.setSelected(hFlipped);
+            }
 
             boolean vFlipped = graphic.isFlippedV();
-            if (flipVCheckBox.isSelected() != vFlipped)
+            if (flipVCheckBox.isSelected() != vFlipped) {
                 flipVCheckBox.setSelected(vFlipped);
-        }    
+            }
+        }
         repaint();
     }
 
     // Panel listener callbacks ///////////////////////////////////////////////
-    public void graphicAdded(GraphicPanel aPanel, GraphicObject aGraphic)
-    {    
+    public void graphicAdded(GraphicPanel aPanel, GraphicObject aGraphic) {
         updateControlPanel(aPanel);
-             
+
         boolean bFound = false;
-        for (int i=0; i<spriteList.getModel().getSize(); ++i)
-        {
-            if (((DefaultListModel)spriteList.getModel()).elementAt(i) == aGraphic)
+        for (int i = 0; i < spriteList.getModel().getSize(); ++i) {
+            if (((DefaultListModel) spriteList.getModel()).elementAt(i) == aGraphic) {
                 bFound = true;
+            }
         }
-        if (!bFound)
-            ((DefaultListModel)spriteList.getModel()).addElement(aGraphic);
-        
+        if (!bFound) {
+            ((DefaultListModel) spriteList.getModel()).addElement(aGraphic);
+        }
+
         workingCell.rebuild();
         animationStripPanel.repaint();
     }
-    
-    public void graphicMoved(GraphicPanel aPanel, GraphicObject aGraphic)
-    {
+
+    public void graphicMoved(GraphicPanel aPanel, GraphicObject aGraphic) {
         updateControlPanel(aPanel);
-        
-        if (workingCell != null)
-        {
+
+        if (workingCell != null) {
             workingCell.rebuild();
         }
         animationStripPanel.repaint();
     }
-    
+
     // messy business, should tidy
-    public void graphicsErased(GraphicPanel aPanel, ArrayList<GraphicObject> aGraphics)
-    {
+    public void graphicsErased(GraphicPanel aPanel, ArrayList<GraphicObject> aGraphics) {
         Animation animation = getWorkingAnimation();
-        AnimationCell cell =  animationStripPanel.selectedCell();
-        
+        AnimationCell cell = animationStripPanel.selectedCell();
+
         ArrayList<UndoableCommand> commands = new ArrayList<UndoableCommand>();
-        for (int i=0; i<aGraphics.size(); ++i)        
+        for (int i = 0; i < aGraphics.size(); ++i) {
             commands.add(new RemoveAnimGraphicCommand(animation, cell, aGraphics.get(i), aPanel));
-        
+        }
+
         GroupedUndoableCommand groupedCommand = new GroupedUndoableCommand(commands);
-        if (cmdManager != null)
+        if (cmdManager != null) {
             cmdManager.execute(groupedCommand);
-        else
-            groupedCommand.execute();       
-    }
-    
-    public void graphicErased(GraphicPanel aPanel, GraphicObject aGraphic)
-    {
-        updateControlPanel(aPanel);
-                
-        workingCell.removeGraphic(aGraphic);        
-        
-        workingCell.rebuild();
-        ((DefaultListModel)spriteList.getModel()).removeElement(aGraphic);
-        animationStripPanel.repaint();        
+        } else {
+            groupedCommand.execute();
+        }
     }
 
-    public void graphicSelectionChanged(GraphicPanel aPanel, GraphicObject aGraphic)
-    {    
+    public void graphicErased(GraphicPanel aPanel, GraphicObject aGraphic) {
         updateControlPanel(aPanel);
-        
-        for (int i=0; i<spriteList.getModel().getSize(); ++i)
-        {
-            if (spriteList.getModel().getElementAt(i) == aGraphic)
-            {
-                if (aGraphic.isSelected())
-                {
-                    if (!spriteList.isSelectedIndex(i))
+
+        workingCell.removeGraphic(aGraphic);
+
+        workingCell.rebuild();
+        ((DefaultListModel) spriteList.getModel()).removeElement(aGraphic);
+        animationStripPanel.repaint();
+    }
+
+    public void graphicSelectionChanged(GraphicPanel aPanel, GraphicObject aGraphic) {
+        updateControlPanel(aPanel);
+
+        for (int i = 0; i < spriteList.getModel().getSize(); ++i) {
+            if (spriteList.getModel().getElementAt(i) == aGraphic) {
+                if (aGraphic.isSelected()) {
+                    if (!spriteList.isSelectedIndex(i)) {
                         spriteList.addSelectionInterval(i, i);
-                }
-                else
-                {
-                    if (spriteList.isSelectedIndex(i))
+                    }
+                } else {
+                    if (spriteList.isSelectedIndex(i)) {
                         spriteList.removeSelectionInterval(i, i);
+                    }
                 }
             }
         }
     }
 
-    public void valueChanged(ListSelectionEvent e)
-    {
-        if (! e.getValueIsAdjusting()) //finished adjusting
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) //finished adjusting
         {
-            JList list = (JList)e.getSource();
-                                    
+            JList list = (JList) e.getSource();
+
             int selectedIndices[] = list.getSelectedIndices();
 
-            if (list == animationList)
-            {
-                DefaultMutableListModel model = (DefaultMutableListModel)list.getModel();
-                
-                if(selectedIndices.length > 0)
-                {
-                    Animation selectedAnimation = (Animation)model.get(selectedIndices[0]);
+            if (list == animationList) {
+                DefaultMutableListModel model = (DefaultMutableListModel) list.getModel();
+
+                if (selectedIndices.length > 0) {
+                    Animation selectedAnimation = (Animation) model.get(selectedIndices[0]);
                     selectedAnimation.setCurrentCellIndex(0);
                     setWorkingCell(selectedAnimation.getCurrentCell());
                     animationStripPanel.setAnimation(selectedAnimation);
@@ -1988,9 +2144,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                     playButton.setEnabled(selectedAnimation.numCells() > 1);
                     loopSpinner.setEnabled(true);
                     loopSpinner.setValue(selectedAnimation.getLoops());
-                }
-                else
-                {
+                } else {
                     spriteTree.setSelectionPath(null);
                     setWorkingCell(null);
                     animationStripPanel.setAnimation(null);
@@ -2001,40 +2155,32 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
                     loopSpinner.setEnabled(false);
                 }
 
-                boolean bEnabled = (! ((DefaultMutableListModel)list.getModel()).isEmpty()) && (list.getSelectedIndex() >= 0);
+                boolean bEnabled = (!((DefaultMutableListModel) list.getModel()).isEmpty()) && (list.getSelectedIndex() >= 0);
                 removeAnimationButton.setEnabled(bEnabled);
                 duplicateAnimationButton.setEnabled(bEnabled);
                 exportGifButton.setEnabled(bEnabled);
-            } 
-            else if (list == spriteList)
-            {
-                DefaultListModel model = (DefaultListModel)spriteList.getModel();
-                for (int i=0; i<list.getModel().getSize(); ++i)
-                {
+            } else if (list == spriteList) {
+                DefaultListModel model = (DefaultListModel) spriteList.getModel();
+                for (int i = 0; i < list.getModel().getSize(); ++i) {
                     boolean bFound = false;
-                    for (int j=0; j<selectedIndices.length; ++j)
-                    {
-                        if (selectedIndices[j] == i)
-                        {
+                    for (int j = 0; j < selectedIndices.length; ++j) {
+                        if (selectedIndices[j] == i) {
                             bFound = true;
                             break;
                         }
                     }
-                    if (!bFound)
-                    {
-                        GraphicObject graphic = (GraphicObject)model.getElementAt(i);
-                        if (graphic.isSelected())
-                        {                            
-                            viewPanel.selectGraphic(graphic, false);                            
+                    if (!bFound) {
+                        GraphicObject graphic = (GraphicObject) model.getElementAt(i);
+                        if (graphic.isSelected()) {
+                            viewPanel.selectGraphic(graphic, false);
                         }
                     }
                 }
 
-                for (int i=0; i<selectedIndices.length; ++i)
-                {
-                    GraphicObject graphic = (GraphicObject)model.getElementAt(selectedIndices[i]);
+                for (int i = 0; i < selectedIndices.length; ++i) {
+                    GraphicObject graphic = (GraphicObject) model.getElementAt(selectedIndices[i]);
                     if (!graphic.isSelected());
-                        viewPanel.selectGraphic(graphic);//, true);
+                    viewPanel.selectGraphic(graphic);//, true);
                 }
                 viewPanel.repaint();
             }
@@ -2043,91 +2189,110 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     ///////////////////////////////////////////////////////////////////////////
 
     // internal frame listener callbacks
-    public void internalFrameOpened(InternalFrameEvent e) {}
-    public void internalFrameClosing(InternalFrameEvent e) {}    
-    public void internalFrameClosed(InternalFrameEvent e) {}    
-    public void internalFrameIconified(InternalFrameEvent e) {}
-    public void internalFrameDeiconified(InternalFrameEvent e) {}
-    public void internalFrameActivated(InternalFrameEvent e) {}
-    public void internalFrameDeactivated(InternalFrameEvent e)
-    {
-        if (e.getSource() == controlPanel)
-            modifySpriteToggle.setSelected(false);
-        if (e.getSource() == spriteListControlPanel)
-            spriteListToggle.setSelected(false);
+    public void internalFrameOpened(InternalFrameEvent e) {
     }
-    
-    private class RollOverSpinModel extends javax.swing.SpinnerNumberModel
-    {
-        public RollOverSpinModel(int aValue, int aMin, int aMax, int aStepSize)
-        {
+
+    public void internalFrameClosing(InternalFrameEvent e) {
+    }
+
+    public void internalFrameClosed(InternalFrameEvent e) {
+    }
+
+    public void internalFrameIconified(InternalFrameEvent e) {
+    }
+
+    public void internalFrameDeiconified(InternalFrameEvent e) {
+    }
+
+    public void internalFrameActivated(InternalFrameEvent e) {
+    }
+
+    public void internalFrameDeactivated(InternalFrameEvent e) {
+        if (e.getSource() == controlPanel) {
+            modifySpriteToggle.setSelected(false);
+        }
+        if (e.getSource() == spriteListControlPanel) {
+            spriteListToggle.setSelected(false);
+        }
+    }
+
+    private class RollOverSpinModel extends javax.swing.SpinnerNumberModel {
+
+        public RollOverSpinModel(int aValue, int aMin, int aMax, int aStepSize) {
             super(aValue, aMin, aMax, aStepSize);
         }
-        
-        public Object getNextValue()
-        {
-            Integer i = (Integer)super.getNextValue();
-            Integer max = (Integer)this.getMaximum();
-            
-            if (i== null)
+
+        public Object getNextValue() {
+            Integer i = (Integer) super.getNextValue();
+            Integer max = (Integer) this.getMaximum();
+
+            if (i == null) {
                 return new Integer(this.getStepSize().intValue());
-            if (i.intValue() >= max.intValue())
-            {
+            }
+            if (i.intValue() >= max.intValue()) {
                 return new Integer(i.intValue() % max.intValue());
             }
-            
+
             return i;
         }
-        
-        public Object getPreviousValue()
-        {
+
+        public Object getPreviousValue() {
             Object o = super.getPreviousValue();
-            if (o != null)
+            if (o != null) {
                 return o;
-            
-            return new Integer (((Integer)this.getMaximum()).intValue() - this.getStepSize().intValue());
-                
+            }
+
+            return new Integer(((Integer) this.getMaximum()).intValue() - this.getStepSize().intValue());
+
         }
     }
-    
-    private class CustomSpinModel extends AbstractSpinnerModel 
-    {
+
+    private class CustomSpinModel extends AbstractSpinnerModel {
+
         protected String value = "";
 
-        public void setValue(Object o) 
-        {
-            if (o != null)               
-                value = o.toString();                                        
-            else
-                value = " ";    
-            
+        public void setValue(Object o) {
+            if (o != null) {
+                value = o.toString();
+            } else {
+                value = " ";
+            }
+
             fireStateChanged();
         }
 
-        public Object getValue() { return value; }    
-
-        public Object getPreviousValue() 
-        {    
-            Integer i = parse();
-            if (i == null) return "0"; // default to 0 from indeterminate
-            else return "" + (i.intValue() - 1);
+        public Object getValue() {
+            return value;
         }
 
-        public Object getNextValue() 
-        {
+        public Object getPreviousValue() {
             Integer i = parse();
-            if (i == null) return "0"; // default to 0 from indeterminate
-            else return "" + (i.intValue() + 1);
+            if (i == null) {
+                return "0"; // default to 0 from indeterminate
+            } else {
+                return "" + (i.intValue() - 1);
+            }
         }
 
-        private Integer parse() 
-        {
-            try { return new Integer(value); }
-            catch (NumberFormatException exc) { return null; }
+        public Object getNextValue() {
+            Integer i = parse();
+            if (i == null) {
+                return "0"; // default to 0 from indeterminate
+            } else {
+                return "" + (i.intValue() + 1);
+            }
+        }
+
+        private Integer parse() {
+            try {
+                return new Integer(value);
+            } catch (NumberFormatException exc) {
+                return null;
+            }
         }
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addAnimationButton;
     private javax.swing.JButton addCellButton;
@@ -2144,6 +2309,8 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JButton exportGifButton;
     private javax.swing.JCheckBox flipHCheckBox;
     private javax.swing.JCheckBox flipVCheckBox;
+    private javax.swing.JLabel idLabel;
+    private javax.swing.JTextField idTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -2152,6 +2319,7 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -2160,12 +2328,16 @@ private void exportGifButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JSpinner loopSpinner;
     private javax.swing.JToggleButton modifySpriteToggle;
     private javax.swing.JCheckBox onionSkinsCheckBox;
+    private javax.swing.JLabel opacityLabel;
+    private javax.swing.JSpinner opacitySpinner;
     private javax.swing.JButton playButton;
     private javax.swing.JButton removeAnimationButton;
     private javax.swing.JButton removeCellButton;
     private javax.swing.JButton removeSpriteButton;
     private javax.swing.JButton rotateACWButton;
     private javax.swing.JButton rotateCWButton;
+    private javax.swing.JLabel scaleLabel;
+    private javax.swing.JSpinner scaleSpinner;
     private dfEditor.SpriteList spriteList;
     private javax.swing.JInternalFrame spriteListControlPanel;
     private javax.swing.JToggleButton spriteListToggle;
