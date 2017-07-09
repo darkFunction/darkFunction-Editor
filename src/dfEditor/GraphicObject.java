@@ -30,23 +30,35 @@ public abstract class GraphicObject extends java.util.Observable
     public enum Anchor { TOP_LEFT, CENTRE }
     
     protected Rectangle _rect;
+    protected String _id;
     protected boolean _bResizable;
     protected boolean _bSelected;
     protected Rectangle _bounds;
     protected Rectangle _savedRect;
     protected String _description = null;
+    protected String _savedId;
     protected float _angle;
+    protected float _scale;
+    protected float _opacity;
     protected float _savedAngle;
+    protected float _savedScale;
+    protected float _savedOpacity;
     protected Anchor _anchor;
 
     public GraphicObject(Rectangle aRect)
     {
+        _id = "";
         _angle = 0;
+        _scale = 100;
+        _opacity = 255;
         _bResizable = false;
         _bSelected = false;
         setRect(aRect);
         saveRect();
         saveAngle();
+        saveScale();
+        saveOpacity();
+        saveId();
         _anchor = Anchor.TOP_LEFT;
         
         _description = super.toString();
@@ -89,6 +101,36 @@ public abstract class GraphicObject extends java.util.Observable
     {
         return ! (_savedRect.equals(_rect));
     }
+    
+    public void setScale(float scale) 
+    {
+        _scale = scale;
+    }
+    
+    public float getScale() 
+    {
+        return _scale;
+    }
+    
+    public void setOpacity(float opacity) 
+    {
+        _opacity = opacity;
+    }
+    
+    public float getOpacity()
+    {
+        return _opacity;
+    }
+    
+    public void setId(String id)
+    {
+        _id = id;
+    }
+    
+    public String getId()
+    {
+        return _id;
+    }
 
     public void setAngle(float aAngle)
     {
@@ -124,6 +166,18 @@ public abstract class GraphicObject extends java.util.Observable
     {
         _savedAngle = getAngle();
     }
+    
+    public void saveScale() {
+        _savedScale = getScale();
+    }
+    
+    public void saveOpacity() {
+        _savedOpacity = getOpacity();
+    }
+    
+    public void saveId() {
+        _savedId = getId();
+    }
 
     public Rectangle getRect()
     {
@@ -138,6 +192,21 @@ public abstract class GraphicObject extends java.util.Observable
     public float getSavedAngle()            
     {
         return _savedAngle;
+    }
+    
+    public float getSavedScale()
+    {
+        return _savedScale;
+    }
+    
+    public float getSavedOpacity()
+    {
+        return _savedOpacity;
+    }
+    
+    public String getSavedId()
+    {
+        return _savedId;
     }
     
     public void moveFromSavedPoint(Point aDist)

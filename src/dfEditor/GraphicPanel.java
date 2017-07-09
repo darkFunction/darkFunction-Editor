@@ -342,7 +342,7 @@ public class GraphicPanel extends javax.swing.JDesktopPane implements MouseMotio
 
         g2d.setTransform(transform);
 
-        graphic.draw(g2d, aOrigin, aZoom, aAlpha, _bAllowsEditing);
+        graphic.draw(g2d, aOrigin, aZoom * graphic.getScale() * 0.01f, aAlpha * (graphic.getOpacity() / 255.0f), _bAllowsEditing);
 
         g2d.setTransform(oldTransform);
     }

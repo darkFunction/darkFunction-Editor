@@ -142,12 +142,30 @@ public class AnimationSetReader
                                                
                         SpriteGraphic graphic = new SpriteGraphic(aImage, new Point(x, y), r);
                         
+                        String id = ((Element)spriteNode).getAttribute("id");
+                        graphic.setId(id);
+                        graphic.saveId();
+                        
                         float angle = 0;
                         String angleString = ((Element)spriteNode).getAttribute("angle");
                         if (angleString != null && angleString.length() != 0)
                             angle = Float.parseFloat(angleString);                        
                         graphic.setAngle(angle);
                         graphic.saveAngle();
+                        
+                        float scale = 100;
+                        String scaleString = ((Element)spriteNode).getAttribute("scale");
+                        if (scaleString != null && scaleString.length() != 0)
+                            scale = Float.parseFloat(scaleString);
+                        graphic.setScale(scale);
+                        graphic.saveScale();
+                        
+                        float opacity = 255;
+                        String opacityString = ((Element)spriteNode).getAttribute("opacity");
+                        if (opacityString != null && opacityString.length() != 0)
+                            opacity = Float.parseFloat(opacityString);
+                        graphic.setOpacity(opacity);
+                        graphic.saveOpacity();
                         
                         boolean flipH = false;
                         boolean flipV = false;

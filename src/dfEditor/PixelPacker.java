@@ -32,12 +32,19 @@ public class PixelPacker
     private class PixelRectPair
     {
         public Rectangle rect;
+        public Rectangle padRect;
         public int[] pixels;
 
-        public PixelRectPair(final int[] aPixels, final Rectangle aRect)
+        public PixelRectPair(final int[] aPixels, final Rectangle aRect, int padding)
         {
             rect = aRect;
             pixels = aPixels;
+
+            padRect = new Rectangle(rect);
+            padRect.x -= padding;
+            padRect.y -= padding;
+            padRect.width += padding * 2;
+            padRect.height += padding * 2;
         }
     }
 
@@ -63,7 +70,7 @@ public class PixelPacker
         return bSuccess;
     }
 
-    public BufferedImage packPixels(final BufferedImage aOrigImage, final Rectangle[] aRects, boolean bPowerOfTwo)
+    public BufferedImage packPixels(final BufferedImage aOrigImage, final Rectangle[] aRects, boolean bPowerOfTwo, int padding)
     {
         int[] origPixels = new int[aOrigImage.getWidth(null) * aOrigImage.getHeight(null)];
         aOrigImage.getRGB( 0,
@@ -92,25 +99,25 @@ public class PixelPacker
                 }
             }
 
-            pairs[i] = new PixelRectPair(pixels, r);
+            pairs[i] = new PixelRectPair(pixels, r, padding);            
         }
 
         // TODO: sprites totally enclosed by other sprites should remain enclosed
         // TODO: multiple images?
 
       	// sort by size
-	for (int i=0; i<pairs.length-1; ++i)
-	{
+    	for (int i=0; i<pairs.length-1; ++i)
+    	{
             double area1 = pairs[i].rect.width * pairs[i].rect.height;
             double area2 = pairs[i+1].rect.width * pairs[i+1].rect.height;
 
             if (area1 < area2)
             {
-		PixelRectPair temp = pairs[i];
-                pairs[i] = pairs[i+1];
-                pairs[i+1] = temp;
+        		PixelRectPair temp = pairs[i];
+                        pairs[i] = pairs[i+1];
+                        pairs[i+1] = temp;
             }
-	}
+    	}
 
         // do the packing here
         // madly inefficient but doesn't seem to matter a flying fuck
@@ -126,7 +133,7 @@ public class PixelPacker
             rootNode.rect = new Rectangle(0, 0, sizeX, sizeY);
             for (int i=0; i<pairs.length; ++i)
             {
-                Node node = rootNode.Insert(pairs[i].rect);
+                Node node = rootNode.Insert(pairs[i].padRect);
                 if (node == null)
                 {
                     // failed to insert
@@ -155,8 +162,8 @@ public class PixelPacker
         rootNode.rect = new Rectangle(0, 0, sizeX, sizeY);
         for (int i=0; i<pairs.length; ++i)
         {
-            Node node = rootNode.Insert(pairs[i].rect);
-            copyRect(node.rect, pairs[i].rect); // don't want to swap pointers
+            Node node = rootNode.Insert(pairs[i].padRect);
+            copyRect(node.rect, pairs[i].padRect); // don't want to swap pointers
         }
 
         // create the new image!
@@ -167,7 +174,7 @@ public class PixelPacker
             sizeX = sizeY = 0;
             for (int i=0; i<pairs.length; ++i)
             {
-                Rectangle r = pairs[i].rect;
+                Rectangle r = pairs[i].padRect;
                 if (sizeX < r.x + r.width)
                     sizeX = r.x + r.width;
                 if (sizeY < r.y + r.height)
@@ -201,14 +208,18 @@ public class PixelPacker
         // copy rects to new image
         for (int i=0; i<pairs.length; ++i)
         {
-            Rectangle r = pairs[i].rect;
+            Rectangle pr = pairs[i].padRect;
+            Rectangle r = pairs[i].rect;    
+            r.x = pr.x + padding;
+            r.y = pr.y + padding;
+
             int[] pixels = pairs[i].pixels;
 
             for (int y=0; y<r.height; ++y)
             {
                 for (int x=0; x<r.width; ++x)
                 {
-                    newImagePixels[(r.y+y) * sizeX + (r.x+x)] = pixels[y * r.width + x];
+                    newImagePixels[(pr.y+y+padding) * sizeX + (pr.x+x+padding)] = pixels[y * r.width + x];
                 }
             }
         }
